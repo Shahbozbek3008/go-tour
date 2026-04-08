@@ -1,0 +1,109 @@
+export default function Part1() {
+    return (
+        <>
+            <filter
+                id="filter0_f_6868_90177"
+                x="17.4246"
+                y="179.382"
+                width="920.868"
+                height="966.175"
+                filterUnits="userSpaceOnUse"
+                colorInterpolationFilters="sRGB"
+            >
+                <feFlood floodOpacity="0" result="BackgroundImageFix" />
+                <feBlend
+                    mode="normal"
+                    in="SourceGraphic"
+                    in2="BackgroundImageFix"
+                    result="shape"
+                />
+                <feGaussianBlur
+                    stdDeviation="157"
+                    result="effect1_foregroundBlur_6868_90177"
+                />
+            </filter>
+            <filter
+                id="filter1_f_6868_90177"
+                x="386.944"
+                y="135.721"
+                width="469.007"
+                height="500.103"
+                filterUnits="userSpaceOnUse"
+                colorInterpolationFilters="sRGB"
+            >
+                <feFlood floodOpacity="0" result="BackgroundImageFix" />
+                <feBlend
+                    mode="normal"
+                    in="SourceGraphic"
+                    in2="BackgroundImageFix"
+                    result="shape"
+                />
+                <feGaussianBlur
+                    stdDeviation="67"
+                    result="effect1_foregroundBlur_6868_90177"
+                />
+            </filter>
+            <filter
+                id="filter2_f_6868_90177"
+                x="0.354126"
+                y="0.941406"
+                width="404.519"
+                height="425.639"
+                filterUnits="userSpaceOnUse"
+                colorInterpolationFilters="sRGB"
+            >
+                <feFlood floodOpacity="0" result="BackgroundImageFix" />
+                <feBlend
+                    mode="normal"
+                    in="SourceGraphic"
+                    in2="BackgroundImageFix"
+                    result="shape"
+                />
+                <feGaussianBlur
+                    stdDeviation="67"
+                    result="effect1_foregroundBlur_6868_90177"
+                />
+            </filter>
+            <filter
+                id="filter3_i_6868_90177"
+                x="533.941"
+                y="257.449"
+                width="227.117"
+                height="200.69"
+                filterUnits="userSpaceOnUse"
+                colorInterpolationFilters="sRGB"
+            >
+                <feFlood floodOpacity="0" result="BackgroundImageFix" />
+                <feBlend
+                    mode="normal"
+                    in="SourceGraphic"
+                    in2="BackgroundImageFix"
+                    result="shape"
+                />
+                <feColorMatrix
+                    in="SourceAlpha"
+                    type="matrix"
+                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                    result="hardAlpha"
+                />
+                <feOffset dy="4" />
+                <feGaussianBlur stdDeviation="13.5" />
+                <feComposite
+                    in2="hardAlpha"
+                    operator="arithmetic"
+                    k2="-1"
+                    k3="1"
+                />
+                <feColorMatrix
+                    type="matrix"
+                    values="0 0 0 0 0.129412 0 0 0 0 0.305882 0 0 0 0 0.8 0 0 0 1 0"
+                />
+                <feBlend
+                    mode="normal"
+                    in2="shape"
+                    result="effect1_innerShadow_6868_90177"
+                />
+            </filter>
+        </>
+    )
+}
