@@ -4,7 +4,7 @@ import { API } from "@/lib/constants/api-endpoints"
 import { setLocale } from "@/lib/next-intl/set-locale"
 import { PropsWithChildrenLocale } from "@/types/common"
 import dynamic from "next/dynamic"
-import Navbar from "./_components/navbar"
+import { Navbar } from "./_components/navbar"
 
 const Footer = dynamic(() => import("./_components/footer"))
 

@@ -1,5 +1,3 @@
-import { AIChatModal } from "@/components/common/ai-chat"
-import MediaViewerModal from "@/components/common/media-viewer-modal"
 import { Toaster } from "@/components/ui/sonner"
 import { routing } from "@/i18n/routing"
 import { setupServerFetchInterceptors } from "@/lib/api/setup-server-fetch-interceptors"
@@ -12,7 +10,6 @@ import { notFound } from "next/navigation"
 import { Suspense } from "react"
 import Providers from "../_providers"
 import "../globals.css"
-import FallbackLoader from "./_components/fallback-loader"
 
 const publicSans = Public_Sans({
     variable: "--font-public-sans",
@@ -20,7 +17,7 @@ const publicSans = Public_Sans({
 })
 
 export const metadata: Metadata = {
-    title: "iNEXLYNK",
+    title: "Go Tour",
     description: "Developed by upgrow.uz",
 }
 
@@ -41,17 +38,15 @@ export default async function LocaleLayout({
     setupServerFetchInterceptors()
 
     return (
-        <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
+        <html lang={locale}>
             <body
                 suppressHydrationWarning
                 className={`${publicSans.variable} antialiased`}
             >
-                <Suspense fallback={<FallbackLoader />}>
+                <Suspense fallback={<p>loading...</p>}>
                     <Providers>
                         {children}
                         <Toaster />
-                        <MediaViewerModal />
-                        <AIChatModal />
                     </Providers>
                 </Suspense>
             </body>

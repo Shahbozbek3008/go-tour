@@ -1,6 +1,6 @@
 import { setLocale } from "@/lib/next-intl/set-locale"
 import { PropsWithChildrenLocale } from "@/types/common"
-import Navbar from "../(main)/_components/navbar"
+import { Navbar } from "../(main)/_components/navbar"
 
 export default function Layout({ params, children }: PropsWithChildrenLocale) {
     setLocale(params)

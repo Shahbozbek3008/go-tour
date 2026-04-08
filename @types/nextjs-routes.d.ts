@@ -14,75 +14,14 @@ declare module "nextjs-routes" {
     | StaticRoute<"/">
     | DynamicRoute<"/[locale]", { "locale": string }>
     | DynamicRoute<"/[locale]/about-us", { "locale": string }>
-    | DynamicRoute<"/[locale]/account", { "locale": string }>
-    | DynamicRoute<"/[locale]/account/business", { "locale": string }>
-    | DynamicRoute<"/[locale]/account/identity", { "locale": string }>
-    | DynamicRoute<"/[locale]/additional-pages/[slug]", { "locale": string; "slug": string }>
     | DynamicRoute<"/[locale]/ai-chat", { "locale": string }>
-    | DynamicRoute<"/[locale]/chat", { "locale": string }>
-    | DynamicRoute<"/[locale]/companies", { "locale": string }>
     | DynamicRoute<"/[locale]/forgot-password", { "locale": string }>
-    | DynamicRoute<"/[locale]/investment", { "locale": string }>
-    | DynamicRoute<"/[locale]/investment/detail", { "locale": string }>
-    | DynamicRoute<"/[locale]/investment/detail/[slug]", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/investment/post", { "locale": string }>
-    | DynamicRoute<"/[locale]/investment/post/[slug]", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/marketplace", { "locale": string }>
-    | DynamicRoute<"/[locale]/marketplace/detail", { "locale": string }>
-    | DynamicRoute<"/[locale]/marketplace/detail/[slug]", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/marketplace/post", { "locale": string }>
-    | DynamicRoute<"/[locale]/marketplace/post/[slug]", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile", { "locale": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/blogs", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/blogs-other", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/blogs/active", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/blogs/archive", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/bookmark", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/bookmark/investment", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/bookmark/marketplace", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/bookmark/news", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/bookmark/outreach-hub", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/investment", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/investment-other", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/investment/active", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/investment/archive", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/marketplace", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/marketplace-other", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/marketplace/active", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/marketplace/archive", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/my-network", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/my-network/black-list", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/my-network/connections", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/my-network/invititations", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/outreach-hub", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/outreach-hub-other", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/outreach-hub/active", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/outreach-hub/archive", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/profile", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/my-profile/[slug]/profile-other", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/news", { "locale": string }>
-    | DynamicRoute<"/[locale]/news/detail", { "locale": string }>
-    | DynamicRoute<"/[locale]/news/detail/[slug]", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/news/post", { "locale": string }>
-    | DynamicRoute<"/[locale]/news/post/[slug]", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/news/tweets", { "locale": string }>
-    | DynamicRoute<"/[locale]/notification", { "locale": string }>
     | DynamicRoute<"/[locale]/oauth", { "locale": string }>
-    | DynamicRoute<"/[locale]/outreach-hub", { "locale": string }>
-    | DynamicRoute<"/[locale]/outreach-hub/detail", { "locale": string }>
-    | DynamicRoute<"/[locale]/outreach-hub/detail/[slug]", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/outreach-hub/post", { "locale": string }>
-    | DynamicRoute<"/[locale]/outreach-hub/post/[slug]", { "locale": string; "slug": string }>
-    | DynamicRoute<"/[locale]/security", { "locale": string }>
-    | DynamicRoute<"/[locale]/security/two-steps-verification", { "locale": string }>
     | DynamicRoute<"/[locale]/set-new-password", { "locale": string }>
     | DynamicRoute<"/[locale]/sign-in", { "locale": string }>
     | DynamicRoute<"/[locale]/sign-up", { "locale": string }>
     | DynamicRoute<"/[locale]/tsv", { "locale": string }>
-    | DynamicRoute<"/[locale]/verification-code", { "locale": string }>
-    | DynamicRoute<"/[locale]/catalog", { "locale": string }>
-    | DynamicRoute<"/[locale]/agents", { "locale": string }>
-    | DynamicRoute<"/[locale]/for-tour-companies", { "locale": string }>;
+    | DynamicRoute<"/[locale]/verification-code", { "locale": string }>;
 
   interface StaticRoute<Pathname> {
     pathname: Pathname;
@@ -151,10 +90,9 @@ declare module "nextjs-routes" {
 
 // prettier-ignore
 declare module "next/link" {
+  import type { Route, RouteLiteral } from "nextjs-routes";;
   import type { LinkProps as NextLinkProps } from "next/dist/client/link";
-  import type { Route, RouteLiteral } from "nextjs-routes";
   import type React from "react";
-;
 
   type StaticRoute = Exclude<Route, { query: any }>["pathname"];
 
@@ -179,8 +117,8 @@ declare module "next/link" {
 
 // prettier-ignore
 declare module "next/router" {
+  import type { Locale, Route, RoutedQuery } from "nextjs-routes";
   import type { NextRouter as Router } from "next/dist/client/router";
-  import type { Locale, Route } from "nextjs-routes";
   export * from "next/dist/client/router";
   export { default } from "next/dist/client/router";
 
@@ -241,8 +179,8 @@ declare module "next/router" {
 // prettier-ignore
 declare module "next/navigation" {
   export * from "next/dist/client/components/navigation";
-  import type { NavigateOptions, AppRouterInstance as NextAppRouterInstance, PrefetchOptions } from "next/dist/shared/lib/app-router-context.shared-runtime";
-  import type { Route, RoutedQuery, RouteLiteral } from "nextjs-routes";
+  import type { Route, RouteLiteral, RoutedQuery } from "nextjs-routes";
+  import type { AppRouterInstance as NextAppRouterInstance, NavigateOptions, PrefetchOptions } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
   type StaticRoute = Exclude<Route, { query: any }>["pathname"];
 
