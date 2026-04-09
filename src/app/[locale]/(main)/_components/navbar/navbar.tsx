@@ -51,61 +51,55 @@ export const Navbar = () => {
     }, [])
 
     useEffect(() => {
-        const handler = (e: MouseEvent) => {
-            if (navRef.current && !navRef.current.contains(e.target as Node)) {
-                setMenuOpen(false)
-            }
-        }
-        document.addEventListener("mousedown", handler)
-        return () => document.removeEventListener("mousedown", handler)
-    }, [])
-
-    useEffect(() => {
         setMenuOpen(false)
     }, [pathname])
 
     return (
-        <header 
-            ref={navRef} 
-            className={`sticky top-0 z-[101] w-full transition-transform duration-300 ${
-                hidden ? "-translate-y-full" : "translate-y-0"
-            }`}
-        >
-            <div className={`transition-all duration-300 ${
-                scrolled ? "bg-white/85 backdrop-blur-md shadow-sm border-b border-transparent" : "bg-white border-b border-gray-100"
-            }`}>
-                <nav className={`mx-auto px-6 lg:px-15 flex items-center justify-between transition-all duration-300 ${
-                    scrolled ? "py-2.5" : "py-4"
+        <>
+            <header 
+                ref={navRef} 
+                className={`sticky top-0 z-[101] w-full transition-transform duration-300 ${
+                    hidden ? "-translate-y-full" : "translate-y-0"
+                }`}
+            >
+                <div className={`transition-all duration-300 ${
+                    scrolled ? "bg-white/85 backdrop-blur-md shadow-sm border-b border-transparent" : "bg-white border-b border-gray-100"
                 }`}>
-                    <Link href="/" className="flex-shrink-0">
-                        <Image src={logo} alt="Travel logo" priority />
-                    </Link>
+                    <nav className={`mx-auto px-6 lg:px-15 flex items-center justify-between transition-all duration-300 ${
+                        scrolled ? "py-2.5" : "py-4"
+                    }`}>
+                        <Link href="/" className="flex-shrink-0">
+                            <Image src={logo} alt="Travel logo" priority />
+                        </Link>
 
-                    <DesktopNavLinks pathname={pathname} />
+                        <DesktopNavLinks pathname={pathname} />
 
-                    <div className="flex items-center gap-2.5">
-                        <LanguageSwitcher />
+                        <div className="flex items-center gap-2.5">
+                            <LanguageSwitcher />
 
-                        <Button
-                            size="default"
-                            variant="default"
-                            className="hidden md:flex rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold"
-                        >
-                            Kirish
-                        </Button>
+                            <Button
+                                size="default"
+                                variant="default"
+                                className="hidden md:flex rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                            >
+                                Kirish
+                            </Button>
 
-                        <NavList
-                            menuOpen={menuOpen}
-                            onMenuToggle={setMenuOpen}
-                        />
-                    </div>
-                </nav>
-            </div>
+                            <NavList
+                                menuOpen={menuOpen}
+                                onMenuToggle={setMenuOpen}
+                            />
+                        </div>
+                    </nav>
+                </div>
+            </header>
+
+            {/* MobileMenu is placed outside the header so its 'fixed' positioning binds to viewport, not the transforming header. */}
             <MobileMenu
                 open={menuOpen}
                 pathname={pathname}
                 onClose={() => setMenuOpen(false)}
             />
-        </header>
+        </>
     )
 }
