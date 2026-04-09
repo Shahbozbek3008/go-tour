@@ -315,7 +315,7 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
                 )}
             >
                 {/* Tab switcher */}
-                <div className="flex items-center gap-2 p-3 border-b border-gray-50">
+                <div className="flex items-center justify-center gap-2 p-3 border-b border-gray-200">
                     <button
                         onClick={() => setTab("period")}
                         className={cn(

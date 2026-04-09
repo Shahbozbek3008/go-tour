@@ -30,7 +30,7 @@ const slides: Slide[] = [
     },
     {
         id: 2,
-        image: "https://uzbekistan.travel/storage/app/media/uploaded-files/samarkand-uzbekistan-kupol-mechet-ploshchad.png",
+        image: "https://uzbekistan.travel/storage/app/media/Rasmlar/Samarqand/umumiy/cropped-images/shutterstock_1979665571-0-0-0-0-1738745770.jpg",
         badge: "NEW",
         title: "Historic Bukhara",
         subtitle: "Walk through 2,500 years of living history",
@@ -39,7 +39,7 @@ const slides: Slide[] = [
     },
     {
         id: 3,
-        image: "https://uzbekistan.travel/storage/app/media/uploaded-files/samarkand-uzbekistan-kupol-mechet-ploshchad.png",
+        image: "https://media.cnn.com/api/v1/images/stellar/prod/gettyimages-1185723641v2.jpg?c=original",
         badge: "FEATURED",
         title: "Ancient Khiva",
         subtitle: "Step inside the world's greatest open-air museum",
@@ -64,7 +64,7 @@ export const Header = () => {
             setTimeout(() => {
                 setCurrent(index)
                 setIsAnimating(false)
-            }, 600)
+            }, 360)
         },
         [isAnimating],
     )
@@ -101,12 +101,6 @@ export const Header = () => {
         resetTimer()
     }
 
-    const handleDot = (index: number) => {
-        if (index === current) return
-        goTo(index, index > current ? "right" : "left")
-        resetTimer()
-    }
-
     const slide = slides[current]
 
     return (
@@ -135,8 +129,7 @@ export const Header = () => {
                     </div>
                 </div>
 
-                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent z-10" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-10" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent z-10 rounded-2xl overflow-hidden" />
 
                 {/* Content */}
                 <div

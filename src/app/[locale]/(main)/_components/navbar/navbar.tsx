@@ -29,7 +29,7 @@ export const Navbar = () => {
     }, [pathname])
 
     return (
-        <header ref={navRef} className="sticky top-0 z-50 w-full">
+        <header ref={navRef} className="sticky top-0 z-101 w-full">
             <div className="bg-white border-b border-gray-100">
                 <nav className="mx-auto px-6 py-4 lg:px-15  flex items-center justify-between">
                     <Link href="/" className="flex-shrink-0">
