@@ -23,35 +23,6 @@ const LANGUAGES = [
 
 type LangCode = (typeof LANGUAGES)[number]["code"]
 
-function UzFlag({ className }: { className?: string }) {
-    return (
-        <svg
-            className={cn("w-5 h-4 rounded-[2px] flex-shrink-0", className)}
-            viewBox="0 0 30 20"
-            xmlns="http://www.w3.org/2000/svg"
-        >
-            <rect width="30" height="20" fill="#1EB53A" />
-            <rect width="30" height="6.67" fill="#009FCA" />
-            <rect y="6.67" width="30" height="1.33" fill="#fff" />
-            <rect y="12" width="30" height="1.33" fill="#fff" />
-        </svg>
-    )
-}
-
-function RuFlag({ className }: { className?: string }) {
-    return (
-        <svg
-            className={cn("w-5 h-4 rounded-[2px] flex-shrink-0", className)}
-            viewBox="0 0 30 20"
-            xmlns="http://www.w3.org/2000/svg"
-        >
-            <rect width="30" height="20" fill="#D52B1E" />
-            <rect width="30" height="13.33" fill="#003580" />
-            <rect width="30" height="6.67" fill="#fff" />
-        </svg>
-    )
-}
-
 export const LanguageSwitcher = () => {
     const router = useRouter()
     const pathname = usePathname()
@@ -76,10 +47,18 @@ export const LanguageSwitcher = () => {
 
     const switchLocale = (code: LangCode) => {
         setOpen(false)
-        // Replace the locale segment in the path
-        const segments = pathname.split("/")
-        segments[1] = code
-        router.push(segments.join("/") as RouteLiteral)
+        
+        let newPath: string = pathname as string
+        const segments = newPath.split("/")
+        
+        if (segments[1] === "uz" || segments[1] === "ru") {
+            segments[1] = code
+            newPath = segments.join("/")
+        } else {
+            newPath = `/${code}${newPath === "/" ? "" : newPath}`
+        }
+
+        router.push(newPath as any)
     }
 
     const ActiveFlag = activeLang.flag
@@ -111,19 +90,17 @@ export const LanguageSwitcher = () => {
                     )}
                     role="listbox"
                 >
-                    {LANGUAGES.map(({ code, label, flag: Flag }) => {
-                        const isActive = code === activeLang.code
+                    {LANGUAGES.filter((lang) => lang.code !== activeLang.code).map(({ code, label, flag: Flag }) => {
                         return (
                             <button
                                 key={code}
                                 role="option"
-                                aria-selected={isActive}
+                                aria-selected={false}
                                 onClick={() => switchLocale(code)}
                                 className={cn(
                                     "w-full flex items-center gap-2.5 px-3 py-2",
                                     "text-sm font-semibold text-gray-700",
                                     "hover:bg-gray-50 transition-colors",
-                                    isActive && "text-blue-600",
                                 )}
                             >
                                 <Flag />
