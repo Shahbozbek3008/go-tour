@@ -1,6 +1,5 @@
 import { Toaster } from "@/components/ui/sonner"
 import { routing } from "@/i18n/routing"
-import { setupServerFetchInterceptors } from "@/lib/api/setup-server-fetch-interceptors"
 import { PropsWithChildrenLocale } from "@/types/common"
 import { Metadata } from "next"
 import { hasLocale } from "next-intl"
@@ -35,7 +34,7 @@ export default async function LocaleLayout({
     }
 
     setRequestLocale(locale)
-    setupServerFetchInterceptors()
+    // setupServerFetchInterceptors()
 
     return (
         <html lang={locale}>

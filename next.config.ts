@@ -7,22 +7,20 @@ const nextConfig: NextConfig = {
     // Image optimization for marketplace
     images: {
         remotePatterns: [
-            { protocol: "https", hostname: "*" },
-            { protocol: "http", hostname: "*" },
-            // {
-            //     // CDN for user uploads
-            //     protocol: "https",
-            //     hostname: "your-cdn-domain.com",
-            //     port: "",
-            //     pathname: "/uploads/**",
-            // },
-            // {
-            //     // S3 bucket for product images
-            //     protocol: "https",
-            //     hostname: "*.amazonaws.com",
-            //     port: "",
-            //     pathname: "/**",
-            // },
+            {
+                protocol: "https",
+                hostname: "**", // barcha hostlar uchun
+            },
+            {
+                protocol: "http",
+                hostname: "**",
+            },
+            {
+                protocol: "https",
+                hostname: "api.file.gotour.uz",
+                port: "",
+                pathname: "/**",
+            },
         ],
         // Image formats
         formats: ["image/webp", "image/avif"],

@@ -75,24 +75,29 @@ function Button({
             {...props}
             disabled={isLoading || disabled}
         >
-            {isLoading ?
-                <Spinner
-                    color={
-                        variant === "destructive" ? "secondary"
-                        : (
-                            variant === "outline" ||
-                            variant === "ghost" ||
-                            variant === "link" ||
-                            variant === "secondary"
-                        ) ?
-                            "primary"
-                        :   "primary-foreground"
-                    }
-                    size="sm"
-                    {...spinnerProps}
-                />
-            :   icon}{" "}
-            {children}
+            {asChild ?
+                children
+            :   <>
+                    {isLoading ?
+                        <Spinner
+                            color={
+                                variant === "destructive" ? "secondary"
+                                : (
+                                    variant === "outline" ||
+                                    variant === "ghost" ||
+                                    variant === "link" ||
+                                    variant === "secondary"
+                                ) ?
+                                    "primary"
+                                :   "primary-foreground"
+                            }
+                            size="sm"
+                            {...spinnerProps}
+                        />
+                    :   icon}
+                    {children}
+                </>
+            }
         </Comp>
     )
 }

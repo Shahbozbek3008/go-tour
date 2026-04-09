@@ -334,9 +334,6 @@
     body {
         @apply bg-background text-foreground font-sans !pointer-events-auto;
     }
-    a {
-        @apply hover:underline underline-offset-4;
-    }
 }
 
 @utility base-container {
