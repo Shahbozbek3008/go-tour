@@ -273,7 +273,7 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
             <button
                 onClick={() => setOpen((o) => !o)}
                 className={cn(
-                    "flex items-center gap-2 px-5 py-4 md:px-4 md:py-3 rounded-2xl md:rounded-xl text-[15px] md:text-sm transition-all duration-200 border w-full",
+                    "flex items-center gap-2 px-5 py-4 md:px-4 md:py-3 rounded-2xl md:rounded-xl text-[15px] md:text-sm transition-all duration-200 border w-full min-w-[250px]",
                     open ?
                         "border-blue-400 bg-blue-50/40 shadow-sm"
                     :   "border-gray-100 hover:border-transparent md:hover:border-gray-200 bg-transparent",
@@ -313,7 +313,9 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
                 className={cn(
                     "absolute top-[calc(100%+8px)] -left-2 md:left-auto z-[100] bg-white rounded-2xl shadow-2xl border border-gray-100",
                     "transition-all duration-200 origin-top overflow-y-auto max-h-[75vh] md:max-h-none md:overflow-visible",
-                    tab === "exact" ? "w-[calc(100vw-32px)] md:w-[560px]" : "w-[calc(100vw-32px)] md:w-[520px]",
+                    tab === "exact" ?
+                        "w-[calc(100vw-32px)] md:w-[560px]"
+                    :   "w-[calc(100vw-32px)] md:w-[520px]",
                     open ?
                         "opacity-100 scale-100 pointer-events-auto"
                     :   "opacity-0 scale-95 pointer-events-none",
