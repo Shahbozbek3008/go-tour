@@ -2,8 +2,22 @@
 
 import { ArrowUp, Mail, MapPin, Phone } from "lucide-react"
 import Link from "next/link"
+import { useEffect, useState } from "react"
 
 const Footer = () => {
+    const [isVisible, setIsVisible] = useState(false)
+
+    useEffect(() => {
+        const toggleVisibility = () => {
+            if (window.scrollY > 300) {
+                setIsVisible(true)
+            } else {
+                setIsVisible(false)
+            }
+        }
+        window.addEventListener("scroll", toggleVisibility)
+        return () => window.removeEventListener("scroll", toggleVisibility)
+    }, [])
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: "smooth" })
     }
@@ -136,26 +150,27 @@ const Footer = () => {
 
             {/* Bottom Row */}
             <div className="mx-auto px-6 md:px-12 lg:px-10">
-                <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-slate-200">
-                    <p className="text-slate-500 text-sm font-medium order-2 md:order-1 mt-6 md:mt-0 pb-4 md:pb-0">
+                <div className="flex flex-col items-center justify-center pt-8 border-t border-slate-200">
+                    <p className="text-slate-500 text-sm font-medium pb-2">
                         traveltoor©2026 all right reserve
                     </p>
-
-                    <div className="order-1 md:order-2">
-                        <button
-                            onClick={scrollToTop}
-                            className="group bg-slate-900 hover:bg-slate-800 active:scale-95 transition-all duration-300 text-white px-6 py-2.5 rounded-full flex items-center justify-center gap-2.5 text-[15px] font-semibold shadow-lg shadow-slate-900/10"
-                        >
-                            <ArrowUp
-                                size={18}
-                                strokeWidth={2.5}
-                                className="transition-transform duration-300 group-hover:-translate-y-1 text-slate-300 group-hover:text-white"
-                            />
-                            Yuqoriga o'tish
-                        </button>
-                    </div>
                 </div>
             </div>
+
+            {/* Scroll To Top Fixed Button */}
+            <button
+                onClick={scrollToTop}
+                className={`fixed bottom-6 right-6 md:bottom-10 md:right-10 z-[100] flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-white text-slate-800 rounded-full border border-slate-200/80 shadow-[0_10px_40px_-5px_rgba(0,0,0,0.15)] hover:shadow-[0_15px_40px_-5px_rgba(0,0,0,0.2)] hover:bg-slate-50 active:scale-90 transition-all duration-500 group ${
+                    isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12 pointer-events-none"
+                }`}
+                aria-label="Yuqoriga o'tish"
+            >
+                <ArrowUp
+                    size={22}
+                    strokeWidth={2.5}
+                    className="transition-transform duration-300 group-hover:-translate-y-1 text-slate-600 group-hover:text-blue-600"
+                />
+            </button>
         </footer>
     )
 }
