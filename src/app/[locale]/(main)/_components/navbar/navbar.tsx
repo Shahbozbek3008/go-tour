@@ -44,7 +44,7 @@ export const Navbar = () => {
                         <Button
                             size="default"
                             variant="default"
-                            className="rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                            className="hidden md:flex rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold"
                         >
                             Kirish
                         </Button>

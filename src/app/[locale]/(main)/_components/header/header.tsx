@@ -104,8 +104,8 @@ export const Header = () => {
     const slide = slides[current]
 
     return (
-        <div className="relative aspect-[16/6] max-h-[600px] w-full">
-            <div className="relative w-full overflow-hidden rounded-2xl aspect-[16/6] min-h-[320px] h-full  select-none group cursor-pointer">
+        <div className="relative aspect-[16/6] min-h-[320px] lg:max-h-[600px] w-full mb-[220px] md:mb-0">
+            <div className="relative w-full overflow-hidden rounded-2xl aspect-[16/6] min-h-[320px] lg:h-full select-none group cursor-pointer shadow-xl">
                 <div
                     className={cn(
                         "absolute inset-0 transition-all duration-700 ease-in-out rounded-2xl",
@@ -134,7 +134,7 @@ export const Header = () => {
                 {/* Content */}
                 <div
                     className={cn(
-                        "absolute inset-0 left-10 z-20 flex flex-col justify-end sm:justify-center px-6 sm:px-12 pb-12 sm:pb-0 transition-all duration-500",
+                        "absolute inset-0 left-0 md:left-10 z-20 flex flex-col justify-end sm:justify-center px-4 sm:px-12 pb-16 sm:pb-0 transition-all duration-500",
                         isAnimating ?
                             "opacity-0 translate-y-4"
                         :   "opacity-100 translate-y-0",
@@ -149,7 +149,7 @@ export const Header = () => {
                         </Badge>
                     )}
 
-                    <h1 className="text-white font-extrabold text-3xl sm:text-5xl lg:text-6xl leading-tight tracking-tight drop-shadow-lg max-w-xl">
+                    <h1 className="text-white font-extrabold text-3xl sm:text-5xl lg:text-6xl leading-tight tracking-tight drop-shadow-lg max-w-xl pr-4 md:pr-0">
                         {slide.title}
                     </h1>
 
@@ -183,7 +183,7 @@ export const Header = () => {
                     <ChevronRight className="w-5 h-5" />
                 </button>
             </div>
-            <div className="absolute left-1/2 -bottom-[30px] -translate-x-1/2 z-100">
+            <div className="absolute left-1/2 -bottom-[200px] md:-bottom-[30px] -translate-x-1/2 w-[calc(100%-2rem)] md:w-auto z-[100]">
                 <SearchBar />
             </div>
         </div>

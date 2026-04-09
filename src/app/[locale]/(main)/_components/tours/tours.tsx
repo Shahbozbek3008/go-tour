@@ -215,14 +215,14 @@ export const TourSection = () => {
         )
 
     return (
-        <section className="w-full bg-[#f0f4ff] my-10 px-15 py-15  overflow-hidden">
-            <div className="">
+        <section className="w-full bg-[#F8FAFC] py-16 md:py-24 overflow-hidden">
+            <div className="w-full mx-auto px-4 sm:px-6 lg:px-15">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                     <span className="text-[13px] font-medium text-slate-500 hidden md:block whitespace-nowrap">
                         Barchasini ko'rish
                     </span>
 
-                    <div className="flex items-center gap-2 pb-1">
+                    <div className="flex items-center gap-2 pb-2 md:pb-1 overflow-x-auto whitespace-nowrap w-full md:w-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                         {tabs.slice(1).map((tab) => (
                             <motion.button
                                 key={tab.id}
@@ -273,7 +273,7 @@ export const TourSection = () => {
                     initial={{ opacity: 0, y: -8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
-                    className="text-3xl md:text-5xl font-semibold text-center text-slate-800 mb-10"
+                    className="text-3xl md:text-[40px] font-bold text-center text-slate-900 mb-10 tracking-tight"
                 >
                     Toping mukammal sarguzashtni
                 </motion.h2>

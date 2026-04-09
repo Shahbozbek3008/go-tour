@@ -52,19 +52,19 @@ export function SearchBar() {
 
     return (
         <div className="w-full">
-            <div className="flex items-stretch gap-2 bg-white rounded-2xl shadow-2xl p-2">
+            <div className="flex flex-col md:flex-row md:items-stretch gap-3 md:gap-2 bg-white rounded-3xl md:rounded-2xl shadow-xl md:shadow-2xl p-4 md:p-2">
                 {/* Location */}
-                <div ref={locationRef} className="relative flex-1">
+                <div ref={locationRef} className="relative flex-1 w-full md:w-auto">
                     <div
                         onClick={() => setLocationOpen((o) => !o)}
                         className={cn(
-                            "flex items-center gap-2 px-4 py-3 rounded-xl cursor-pointer transition-all duration-200 border min-w-[250px] max-w-[250px]",
+                            "flex items-center gap-2 px-5 py-4 md:px-4 md:py-3 rounded-2xl md:rounded-xl cursor-pointer transition-all duration-200 border w-full md:min-w-[250px] md:max-w-[250px]",
                             locationOpen ?
                                 "border-blue-400 shadow-sm"
-                            :   "border-transparent hover:border-gray-200",
+                            :   "border-gray-100 hover:border-transparent md:hover:border-gray-200",
                         )}
                     >
-                        <MapPin className="w-4 h-4 text-gray-400 shrink-0" />
+                        <MapPin className="w-5 h-5 md:w-4 md:h-4 text-gray-400 shrink-0" />
                         {locationOpen ?
                             <input
                                 autoFocus
@@ -73,8 +73,7 @@ export function SearchBar() {
                                     setLocationQuery(e.target.value)
                                 }
                                 placeholder="Qidirish..."
-                                width={250}
-                                className="flex-1 text-sm outline-none text-gray-800 placeholder-gray-400 w-[250px] max-w-[250px]"
+                                className="flex-1 text-[15px] md:text-sm outline-none text-gray-800 placeholder-gray-400 w-full md:w-[250px] md:max-w-[250px]"
                                 onClick={(e) => e.stopPropagation()}
                             />
                         :   <span
@@ -108,7 +107,7 @@ export function SearchBar() {
 
                     <div
                         className={cn(
-                            "absolute top-[calc(100%+8px)] left-0 w-72 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 transition-all duration-200 origin-top overflow-hidden",
+                            "absolute top-[calc(100%+8px)] left-0 w-full md:w-72 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 transition-all duration-200 origin-top overflow-hidden",
                             locationOpen ?
                                 "opacity-100 scale-100 pointer-events-auto"
                             :   "opacity-0 scale-95 pointer-events-none",
@@ -152,13 +151,13 @@ export function SearchBar() {
                     </div>
                 </div>
 
-                <div className="w-px bg-gray-200 my-2" />
+                <div className="hidden md:block w-px bg-gray-200 my-2" />
 
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                     <DatePicker onChange={(v) => setDateValue(v)} />
                 </div>
-                <Button className="shrink-0 bg-blue-500 hover:bg-blue-600 active:scale-95 text-white font-semibold px-6 rounded-xl flex items-center gap-2 text-sm transition-all duration-200 shadow-lg shadow-blue-200">
-                    <Search className="w-4 h-4" />
+                <Button className="shrink-0 w-full md:w-auto mt-2 md:mt-0 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-semibold py-6 md:py-auto px-6 rounded-2xl md:rounded-xl flex items-center justify-center gap-2 text-[16px] md:text-sm transition-all duration-200 shadow-xl md:shadow-lg shadow-blue-200">
+                    <Search className="w-5 h-5 md:w-4 md:h-4" />
                     Qidirish
                 </Button>
             </div>

@@ -67,18 +67,18 @@ const cardVariants = {
 function CategoryCard({
     category,
     className = "",
-    style,
+    gridClass,
 }: {
     category: Category
     className?: string
-    style?: React.CSSProperties
+    gridClass?: string
 }) {
     return (
         <motion.div
             variants={cardVariants as any}
-            style={style}
             className={cn(
-                "group relative overflow-hidden rounded-xl cursor-pointer",
+                "group relative overflow-hidden rounded-xl cursor-pointer w-full h-full min-h-[160px] md:min-h-0",
+                gridClass,
                 className,
             )}
         >
@@ -115,40 +115,44 @@ function CategoryCard({
 
 export const Categories = () => {
     return (
-        <section className="w-full bg-transparent pb-15 px-15">
-            <motion.div
-                initial={{ opacity: 0, y: -12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                className="text-center mb-6"
-            >
-                <h2 className="text-5xl my-10 font-medium tracking-tight text-[#222757]">
-                    Kategoriyalar
-                </h2>
-            </motion.div>
+        <section className="w-full bg-white py-16 md:py-24 overflow-hidden">
+            <div className="w-full mx-auto px-4 sm:px-6 lg:px-15">
+                <motion.div
+                    initial={{ opacity: 0, y: -12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                    className="text-center mb-12"
+                >
+                    <h2 className="text-3xl md:text-[40px] font-bold tracking-tight text-slate-900">
+                        Kategoriyalar
+                    </h2>
+                </motion.div>
 
-            <motion.div
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-                className="grid gap-3 w-full h-[360px]"
-                style={{
-                    gridTemplateColumns: "1fr 2fr 1fr 1fr",
-                    gridTemplateRows: "1fr 1fr",
-                    gridTemplateAreas: `
-                        "beach city nature nature"
-                        "adventure city hiking ski"
-                    `,
-                }}
-            >
-                {categories.map((cat) => (
-                    <CategoryCard
-                        key={cat.id}
-                        category={cat}
-                        style={{ gridArea: cat.id }}
-                    />
-                ))}
-            </motion.div>
+                <motion.div
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-[1fr_2fr_1fr_1fr] lg:grid-rows-2 gap-3 w-full h-auto lg:h-[360px]"
+                >
+                    {categories.map((cat) => {
+                        const gridClass = 
+                            cat.id === "beach" ? "lg:col-start-1 lg:row-start-1" :
+                            cat.id === "city" ? "col-span-2 lg:col-span-1 lg:col-start-2 lg:row-span-2" :
+                            cat.id === "nature" ? "md:col-span-2 lg:col-span-2 lg:col-start-3 lg:row-start-1" :
+                            cat.id === "adventure" ? "lg:col-start-1 lg:row-start-2" :
+                            cat.id === "hiking" ? "lg:col-start-3 lg:row-start-2" :
+                            cat.id === "ski" ? "lg:col-start-4 lg:row-start-2" : "";
+
+                        return (
+                            <CategoryCard
+                                key={cat.id}
+                                category={cat}
+                                gridClass={gridClass}
+                            />
+                        )
+                    })}
+                </motion.div>
+            </div>
         </section>
     )
 }

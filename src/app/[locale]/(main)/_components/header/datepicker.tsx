@@ -195,6 +195,11 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
     useEffect(() => {
         if (!open || !wrapperRef.current) return
 
+        if (window.innerWidth < 768) {
+            setOffset(0)
+            return
+        }
+
         const triggerRect = wrapperRef.current.getBoundingClientRect()
         const dropWidth = tab === "exact" ? 560 : 520
         const vw = window.innerWidth
@@ -268,13 +273,13 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
             <button
                 onClick={() => setOpen((o) => !o)}
                 className={cn(
-                    "flex items-center gap-2 px-4 py-3 rounded-xl text-sm transition-all duration-200 border w-[250px]",
+                    "flex items-center gap-2 px-5 py-4 md:px-4 md:py-3 rounded-2xl md:rounded-xl text-[15px] md:text-sm transition-all duration-200 border w-full",
                     open ?
                         "border-blue-400 bg-blue-50/40 shadow-sm"
-                    :   "border-transparent hover:border-gray-200 bg-transparent",
+                    :   "border-gray-100 hover:border-transparent md:hover:border-gray-200 bg-transparent",
                 )}
             >
-                <Calendar className="w-4 h-4 text-gray-400 shrink-0" />
+                <Calendar className="w-5 h-5 md:w-4 md:h-4 text-gray-400 shrink-0" />
                 <span
                     className={cn(
                         "flex-1 text-left truncate",
@@ -306,9 +311,9 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
                 ref={dropdownRef}
                 style={{ left: offset }}
                 className={cn(
-                    "absolute top-[calc(100%+8px)] z-[100] bg-white rounded-2xl shadow-2xl border border-gray-100",
-                    "transition-all duration-200 origin-top-left",
-                    tab === "exact" ? "w-[560px]" : "w-[520px]",
+                    "absolute top-[calc(100%+8px)] -left-2 md:left-auto z-[100] bg-white rounded-2xl shadow-2xl border border-gray-100",
+                    "transition-all duration-200 origin-top overflow-y-auto max-h-[75vh] md:max-h-none md:overflow-visible",
+                    tab === "exact" ? "w-[calc(100vw-32px)] md:w-[560px]" : "w-[calc(100vw-32px)] md:w-[520px]",
                     open ?
                         "opacity-100 scale-100 pointer-events-auto"
                     :   "opacity-0 scale-95 pointer-events-none",
@@ -344,8 +349,8 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
 
                 {/* Period tab content */}
                 {tab === "period" && (
-                    <div className="p-4">
-                        <div className="grid grid-cols-4 gap-4">
+                    <div className="p-3 md:p-4">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-4">
                             {(
                                 [
                                     { title: "OY", items: MONTHS.slice(0, 6) },
@@ -391,15 +396,15 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
                             </p>
                         )}
 
-                        <div className="flex items-start gap-1">
+                        <div className="flex items-start gap-1 relative pt-10 md:pt-0">
                             <button
                                 onClick={prevMonth}
-                                className="mt-1 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors shrink-0"
+                                className="absolute top-0 left-0 md:static md:mt-1 w-10 md:w-8 h-10 md:h-8 flex items-center justify-center rounded-full bg-gray-50 md:bg-transparent hover:bg-gray-100 transition-colors shrink-0 z-10"
                             >
-                                <ChevronLeft className="w-4 h-4 text-gray-500" />
+                                <ChevronLeft className="w-5 md:w-4 h-5 md:h-4 text-gray-600 md:text-gray-500" />
                             </button>
 
-                            <div className="flex flex-1 gap-2 min-w-0">
+                            <div className="flex flex-col md:flex-row flex-1 gap-8 md:gap-2 min-w-0">
                                 <MonthCalendar
                                     year={calYear}
                                     month={calMonth}
@@ -408,7 +413,8 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
                                     onDayClick={handleDayClick}
                                     onDayHover={setHovered}
                                 />
-                                <div className="w-px bg-gray-100 self-stretch" />
+                                <div className="hidden md:block w-px bg-gray-100 self-stretch" />
+                                <div className="block md:hidden h-px bg-gray-100 -mx-4" />
                                 <MonthCalendar
                                     year={secondYear}
                                     month={secondMonth}
@@ -421,9 +427,9 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
 
                             <button
                                 onClick={nextMonth}
-                                className="mt-1 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors shrink-0"
+                                className="absolute top-0 right-0 md:static md:mt-1 w-10 md:w-8 h-10 md:h-8 flex items-center justify-center rounded-full bg-gray-50 md:bg-transparent hover:bg-gray-100 transition-colors shrink-0 z-10"
                             >
-                                <ChevronRight className="w-4 h-4 text-gray-500" />
+                                <ChevronRight className="w-5 md:w-4 h-5 md:h-4 text-gray-600 md:text-gray-500" />
                             </button>
                         </div>
 

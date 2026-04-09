@@ -140,14 +140,14 @@ function CityCard({ city }: { city: City }) {
                 </motion.div>
             </div>
 
-            <div className="absolute bottom-0 left-0 right-0 z-20 p-6 translate-y-1 group-hover:translate-y-0 transition-transform duration-350">
-                <div className="inline-flex items-center gap-1 text-amber-400 text-[10px] font-semibold uppercase tracking-wider bg-amber-400/10 border border-amber-400/25 rounded-full px-3 py-1 mb-3">
+            <div className="absolute bottom-0 left-0 right-0 z-20 p-4 md:p-6 translate-y-1 group-hover:translate-y-0 transition-transform duration-350">
+                <div className="inline-flex items-center gap-1 text-amber-400 text-[10px] font-semibold uppercase tracking-wider bg-amber-400/10 border border-amber-400/25 rounded-full px-2 py-1 md:px-3 md:py-1 mb-2 md:mb-3">
                     {city.region} · {city.country}
                 </div>
 
                 <h3
-                    className={`font-bold text-white leading-tight mb-2 ${
-                        city.featured ? "text-4xl" : "text-2xl"
+                    className={`font-bold text-white leading-tight md:mb-2 ${
+                        city.featured ? "text-2xl md:text-4xl" : "text-xl md:text-2xl"
                     }`}
                 >
                     {city.name}
@@ -185,14 +185,14 @@ function CityCard({ city }: { city: City }) {
 
 export function UnforgettableCities() {
     return (
-        <section className="w-full py-20 px-6 md:px-10 overflow-hidden">
-            <div className="">
+        <section className="w-full bg-[#F8FAFC] py-16 md:py-24 overflow-hidden">
+            <div className="w-full mx-auto px-4 sm:px-6 lg:px-15">
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6 w-full">
                     <motion.h2
                         variants={headerVariants as any}
                         initial="hidden"
                         animate="visible"
-                        className="text-5xl md:text-6xl lg:text-5xl font-semibold text-black text-center leading-[1.05] mb-4 w-full"
+                        className="text-3xl md:text-[40px] font-bold text-slate-900 text-center leading-[1.05] tracking-tight w-full"
                     >
                         Unutilmas shaharlar
                     </motion.h2>
