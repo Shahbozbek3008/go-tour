@@ -23,9 +23,11 @@ export const Login = () => {
                             methods={methods}
                             inputClassName="rounded-lg"
                         />
-                        <Button type="submit">
-                            <ClientTranslate translationKey="signIn" />
-                        </Button>
+                        <div className="flex items-center justify-end">
+                            <Button type="submit">
+                                <ClientTranslate translationKey="signIn" />
+                            </Button>
+                        </div>
                     </div>
                 </form>
             </Form>
