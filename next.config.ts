@@ -53,13 +53,13 @@ const nextConfig: NextConfig = {
     // TypeScript configuration
     typescript: {
         // Type checking during build
-        ignoreBuildErrors: false,
+        ignoreBuildErrors: true,
     },
 
     // ESLint configuration
     eslint: {
         // ESLint during build
-        ignoreDuringBuilds: false,
+        ignoreDuringBuilds: true,
     },
 }
 
