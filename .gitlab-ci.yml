@@ -1,0 +1,38 @@
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  image: node:20
+  script:
+    - npm config set registry https://registry.npmmirror.com
+    - npm install --prefer-offline --no-audit --progress=false
+    - npm run build
+  artifacts:
+    paths:
+      - .next
+      - public
+      - package.json
+      - package-lock.json
+      - next.config.ts
+    expire_in: 1 hour
+
+deploy:
+  stage: deploy
+  image: ubuntu:22.04
+  before_script:
+    - apt-get update -y && apt-get install -y openssh-client rsync
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts
+
+  script:
+    - rsync -avz --delete ./ root@$SERVER_IP:$SERVER_PATH
+    - ssh root@$SERVER_IP "
+        cd $SERVER_PATH &&
+        npm config set registry https://registry.npmmirror.com &&
+        npm install --production --prefer-offline --no-audit &&
+        pm2 restart go-tour-next || pm2 start npm --name 'go-tour-next' -- start -- -p 3001
+      "
