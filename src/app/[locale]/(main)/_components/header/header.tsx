@@ -1,12 +1,12 @@
 "use client"
 
+import { SearchBar } from "@/components/searchbar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils/shadcn"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import Image from "next/image"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { SearchBar } from "./searchbar"
 
 interface Slide {
     id: number

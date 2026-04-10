@@ -54,7 +54,10 @@ export function SearchBar() {
         <div className="w-full">
             <div className="flex flex-col md:flex-row md:items-stretch gap-3 md:gap-2 bg-white rounded-3xl md:rounded-2xl shadow-xl md:shadow-2xl p-4 md:p-2">
                 {/* Location */}
-                <div ref={locationRef} className="relative flex-1 w-full md:w-auto">
+                <div
+                    ref={locationRef}
+                    className="relative flex-1 w-full md:w-auto"
+                >
                     <div
                         onClick={() => setLocationOpen((o) => !o)}
                         className={cn(

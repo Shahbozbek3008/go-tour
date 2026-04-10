@@ -2,6 +2,7 @@
 "use client"
 
 import { Card } from "@/components/card"
+import { Button } from "@/components/ui/button"
 import useEmblaCarousel from "embla-carousel-react"
 import { AnimatePresence, motion } from "framer-motion"
 import { ChevronLeft, ChevronRight } from "lucide-react"
@@ -35,7 +36,7 @@ type Tour = {
 }
 
 const tabs: Tab[] = [
-    { id: "all", label: "Barchasini ko'rish" },
+    { id: "all", label: "Barchasi" },
     { id: "bestseller", label: "Eng ko'p sotiladigan" },
     { id: "discount", label: "Chegirmali turlar" },
     { id: "best", label: "Eng yaxshi turlar" },
@@ -217,68 +218,37 @@ export const TourSection = () => {
     return (
         <section className="w-full bg-[#F8FAFC] py-16 md:py-24 overflow-hidden">
             <div className="w-full mx-auto px-4 sm:px-6 lg:px-15">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                    <span className="text-[13px] font-medium text-slate-500 hidden md:block whitespace-nowrap">
-                        Barchasini ko'rish
-                    </span>
+                <div className="flex flex-col items-center justify-center mb-10">
+                    <motion.h2
+                        initial={{ opacity: 0, y: -8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="text-3xl md:text-[40px] font-bold text-center text-slate-900 mb-8 tracking-tight"
+                    >
+                        Toping mukammal sarguzashtni
+                    </motion.h2>
 
-                    <div className="flex items-center gap-2 pb-2 md:pb-1 overflow-x-auto whitespace-nowrap w-full md:w-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                        {tabs.slice(1).map((tab) => (
-                            <motion.button
+                    <div className="flex items-center justify-start md:justify-center gap-1 p-1.5 bg-slate-200/50 rounded-full overflow-x-auto whitespace-nowrap w-full md:w-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                        {tabs.map((tab) => (
+                            <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
-                                whileHover={{ scale: 1.03 }}
-                                whileTap={{ scale: 0.97 }}
-                                className={`relative flex-shrink-0 px-4 py-2 cursor-pointer rounded-full text-[13px] font-medium transition-colors duration-200 ${
+                                className={`relative flex-shrink-0 px-5 py-2 cursor-pointer rounded-full text-[14px] font-medium transition-all duration-300 ${
                                     activeTab === tab.id ?
-                                        "bg-amber-500 text-white"
-                                    :   "bg-white text-black"
+                                        "bg-white text-slate-900 shadow-sm"
+                                    :   "text-slate-500 hover:text-slate-800 hover:bg-slate-200/50"
                                 }`}
                             >
                                 {tab.label}
-                                {activeTab === tab.id && (
-                                    <motion.div
-                                        layoutId="tab-indicator"
-                                        className="absolute inset-0 rounded-full bg-amber-500-z-10"
-                                        transition={{
-                                            duration: 0.25,
-                                            ease: [0.25, 0.1, 0.25, 1],
-                                        }}
-                                    />
-                                )}
-                            </motion.button>
+                            </button>
                         ))}
-                    </div>
-
-                    <div className="hidden md:flex items-center gap-2">
-                        <button
-                            onClick={scrollPrev}
-                            className="w-9 h-9 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm hover:shadow-md hover:bg-slate-50 transition-all duration-200 active:scale-95"
-                        >
-                            <ChevronLeft size={16} className="text-slate-600" />
-                        </button>
-                        <button
-                            onClick={scrollNext}
-                            className="w-9 h-9 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm hover:shadow-md hover:bg-slate-50 transition-all duration-200 active:scale-95"
-                        >
-                            <ChevronRight
-                                size={16}
-                                className="text-slate-600"
-                            />
-                        </button>
                     </div>
                 </div>
 
-                <motion.h2
-                    initial={{ opacity: 0, y: -8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="text-3xl md:text-[40px] font-bold text-center text-slate-900 mb-10 tracking-tight"
+                <div
+                    ref={emblaRef}
+                    className="overflow-hidden cursor-grab active:cursor-grabbing"
                 >
-                    Toping mukammal sarguzashtni
-                </motion.h2>
-
-                <div ref={emblaRef} className="overflow-hidden">
                     <AnimatePresence mode="popLayout">
                         <motion.div className="flex gap-4 pl-0.5 pb-2">
                             {filtered.map((tour) => (
@@ -291,19 +261,32 @@ export const TourSection = () => {
                     </AnimatePresence>
                 </div>
 
-                <div className="flex md:hidden items-center justify-center gap-3 mt-6">
-                    <button
-                        onClick={scrollPrev}
-                        className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm active:scale-95"
+                <div className="flex items-center justify-between mt-8 border-t border-slate-200/60 pt-6">
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={scrollPrev}
+                            className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm hover:shadow-md hover:bg-slate-50 transition-all duration-200 active:scale-95"
+                        >
+                            <ChevronLeft size={18} className="text-slate-600" />
+                        </button>
+                        <button
+                            onClick={scrollNext}
+                            className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm hover:shadow-md hover:bg-slate-50 transition-all duration-200 active:scale-95"
+                        >
+                            <ChevronRight
+                                size={18}
+                                className="text-slate-600"
+                            />
+                        </button>
+                    </div>
+
+                    <Button
+                        variant="ghost"
+                        className="px-6 py-2.5 rounded-full font-semibold hover:bg-transparent hover:text-black active:scale-95 flex items-center gap-2"
                     >
-                        <ChevronLeft size={18} className="text-slate-600" />
-                    </button>
-                    <button
-                        onClick={scrollNext}
-                        className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm active:scale-95"
-                    >
-                        <ChevronRight size={18} className="text-slate-600" />
-                    </button>
+                        Barchasini ko'rish
+                        <ChevronRight size={16} />
+                    </Button>
                 </div>
             </div>
         </section>

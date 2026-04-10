@@ -1,7 +1,10 @@
 "use client"
 
 import ClientTranslate from "@/components/common/translation/client-translate"
+import { Button } from "@/components/ui/button"
+import { useModal } from "@/hooks/use-modal"
 import { NAV_LIST } from "@/lib/constants"
+import { MODAL_KEYS } from "@/lib/constants/modal-keys"
 import { cn } from "@/lib/utils/shadcn"
 import Link from "next/link"
 
@@ -67,6 +70,7 @@ interface MobileMenuProps {
 
 export function MobileMenu({ open, pathname, onClose }: MobileMenuProps) {
     const normalizedPathname = stripLocale(pathname)
+    const { openModal } = useModal(MODAL_KEYS.SIGN_IN_MODAL)
 
     return (
         <>
@@ -152,13 +156,16 @@ export function MobileMenu({ open, pathname, onClose }: MobileMenuProps) {
                 </div>
 
                 <div className="p-6 border-t border-gray-100 bg-white">
-                    <button
+                    <Button
                         type="button"
-                        onClick={onClose}
+                        onClick={() => {
+                            openModal()
+                            onClose()
+                        }}
                         className="flex w-full items-center justify-center bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3.5 font-bold shadow-lg shadow-blue-600/20 active:scale-[0.98] transition-all text-[15px]"
                     >
                         <ClientTranslate translationKey="signIn" />
-                    </button>
+                    </Button>
                 </div>
             </div>
         </>
