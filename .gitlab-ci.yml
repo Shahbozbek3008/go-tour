@@ -33,9 +33,4 @@ deploy:
 
   script:
     - rsync -avz --delete ./ root@$SERVER_IP:$SERVER_PATH
-    - ssh root@$SERVER_IP "
-        cd $SERVER_PATH &&
-        npm config set registry https://registry.npmmirror.com &&
-        npm install --production --prefer-offline --no-audit &&
-        pm2 restart go-tour-next || pm2 start npm --name 'go-tour-next' -- start -- -p 3001
-      "
+    - ssh root@$SERVER_IP "cd $SERVER_PATH && npm config set registry https://registry.npmmirror.com && npm install --production --prefer-offline --no-audit && pm2 restart go-tour-next || pm2 start npm --name 'go-tour-next' -- start -- -p 3001"
