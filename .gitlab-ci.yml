@@ -24,10 +24,9 @@ deploy:
   before_script:
   - apt-get update -y && apt-get install -y openssh-client rsync
   - eval $(ssh-agent -s)
+  - chmod 600 $SSH_KEY_FILE
+  - ssh-add $SSH_KEY_FILE
   - mkdir -p ~/.ssh
-  - printf "%s" "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-  - chmod 600 ~/.ssh/id_rsa
-  - ssh-add ~/.ssh/id_rsa
   - ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts
 
   script:
