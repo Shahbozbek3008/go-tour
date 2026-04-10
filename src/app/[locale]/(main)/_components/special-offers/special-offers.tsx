@@ -138,7 +138,6 @@ export const SpecialOffers = () => {
     const getVariant = (offset: number) => {
         const absOffset = Math.abs(offset)
         const isLeft = offset < 0
-        const isRight = offset > 0
 
         if (absOffset === 0) return "active"
         if (absOffset === 1) return isLeft ? "left1" : "right1"

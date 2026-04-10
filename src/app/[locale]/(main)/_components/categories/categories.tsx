@@ -1,7 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils/shadcn"
-import { motion } from "framer-motion"
+import { motion, Variants } from "framer-motion"
 import Image from "next/image"
 
 type Category = {
@@ -54,7 +54,7 @@ const containerVariants = {
     },
 }
 
-const cardVariants = {
+const cardVariants: Variants = {
     hidden: { opacity: 0, y: 20, scale: 0.97 },
     visible: {
         opacity: 1,
@@ -75,7 +75,7 @@ function CategoryCard({
 }) {
     return (
         <motion.div
-            variants={cardVariants as any}
+            variants={cardVariants}
             className={cn(
                 "group relative overflow-hidden rounded-xl cursor-pointer w-full h-full min-h-[160px] md:min-h-0",
                 gridClass,

@@ -29,7 +29,7 @@ export function SearchBar() {
     const [selectedLocation, setSelectedLocation] = useState<string | null>(
         null,
     )
-    const [dateValue, setDateValue] = useState<string | null>(null)
+    const [_dateValue, setDateValue] = useState<string | null>(null)
 
     const locationRef = useRef<HTMLDivElement>(null)
 

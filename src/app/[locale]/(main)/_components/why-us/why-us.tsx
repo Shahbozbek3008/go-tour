@@ -1,7 +1,6 @@
 "use client"
 
 import {
-    ArrowUp,
     BookOpen,
     ChevronDown,
     MapPin,
@@ -118,19 +117,7 @@ function FaqItem({ question, answer }: FaqItemProps) {
     )
 }
 
-function ScrollToTop() {
-    const scrollUp = () => window.scrollTo({ top: 0, behavior: "smooth" })
 
-    return (
-        <button
-            onClick={scrollUp}
-            className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-2.5 rounded-full bg-blue-600 text-white text-[13px] font-medium shadow-lg shadow-blue-200 hover:bg-blue-700 active:scale-95 transition-all duration-200"
-        >
-            <ArrowUp className="w-3.5 h-3.5" />
-            Yuqoriga o'tish
-        </button>
-    )
-}
 
 export const WhyUs = () => {
     return (

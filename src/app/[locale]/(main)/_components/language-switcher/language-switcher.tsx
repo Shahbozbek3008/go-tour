@@ -58,7 +58,7 @@ export const LanguageSwitcher = () => {
             newPath = `/${code}${newPath === "/" ? "" : newPath}`
         }
 
-        router.push(newPath as any)
+        router.push(newPath as RouteLiteral)
     }
 
     const ActiveFlag = activeLang.flag

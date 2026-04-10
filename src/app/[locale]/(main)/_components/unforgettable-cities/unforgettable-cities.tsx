@@ -1,7 +1,7 @@
 // components/sections/UnforgettableCities.tsx
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, Variants } from "framer-motion"
 import { ArrowRight, Star } from "lucide-react"
 import Image from "next/image"
 
@@ -81,7 +81,7 @@ const containerVariants = {
     visible: { transition: { staggerChildren: 0.09 } },
 }
 
-const cardVariants = {
+const cardVariants: Variants = {
     hidden: { opacity: 0, y: 28 },
     visible: {
         opacity: 1,
@@ -90,7 +90,7 @@ const cardVariants = {
     },
 }
 
-const headerVariants = {
+const headerVariants: Variants = {
     hidden: { opacity: 0, y: 16 },
     visible: (i: number) => ({
         opacity: 1,
@@ -106,7 +106,7 @@ const headerVariants = {
 function CityCard({ city }: { city: City }) {
     return (
         <motion.div
-            variants={cardVariants as any}
+            variants={cardVariants}
             className={`group relative overflow-hidden rounded-2xl cursor-pointer ${
                 city.featured ? "row-span-2" : ""
             }`}
@@ -189,7 +189,7 @@ export function UnforgettableCities() {
             <div className="w-full mx-auto px-4 sm:px-6 lg:px-15">
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6 w-full">
                     <motion.h2
-                        variants={headerVariants as any}
+                        variants={headerVariants}
                         initial="hidden"
                         animate="visible"
                         className="text-3xl md:text-[40px] font-bold text-slate-900 text-center leading-[1.05] tracking-tight w-full"
