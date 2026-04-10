@@ -39,6 +39,3 @@ deploy:
         npm install --production --prefer-offline --no-audit &&
         pm2 restart go-tour-next || pm2 start npm --name 'go-tour-next' -- start -- -p 3001
       "
-        npm install --production --prefer-offline --no-audit &&
-        pm2 restart go-tour-next || pm2 start npm --name 'go-tour-next' -- start -- -p 3001
-      "
