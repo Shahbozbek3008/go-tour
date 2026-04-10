@@ -111,17 +111,17 @@ export default function PhoneField<IForm extends FieldValues>({
                 // hideDropdown
                 // forceDialCode
                 className={cn(
-                    "w-full placeholder:clamp-[text,sm,base] clamp-[h,10,12] rounded-md has-[input:focus]:ring-2 has-[input:focus]:ring-ring has-[input:focus]:ring-offset-0 !outline-none",
+                    "w-full  placeholder:clamp-[text,sm,base] clamp-[h,10,12] rounded-lg !outline-none",
                     className,
                 )}
                 inputClassName={cn(
-                    "w-full !h-full !text-foreground !rounded-r-sm !px-3 !bg-background !border-input !clamp-[text,sm,base]",
+                    "w-full !h-full !text-foreground !rounded-r-lg !px-3 !bg-background !border-input !clamp-[text,sm,base] !outline-none",
                     inputClassName,
                 )}
                 countrySelectorStyleProps={{
                     // className="hidden",
                     buttonClassName:
-                        "!h-full !px-3 !rounded-l-sm !bg-background !border-input",
+                        "!h-full !px-3 !rounded-l-lg !bg-background !border-input",
                     ...countrySelectorStyleProps,
                 }}
                 value={val}

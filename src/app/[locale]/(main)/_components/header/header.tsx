@@ -183,7 +183,7 @@ export const Header = () => {
                     <ChevronRight className="w-5 h-5" />
                 </button>
             </div>
-            <div className="absolute left-1/2 -bottom-[200px] md:-bottom-[30px] -translate-x-1/2 w-[calc(100%-2rem)] md:w-auto z-[100]">
+            <div className="absolute left-1/2 -bottom-[200px] md:-bottom-[30px] -translate-x-1/2 w-[calc(100%-2rem)] md:w-auto z-[10]">
                 <SearchBar />
             </div>
         </div>

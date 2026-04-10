@@ -71,10 +71,12 @@ export function MobileMenu({ open, pathname, onClose }: MobileMenuProps) {
     return (
         <>
             {/* Overlay */}
-            <div 
+            <div
                 className={cn(
                     "fixed inset-0 bg-[#0F1B2D]/40 backdrop-blur-sm z-[990] md:hidden transition-opacity duration-300",
-                    open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+                    open ?
+                        "opacity-100 pointer-events-auto"
+                    :   "opacity-0 pointer-events-none",
                 )}
                 onClick={onClose}
             />
@@ -88,25 +90,39 @@ export function MobileMenu({ open, pathname, onClose }: MobileMenuProps) {
                 aria-hidden={!open}
             >
                 <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
-                    <span className="text-lg font-bold text-slate-900 tracking-tight">Menyu</span>
-                    <button 
+                    <span className="text-lg font-bold text-slate-900 tracking-tight">
+                        Menyu
+                    </span>
+                    <button
                         onClick={onClose}
                         className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-black transition-colors"
                     >
-                        <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                        <svg
+                            width="12"
+                            height="12"
+                            viewBox="0 0 14 14"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                        >
                             <path d="M1 1L13 13M1 13L13 1" />
                         </svg>
                     </button>
                 </div>
-                
+
                 <div className="flex-1 overflow-y-auto py-2">
                     <ul className="flex flex-col">
                         {NAV_LIST.map((item) => {
-                            const normalizedHref = stripLocale(item.href as string)
+                            const normalizedHref = stripLocale(
+                                item.href as string,
+                            )
                             const isActive =
                                 normalizedPathname === normalizedHref ||
                                 (normalizedHref !== "/" &&
-                                    normalizedPathname.startsWith(normalizedHref + "/"))
+                                    normalizedPathname.startsWith(
+                                        normalizedHref + "/",
+                                    ))
 
                             return (
                                 <li key={item.href as string}>
@@ -122,7 +138,9 @@ export function MobileMenu({ open, pathname, onClose }: MobileMenuProps) {
                                             :   "text-slate-700 hover:bg-gray-50 hover:text-blue-600",
                                         )}
                                     >
-                                        <ClientTranslate translationKey={item.title} />
+                                        <ClientTranslate
+                                            translationKey={item.title}
+                                        />
                                         {isActive ?
                                             <span className="w-[6px] h-[6px] rounded-full bg-blue-600 flex-shrink-0 shadow-sm shadow-blue-600/50" />
                                         :   <ChevronRightIcon />}
@@ -132,10 +150,14 @@ export function MobileMenu({ open, pathname, onClose }: MobileMenuProps) {
                         })}
                     </ul>
                 </div>
-                
+
                 <div className="p-6 border-t border-gray-100 bg-white">
-                    <button type="button" onClick={onClose} className="flex w-full items-center justify-center bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3.5 font-bold shadow-lg shadow-blue-600/20 active:scale-[0.98] transition-all text-[15px]">
-                        Kirish
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="flex w-full items-center justify-center bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3.5 font-bold shadow-lg shadow-blue-600/20 active:scale-[0.98] transition-all text-[15px]"
+                    >
+                        <ClientTranslate translationKey="signIn" />
                     </button>
                 </div>
             </div>

@@ -84,11 +84,11 @@ function DialogContent({
                 {/* Close Button */}
                 <DialogPrimitive.Close
                     className={cn(
-                        "absolute top-2 clamp-[right,1,5] z-10 opacity-70 transition-opacity hover:opacity-100 focus:outline-none",
+                        "absolute top-4 clamp-[right,1,5] z-10 opacity-70 transition-opacity hover:opacity-100 focus:outline-none",
                         closeButtonClassName,
                     )}
                 >
-                    <XIcon className="w-6 h-6 sm:w-8 sm:h-8" />
+                    <XIcon className="w-4 h-4 sm:w-6 sm:h-6" />
                     <span className="sr-only">Close</span>
                 </DialogPrimitive.Close>
 
