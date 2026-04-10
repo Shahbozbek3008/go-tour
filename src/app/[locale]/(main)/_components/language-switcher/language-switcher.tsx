@@ -23,7 +23,7 @@ const LANGUAGES = [
 
 type LangCode = (typeof LANGUAGES)[number]["code"]
 
-export const LanguageSwitcher = () => {
+export const LanguageSwitcher = ({ isTransparent }: { isTransparent?: boolean }) => {
     const router = useRouter()
     const pathname = usePathname()
 
@@ -70,10 +70,12 @@ export const LanguageSwitcher = () => {
                 onClick={() => setOpen((prev) => !prev)}
                 className={cn(
                     "flex items-center gap-2 px-3 py-1.5",
-                    "rounded-lg bg-[#f4f4f4]",
-                    "text-sm font-semibold text-gray-700",
-                    "hover:bg-gray-50 transition-colors",
-                    open && "bg-gray-50",
+                    "rounded-lg",
+                    "text-sm font-semibold transition-colors",
+                    isTransparent && !open ? 
+                        "bg-white/20 text-white hover:bg-white/30 border border-white/20" 
+                    : "bg-[#f4f4f4] text-gray-700 hover:bg-gray-50",
+                    open && !isTransparent && "bg-gray-50",
                 )}
                 aria-haspopup="listbox"
                 aria-expanded={open}

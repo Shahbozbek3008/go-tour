@@ -14,26 +14,30 @@ function stripLocale(path: string) {
     return path.replace(/^\/[a-z]{2}(?=\/|$)/, "") || "/"
 }
 
-function BurgerIcon({ open }: { open: boolean }) {
+function BurgerIcon({ open, isTransparent }: { open: boolean; isTransparent?: boolean }) {
+    const bgColor = isTransparent && !open ? "bg-white" : "bg-gray-800"
     return (
         <div className="flex flex-col justify-center items-center gap-[5px] w-full h-full">
             <span
                 className={cn(
-                    "block w-4 h-[1.5px] bg-gray-800 rounded-full",
+                    "block w-4 h-[1.5px] rounded-full",
+                    bgColor,
                     "transition-all duration-[250ms] ease-in-out",
                     open && "translate-y-[6.5px] rotate-45",
                 )}
             />
             <span
                 className={cn(
-                    "block w-4 h-[1.5px] bg-gray-800 rounded-full",
+                    "block w-4 h-[1.5px] rounded-full",
+                    bgColor,
                     "transition-all duration-[250ms] ease-in-out",
                     open && "opacity-0 scale-x-0",
                 )}
             />
             <span
                 className={cn(
-                    "block w-4 h-[1.5px] bg-gray-800 rounded-full",
+                    "block w-4 h-[1.5px] rounded-full",
+                    bgColor,
                     "transition-all duration-[250ms] ease-in-out",
                     open && "-translate-y-[6.5px] -rotate-45",
                 )}
@@ -172,7 +176,7 @@ export function MobileMenu({ open, pathname, onClose }: MobileMenuProps) {
     )
 }
 
-export function DesktopNavLinks({ pathname }: { pathname: string }) {
+export function DesktopNavLinks({ pathname, isTransparent }: { pathname: string; isTransparent?: boolean }) {
     const normalizedPathname = stripLocale(pathname)
 
     return (
@@ -190,14 +194,15 @@ export function DesktopNavLinks({ pathname }: { pathname: string }) {
                             href={item.href}
                             className={cn(
                                 "relative pb-[3px] font-semibold transition-colors duration-150",
-                                "hover:text-primary",
+                                isTransparent ? "text-white/90 hover:text-white" : "text-slate-800 hover:text-primary",
                                 "after:content-[''] after:absolute after:-bottom-[5px]",
                                 "after:left-0 after:right-0 after:h-[2px]",
-                                "after:bg-primary after:rounded-full",
+                                isTransparent ? "after:bg-white" : "after:bg-primary",
+                                "after:rounded-full",
                                 "after:scale-x-0 after:transition-transform after:duration-200 after:origin-left",
                                 "hover:after:scale-x-100",
                                 isActive && [
-                                    "text-primary",
+                                    isTransparent ? "text-white" : "text-primary",
                                     "after:scale-x-100",
                                 ],
                             )}
@@ -214,9 +219,10 @@ export function DesktopNavLinks({ pathname }: { pathname: string }) {
 interface NavListProps {
     onMenuToggle: (open: boolean) => void
     menuOpen: boolean
+    isTransparent?: boolean
 }
 
-export function NavList({ onMenuToggle, menuOpen }: NavListProps) {
+export function NavList({ onMenuToggle, menuOpen, isTransparent }: NavListProps) {
     return (
         <button
             aria-label={menuOpen ? "Menyuni yopish" : "Menyuni ochish"}
@@ -224,12 +230,15 @@ export function NavList({ onMenuToggle, menuOpen }: NavListProps) {
             onClick={() => onMenuToggle(!menuOpen)}
             className={cn(
                 "md:hidden flex items-center justify-center",
-                "w-9 h-9 rounded-lg border border-gray-200 bg-white",
-                "cursor-pointer transition-colors hover:bg-gray-50 active:bg-gray-100",
-                menuOpen && "bg-gray-50",
+                "w-9 h-9 rounded-lg border",
+                "cursor-pointer transition-colors",
+                isTransparent && !menuOpen ? 
+                    "border-white/30 bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm" 
+                 : "border-gray-200 bg-white hover:bg-gray-50 active:bg-gray-100",
+                menuOpen && !isTransparent && "bg-gray-50",
             )}
         >
-            <BurgerIcon open={menuOpen} />
+            <BurgerIcon open={menuOpen} isTransparent={isTransparent} />
         </button>
     )
 }

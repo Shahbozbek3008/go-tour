@@ -15,9 +15,10 @@ export interface Crumb {
 interface Props {
     className?: string
     crumbs: Crumb[]
+    theme?: "light" | "transparent"
 }
 
-const Breadcrumb = ({ crumbs = [], className }: Props) => {
+const Breadcrumb = ({ crumbs = [], className, theme = "light" }: Props) => {
     return (
         <nav
             className={cn(
@@ -25,7 +26,7 @@ const Breadcrumb = ({ crumbs = [], className }: Props) => {
                 className,
             )}
         >
-            <Link href="/" className="flex items-center gap-1">
+            <Link href="/" className={cn("flex items-center gap-1 hover:underline underline-offset-4", theme === "transparent" ? "text-white/90 hover:text-white" : "text-slate-600 hover:text-slate-900")}>
                 <IconHome />
                 <span>
                     <ClientTranslate translationKey="home" />
@@ -34,14 +35,14 @@ const Breadcrumb = ({ crumbs = [], className }: Props) => {
             {crumbs.map((c, i) => {
                 return (
                     <div key={i} className="flex items-center gap-1">
-                        <span>
+                        <span className={theme === "transparent" ? "text-white/60" : "text-gray-400"}>
                             <IconChevronLeft />
                         </span>
                         {c.href ?
-                            <Link href={c.href} className="line-clamp-1">
+                            <Link href={c.href} className={cn("line-clamp-1 hover:underline underline-offset-4", theme === "transparent" ? "text-white/90 hover:text-white" : "text-slate-600 hover:text-slate-900")}>
                                 {c.label}
                             </Link>
-                        :   <span className="text-gradient line-clamp-1">
+                        :   <span className={cn("line-clamp-1 font-medium", theme === "transparent" ? "text-white drop-shadow-sm" : "text-gradient")}>
                                 {c.label}
                             </span>
                         }

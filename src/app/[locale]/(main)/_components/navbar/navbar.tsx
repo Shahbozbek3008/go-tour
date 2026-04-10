@@ -5,6 +5,7 @@ import ClientTranslate from "@/components/common/translation/client-translate"
 import { Button } from "@/components/ui/button"
 import { useModal } from "@/hooks/use-modal"
 import { MODAL_KEYS } from "@/lib/constants/modal-keys"
+import { cn } from "@/lib/utils/shadcn"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -21,6 +22,9 @@ export const Navbar = () => {
     const lastScrollY = useRef(0)
     const navRef = useRef<HTMLElement>(null)
     const { isOpen, openModal } = useModal(MODAL_KEYS.SIGN_IN_MODAL)
+
+    const isCatalog = pathname.includes("/catalog")
+    const isTransparent = isCatalog && !scrolled
 
     useEffect(() => {
         const handleScroll = () => {
@@ -58,14 +62,17 @@ export const Navbar = () => {
         <>
             <header
                 ref={navRef}
-                className={`sticky top-0 z-[50] w-full transition-transform duration-300 ${
-                    hidden ? "-translate-y-full" : "translate-y-0"
-                }`}
+                className={cn(
+                    "top-0 z-[50] w-full transition-transform duration-300",
+                    isCatalog ? "fixed" : "sticky",
+                    hidden ? "-translate-y-full" : "translate-y-0",
+                )}
             >
                 <div
                     className={`transition-all duration-300 ${
-                        scrolled ?
-                            "bg-white/85 backdrop-blur-md shadow-sm border-b border-transparent"
+                        isTransparent ? "bg-transparent border-transparent"
+                        : scrolled ?
+                            "bg-white/85 backdrop-blur-md shadow-sm border-b border-white/20"
                         :   "bg-white border-b border-gray-100"
                     }`}
                 >
@@ -75,18 +82,34 @@ export const Navbar = () => {
                         }`}
                     >
                         <Link href="/" className="flex-shrink-0">
-                            <Image src={logo} alt="Travel logo" priority />
+                            <Image
+                                src={logo}
+                                alt="Travel logo"
+                                priority
+                                className={cn(
+                                    "transition-all duration-300",
+                                    isTransparent && "brightness-0 invert",
+                                )}
+                            />
                         </Link>
 
-                        <DesktopNavLinks pathname={pathname} />
+                        <DesktopNavLinks
+                            pathname={pathname}
+                            isTransparent={isTransparent}
+                        />
 
                         <div className="flex items-center gap-2.5">
-                            <LanguageSwitcher />
+                            <LanguageSwitcher isTransparent={isTransparent} />
 
                             <Button
                                 size="default"
                                 variant="default"
-                                className="hidden md:flex rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                                className={cn(
+                                    "hidden md:flex rounded-lg font-semibold transition-all shadow-sm",
+                                    isTransparent ?
+                                        "bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/30"
+                                    :   "bg-blue-600 hover:bg-blue-700 text-white",
+                                )}
                                 onClick={openModal}
                             >
                                 <ClientTranslate translationKey="signIn" />
@@ -95,6 +118,7 @@ export const Navbar = () => {
                             <NavList
                                 menuOpen={menuOpen}
                                 onMenuToggle={setMenuOpen}
+                                isTransparent={isTransparent}
                             />
                         </div>
                     </nav>
@@ -102,7 +126,6 @@ export const Navbar = () => {
                 {isOpen && <Login />}
             </header>
 
-            {/* MobileMenu is placed outside the header so its 'fixed' positioning binds to viewport, not the transforming header. */}
             <MobileMenu
                 open={menuOpen}
                 pathname={pathname}
