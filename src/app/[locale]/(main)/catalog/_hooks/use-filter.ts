@@ -77,6 +77,15 @@ export const useFilter = () => {
         setMaxInput(String(PRICE_MAX))
     }
 
+    const activeFiltersCount =
+        [
+            filters.category !== "all",
+            filters.priceRange[0] !== PRICE_MIN ||
+                filters.priceRange[1] !== PRICE_MAX,
+            filters.duration !== "all",
+            filters.rating !== "all",
+        ].filter(Boolean).length + filters.tags.length
+
     return {
         filters,
         minInput,
@@ -88,5 +97,6 @@ export const useFilter = () => {
         handleMaxInput,
         hasActiveFilters,
         handlePriceSlider,
+        activeFiltersCount,
     }
 }

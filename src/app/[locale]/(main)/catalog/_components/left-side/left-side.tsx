@@ -1,5 +1,6 @@
 "use client"
 
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { RadioGroup } from "@/components/ui/radio-group"
@@ -30,14 +31,20 @@ export const CatalogLeftSide = () => {
         handleMaxInput,
         hasActiveFilters,
         handlePriceSlider,
+        activeFiltersCount,
     } = useFilter()
 
     return (
         <aside className="w-full max-w-[300px] border border-zinc-200 rounded-xl p-3 shrink-0 sticky top-24">
-            <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center gap-2 mb-1">
                 <span className="text-[15px] font-bold text-zinc-900 tracking-tight">
                     Filterlar
                 </span>
+                {activeFiltersCount > 0 && (
+                    <Badge className="flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full bg-blue-600 text-white text-[11px] font-bold animate-in zoom-in duration-300">
+                        {activeFiltersCount}
+                    </Badge>
+                )}
             </div>
 
             <div className="divide-y divide-zinc-100">
