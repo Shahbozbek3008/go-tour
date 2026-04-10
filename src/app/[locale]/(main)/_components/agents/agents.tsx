@@ -98,7 +98,7 @@ export const Agents = () => {
     }, [emblaApi, onSelect])
 
     return (
-        <section className="w-full bg-white py-16 md:py-24 overflow-hidden">
+        <section className="w-full bg-white py-16 overflow-hidden">
             <div className="w-full mx-auto px-4 sm:px-6 lg:px-15">
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
                     <h2 className="w-full text-3xl md:text-[40px] tracking-tight font-bold text-slate-900 text-center">
