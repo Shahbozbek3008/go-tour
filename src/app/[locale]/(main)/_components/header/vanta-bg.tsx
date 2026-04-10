@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react"
 import * as THREE from "three"
-// @ts-expect-error SDFSDF
 import NET from "vanta/dist/vanta.net.min"
 
 const VantaBg = () => {

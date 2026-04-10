@@ -378,7 +378,6 @@ function ScrollButton(props: ScrollButtonProps) {
             ref={ref}
             className={cn(scrollButtonVariants({ direction, className }))}
         >
-            {/* @ts-expect-error asdf */}
             <Icon />
         </button>
     )

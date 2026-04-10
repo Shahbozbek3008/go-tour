@@ -8,7 +8,6 @@ import {
 import * as React from "react"
 
 import { Button, buttonVariants } from "@/components/ui/button"
-import { useLanguage } from "@/hooks/use-language"
 import { cn } from "@/lib/utils/shadcn"
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
@@ -74,14 +73,13 @@ function PaginationPrevious({
     children,
     ...props
 }: React.ComponentProps<typeof PaginationLink>) {
-    const { isArabic } = useLanguage()
     return (
         <PaginationLink
             aria-label="Go to previous page"
             className={cn("bg-muted", className)}
             {...props}
         >
-            <ChevronLeftIcon className={cn(isArabic && "rotate-180")} />
+            <ChevronLeftIcon />
             {children}
         </PaginationLink>
     )
@@ -92,7 +90,6 @@ function PaginationNext({
     children,
     ...props
 }: React.ComponentProps<typeof PaginationLink>) {
-    const { isArabic } = useLanguage()
     return (
         <PaginationLink
             aria-label="Go to next page"
@@ -100,7 +97,7 @@ function PaginationNext({
             {...props}
         >
             {children}
-            <ChevronRightIcon className={cn(isArabic && "rotate-180")} />
+            <ChevronRightIcon />
         </PaginationLink>
     )
 }

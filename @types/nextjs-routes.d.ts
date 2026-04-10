@@ -15,16 +15,8 @@ declare module "nextjs-routes" {
     | DynamicRoute<"/[locale]", { "locale": string }>
     | DynamicRoute<"/[locale]/about-us", { "locale": string }>
     | DynamicRoute<"/[locale]/agents", { "locale": string }>
-    | DynamicRoute<"/[locale]/ai-chat", { "locale": string }>
     | DynamicRoute<"/[locale]/catalog", { "locale": string }>
-    | DynamicRoute<"/[locale]/forgot-password", { "locale": string }>
-    | DynamicRoute<"/[locale]/oauth", { "locale": string }>
-    | DynamicRoute<"/[locale]/set-new-password", { "locale": string }>
-    | DynamicRoute<"/[locale]/sign-in", { "locale": string }>
-    | DynamicRoute<"/[locale]/sign-up", { "locale": string }>
-    | DynamicRoute<"/[locale]/tour-companies", { "locale": string }>
-    | DynamicRoute<"/[locale]/tsv", { "locale": string }>
-    | DynamicRoute<"/[locale]/verification-code", { "locale": string }>;
+    | DynamicRoute<"/[locale]/tour-companies", { "locale": string }>;
 
   interface StaticRoute<Pathname> {
     pathname: Pathname;

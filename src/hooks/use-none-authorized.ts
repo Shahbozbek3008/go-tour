@@ -1,5 +1,4 @@
 import { useRouter } from "@/i18n/navigation"
-import { getHref } from "@/lib/utils/get-href"
 import { useProfileQuery } from "./react-query/use-profile-query"
 import { useLastPage } from "./use-last-page"
 
@@ -10,7 +9,9 @@ export function useNoneAuthorized() {
 
     const redirectToSignIn = (action?: () => void) => {
         if (!isAuthenticated) {
-            router.push(getHref({ pathname: "/[locale]/sign-in" }))
+            // router.push(
+            //     getHref({ pathname: "/[locale]/sign-in" as RouteLiteral }),
+            // )
             setLastPage()
         } else {
             action?.()

@@ -5,7 +5,6 @@ import { IconBookmark } from "@/assets/icons/bookmark"
 import { IconShare } from "@/assets/icons/share"
 import { useRequest } from "@/hooks/react-query/use-request"
 import { useRevalidate } from "@/hooks/react-query/use-revalidate"
-import { useLanguage } from "@/hooks/use-language"
 import { useRouter } from "@/i18n/navigation"
 import { cn } from "@/lib/utils/shadcn"
 import { useState } from "react"
@@ -30,7 +29,6 @@ export const GobackMobile = ({
     backSlug,
     title,
 }: Props) => {
-    const { isArabic } = useLanguage()
     const [isBookmarked, setIsBookmarked] = useState(bookmarked)
 
     const { invalidateByPatternMatch, invalidateByExactMatch } = useRevalidate()
@@ -63,11 +61,7 @@ export const GobackMobile = ({
             <div className="flex items-center gap-3">
                 <Button
                     className="has-[>svg]:px-0 py-0 text-text-900"
-                    icon={
-                        <IconArrowLeft
-                            className={cn(isArabic && "rotate-180")}
-                        />
-                    }
+                    icon={<IconArrowLeft />}
                     variant={"ghost"}
                     onClick={() => router.back()}
                 />

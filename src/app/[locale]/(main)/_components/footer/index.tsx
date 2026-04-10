@@ -1,6 +1,7 @@
 "use client"
 
 import { ArrowUp, Mail, MapPin, Phone } from "lucide-react"
+import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 
@@ -79,11 +80,14 @@ const Footer = () => {
                                     className="flex items-center gap-3 group cursor-pointer"
                                 >
                                     <div className="w-11 h-11 rounded-full overflow-hidden shadow-sm border border-slate-200 transition-transform duration-300 group-hover:scale-105 group-hover:shadow-md group-hover:border-blue-200 relative">
-                                        <img
+                                        <Image
                                             src={`https://ui-avatars.com/api/?name=Ag+${agent}&background=EFF6FF&color=1D4ED8&bold=true&size=80`}
                                             alt={`Agent ${agent}`}
                                             className="w-full h-full object-cover"
                                             draggable={false}
+                                            width={44}
+                                            height={44}
+                                            unoptimized
                                         />
                                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
                                     </div>
@@ -161,7 +165,9 @@ const Footer = () => {
             <button
                 onClick={scrollToTop}
                 className={`fixed bottom-6 right-6 md:bottom-10 md:right-10 z-[100] flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-white text-slate-800 rounded-full border border-slate-200/80 shadow-[0_10px_40px_-5px_rgba(0,0,0,0.15)] hover:shadow-[0_15px_40px_-5px_rgba(0,0,0,0.2)] hover:bg-slate-50 active:scale-90 transition-all duration-500 group ${
-                    isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12 pointer-events-none"
+                    isVisible ?
+                        "opacity-100 translate-y-0"
+                    :   "opacity-0 translate-y-12 pointer-events-none"
                 }`}
                 aria-label="Yuqoriga o'tish"
             >
