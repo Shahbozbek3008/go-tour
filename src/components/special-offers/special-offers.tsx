@@ -3,6 +3,7 @@ import { Card } from "@/components/card"
 import { TOURS } from "@/lib/constants/tours"
 import useEmblaCarousel from "embla-carousel-react"
 import { AnimatePresence, motion } from "framer-motion"
+import ClientTranslate from "../common/translation/client-translate"
 
 export const SpecialOffers = () => {
     const [emblaRef] = useEmblaCarousel({
@@ -13,7 +14,9 @@ export const SpecialOffers = () => {
 
     return (
         <div className="flex flex-col">
-            <h2 className="text-3xl font-semibold mb-10">Maxsus Takliflar</h2>
+            <h2 className="text-3xl font-semibold mb-10">
+                <ClientTranslate translationKey="specialOffers" />
+            </h2>
             <div
                 ref={emblaRef}
                 className="overflow-hidden cursor-grab active:cursor-grabbing"

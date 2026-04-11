@@ -1,7 +1,7 @@
+import { SpecialOffers } from "@/components/special-offers"
 import { CatalogHeader } from "./header"
 import { CatalogLeftSide } from "./left-side"
 import { CatalogRightSide } from "./right-side"
-import { SpecialOffers } from "./special-offers"
 
 export const CatalogLayout = () => {
     return (

@@ -750,5 +750,7 @@
     "additional": "Дополнительно:",
     "priceModel": "Модель цены",
     "forTourCompanies": "Для туристических компаний",
-    "getTheCode": "Получить код"
+    "getTheCode": "Получить код",
+    "allView": "Посмотреть все",
+    "specialOffers": "Специальные предложения"
 }

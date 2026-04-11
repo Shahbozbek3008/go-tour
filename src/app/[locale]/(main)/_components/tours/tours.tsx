@@ -2,7 +2,11 @@
 "use client"
 
 import { Card } from "@/components/card"
+import ClientTranslate from "@/components/common/translation/client-translate"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "@/i18n/navigation"
+import { TOURS } from "@/lib/constants/tours"
+import { getHref } from "@/lib/utils/get-href"
 import useEmblaCarousel from "embla-carousel-react"
 import { AnimatePresence, motion } from "framer-motion"
 import { ChevronLeft, ChevronRight } from "lucide-react"
@@ -14,27 +18,6 @@ type Tab = {
     highlight?: boolean
 }
 
-type Tour = {
-    id: number
-    title: string
-    subtitle: string
-    image: string
-    price: number
-    originalPrice?: number
-    discount?: number
-    days: number
-    rating: number
-    reviews: number
-    location: string
-    dates: string
-    author: string
-    authorAvatar: string
-    badge: string
-    badgeColor: string
-    isNew?: boolean
-    category: string
-}
-
 const tabs: Tab[] = [
     { id: "all", label: "Barchasi" },
     { id: "bestseller", label: "Eng ko'p sotiladigan" },
@@ -44,162 +27,8 @@ const tabs: Tab[] = [
     { id: "special", label: "Maxsus takliflar" },
 ]
 
-const tours: Tour[] = [
-    {
-        id: 1,
-        title: "Astana City Tour",
-        subtitle: "Zamonaviy Shahar",
-        image: "https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?w=800&q=80",
-        price: 1637,
-        originalPrice: 2046,
-        discount: 20,
-        days: 2,
-        rating: 5.0,
-        reviews: 24,
-        location: "Qozog'iston, Astana",
-        dates: "15 – 17 iyun",
-        author: "Silk Road Travel",
-        authorAvatar: "https://i.pravatar.cc/40?img=1",
-        badge: "Maxsus takliflar",
-        badgeColor: "blue",
-        category: "special",
-    },
-    {
-        id: 2,
-        title: "Paris Romantic Escape",
-        subtitle: "Sevishganlar Uchun Parij",
-        image: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&q=80",
-        price: 1565,
-        originalPrice: 1956,
-        discount: 20,
-        days: 4,
-        rating: 5.0,
-        reviews: 180,
-        location: "Fransiya, Parij",
-        dates: "23 – 27 iyun",
-        author: "Silk Road Travel",
-        authorAvatar: "https://i.pravatar.cc/40?img=2",
-        badge: "Maxsus takliflar",
-        badgeColor: "blue",
-        category: "special",
-    },
-    {
-        id: 3,
-        title: "Maldives Luxury Resort",
-        subtitle: "Orollarda Premium Dam Olish",
-        image: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=800&q=80",
-        price: 1619,
-        originalPrice: 1704,
-        discount: 5,
-        days: 6,
-        rating: 5.0,
-        reviews: 360,
-        location: "Maldivlar",
-        dates: "1 – 7 iyul",
-        author: "Samarkand Tours",
-        authorAvatar: "https://i.pravatar.cc/40?img=3",
-        badge: "Maxsus takliflar",
-        badgeColor: "blue",
-        category: "special",
-    },
-    {
-        id: 4,
-        title: "Dubai Luxury Escape",
-        subtitle: "Dubayda Hashamatli Mehmonxonalar",
-        image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&q=80",
-        price: 1517,
-        originalPrice: 1596,
-        discount: 5,
-        days: 4,
-        rating: 4.9,
-        reviews: 92,
-        location: "BAA, Dubai",
-        dates: "20 – 24 iyun",
-        author: "Silk Road Travel",
-        authorAvatar: "https://i.pravatar.cc/40?img=4",
-        badge: "Maxsus takliflar",
-        badgeColor: "blue",
-        category: "special",
-    },
-    {
-        id: 5,
-        title: "Tokyo Explorer",
-        subtitle: "Yaponiya Madaniyati Va Texnologiyasi",
-        image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&q=80",
-        price: 2100,
-        originalPrice: 2310,
-        discount: 10,
-        days: 7,
-        rating: 5.0,
-        reviews: 145,
-        location: "Yaponiya, Tokio",
-        dates: "10 – 17 iyul",
-        author: "Asia Travel",
-        authorAvatar: "https://i.pravatar.cc/40?img=5",
-        badge: "Yangi",
-        badgeColor: "green",
-        isNew: true,
-        category: "new",
-    },
-    {
-        id: 6,
-        title: "Bali Retreat",
-        subtitle: "Ruhiy Tinchlik Va Tabiat",
-        image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800&q=80",
-        price: 980,
-        originalPrice: 1300,
-        discount: 25,
-        days: 5,
-        rating: 4.8,
-        reviews: 210,
-        location: "Indoneziya, Bali",
-        dates: "5 – 10 avgust",
-        author: "Island Tours",
-        authorAvatar: "https://i.pravatar.cc/40?img=6",
-        badge: "Chegirma",
-        badgeColor: "blue",
-        category: "discount",
-    },
-    {
-        id: 7,
-        title: "Istanbul Discovery",
-        subtitle: "Tarix Va Zamonaviylik",
-        image: "https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?w=800&q=80",
-        price: 750,
-        originalPrice: 830,
-        discount: 10,
-        days: 4,
-        rating: 4.9,
-        reviews: 88,
-        location: "Turkiya, Istanbul",
-        dates: "12 – 16 iyul",
-        author: "Euro Travel",
-        authorAvatar: "https://i.pravatar.cc/40?img=7",
-        badge: "Bestseller",
-        badgeColor: "blue",
-        category: "bestseller",
-    },
-    {
-        id: 8,
-        title: "Santorini Dream",
-        subtitle: "Oq Uylar Va Ko'k Dengiz",
-        image: "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=800&q=80",
-        price: 1850,
-        originalPrice: 1850,
-        days: 6,
-        rating: 5.0,
-        reviews: 312,
-        location: "Gretsiya, Santorini",
-        dates: "20 – 26 iyul",
-        author: "Med Travel",
-        authorAvatar: "https://i.pravatar.cc/40?img=8",
-        badge: "Eng Yaxshi",
-        badgeColor: "blue",
-        category: "best",
-    },
-]
-
 export const TourSection = () => {
+    const router = useRouter()
     const [activeTab, setActiveTab] = useState("all")
     const [emblaRef, emblaApi] = useEmblaCarousel({
         align: "start",
@@ -211,8 +40,8 @@ export const TourSection = () => {
     const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi])
 
     const filtered =
-        activeTab === "all" ? tours : (
-            tours.filter((t) => t.category === activeTab)
+        activeTab === "all" ? TOURS : (
+            TOURS.filter((t) => t.category === activeTab)
         )
 
     return (
@@ -283,9 +112,16 @@ export const TourSection = () => {
 
                     <Button
                         variant="ghost"
+                        onClick={() =>
+                            router.push(
+                                getHref({
+                                    pathname: "/[locale]/catalog",
+                                }),
+                            )
+                        }
                         className="px-6 py-2.5 rounded-full font-semibold hover:bg-transparent hover:text-black active:scale-95 flex items-center gap-2"
                     >
-                        Barchasini ko'rish
+                        <ClientTranslate translationKey="allView" />
                         <ChevronRight size={16} />
                     </Button>
                 </div>
