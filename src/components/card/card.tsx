@@ -21,14 +21,17 @@ interface Tour {
     badge: string
     isNew?: boolean
     discount?: number
+    hasLike?: boolean
 }
 
 export const Card = ({
     tour,
     wrapperClassName,
+    hasLike = true,
 }: {
     tour: Tour
     wrapperClassName?: string
+    hasLike?: boolean
 }) => {
     const [liked, setLiked] = useState(false)
 
@@ -51,20 +54,21 @@ export const Card = ({
                     </span>
                 </div>
 
-                <button
-                    onClick={() => setLiked((p) => !p)}
-                    className="absolute top-3 right-3 z-20 w-8 h-8  bg-transparent flex items-center justify-center transition-transform duration-200 hover:scale-110 active:scale-95"
-                >
-                    <Heart
-                        size={28}
-                        className={
-                            liked ?
-                                "fill-red-500 stroke-red-500"
-                            :   "stroke-white"
-                        }
-                    />
-                </button>
-
+                {hasLike && (
+                    <button
+                        onClick={() => setLiked((p) => !p)}
+                        className="absolute top-3 right-3 z-20 w-8 h-8  bg-transparent flex items-center justify-center transition-transform duration-200 hover:scale-110 active:scale-95"
+                    >
+                        <Heart
+                            size={28}
+                            className={
+                                liked ?
+                                    "fill-red-500 stroke-red-500"
+                                :   "stroke-white"
+                            }
+                        />
+                    </button>
+                )}
                 <div className="absolute bottom-3 left-3 z-20 flex items-center gap-2">
                     <div className="relative w-7 h-7 rounded-full overflow-hidden border-2 border-white shadow-sm">
                         <Image

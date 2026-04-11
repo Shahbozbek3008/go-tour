@@ -3,9 +3,9 @@ import ClientTranslate from "@/components/common/translation/client-translate"
 import PhoneField from "@/components/form/phone-field"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
+import { Link } from "@/i18n/navigation"
 import { MODAL_KEYS } from "@/lib/constants/modal-keys"
 import { getHref } from "@/lib/utils/get-href"
-import Link from "next/link"
 import { useForm } from "react-hook-form"
 
 export const Login = () => {
@@ -13,7 +13,7 @@ export const Login = () => {
 
     return (
         <Modal
-            className="max-w-[400px]"
+            className="w-[clamp(300px,90vw,400px)]"
             modalKey={MODAL_KEYS.SIGN_IN_MODAL}
             title="Tizimga kirish"
         >
@@ -36,7 +36,7 @@ export const Login = () => {
                                 <ClientTranslate translationKey="agreePrefix" />{" "}
                                 <Link
                                     href={getHref({
-                                        pathname: "/[locale]/privacy-policy",
+                                        pathname: "/[locale]/about-us",
                                     })}
                                     className="text-[#1a1a1a] underline underline-offset-2 decoration-[#1a1a1a]/40 hover:decoration-[#1a1a1a] transition-all duration-150"
                                 >
@@ -45,7 +45,7 @@ export const Login = () => {
                                 <ClientTranslate translationKey="and" />{" "}
                                 <Link
                                     href={getHref({
-                                        pathname: "/[locale]/offer",
+                                        pathname: "/[locale]/agents",
                                     })}
                                     className="text-[#1a1a1a] underline underline-offset-2 decoration-[#1a1a1a]/40 hover:decoration-[#1a1a1a] transition-all duration-150"
                                 >

@@ -23,7 +23,8 @@ export const Navbar = () => {
     const navRef = useRef<HTMLElement>(null)
     const { isOpen, openModal } = useModal(MODAL_KEYS.SIGN_IN_MODAL)
 
-    const isCatalog = pathname.includes("/catalog")
+    const isCatalog =
+        pathname.includes("/catalog") || pathname.includes("/agents")
     const isTransparent = isCatalog && !scrolled
 
     useEffect(() => {
