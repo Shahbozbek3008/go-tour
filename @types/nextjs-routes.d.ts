@@ -18,8 +18,7 @@ declare module "nextjs-routes" {
     | DynamicRoute<"/[locale]/catalog", { "locale": string }>
     | DynamicRoute<"/[locale]/tour-companies", { "locale": string }>
     | DynamicRoute<"/[locale]/privacy-policy", { "locale": string }>
-    | DynamicRoute<"/[locale]/offer", { "locale": string }>
-    | DynamicRoute<"/[locale]/about-uzumid", { "locale": string }>;
+    | DynamicRoute<"/[locale]/offer", { "locale": string }>;
 
   interface StaticRoute<Pathname> {
     pathname: Pathname;

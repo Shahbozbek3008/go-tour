@@ -15,6 +15,7 @@ import {
     PhoneInputRefType,
 } from "react-international-phone"
 import "react-international-phone/style.css"
+import ClientTranslate from "../common/translation/client-translate"
 import { TranslationKey } from "../common/translation/types"
 import ErrorMessage from "../ui/error-message"
 import { Label } from "../ui/label"
@@ -104,7 +105,7 @@ export default function PhoneField<IForm extends FieldValues>({
                     className={cn(!!error && "text-destructive")}
                     required={!optional}
                 >
-                    {label}
+                    <ClientTranslate translationKey={label as string} />
                 </Label>
             )}
             <PhoneInput
