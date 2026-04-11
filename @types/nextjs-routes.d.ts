@@ -16,7 +16,10 @@ declare module "nextjs-routes" {
     | DynamicRoute<"/[locale]/about-us", { "locale": string }>
     | DynamicRoute<"/[locale]/agents", { "locale": string }>
     | DynamicRoute<"/[locale]/catalog", { "locale": string }>
-    | DynamicRoute<"/[locale]/tour-companies", { "locale": string }>;
+    | DynamicRoute<"/[locale]/tour-companies", { "locale": string }>
+    | DynamicRoute<"/[locale]/privacy-policy", { "locale": string }>
+    | DynamicRoute<"/[locale]/offer", { "locale": string }>
+    | DynamicRoute<"/[locale]/about-uzumid", { "locale": string }>;
 
   interface StaticRoute<Pathname> {
     pathname: Pathname;
@@ -85,9 +88,10 @@ declare module "nextjs-routes" {
 
 // prettier-ignore
 declare module "next/link" {
-  import type { Route, RouteLiteral } from "nextjs-routes";;
   import type { LinkProps as NextLinkProps } from "next/dist/client/link";
+  import type { Route, RouteLiteral } from "nextjs-routes";
   import type React from "react";
+;
 
   type StaticRoute = Exclude<Route, { query: any }>["pathname"];
 
@@ -112,8 +116,8 @@ declare module "next/link" {
 
 // prettier-ignore
 declare module "next/router" {
-  import type { Locale, Route, RoutedQuery } from "nextjs-routes";
   import type { NextRouter as Router } from "next/dist/client/router";
+  import type { Locale, Route } from "nextjs-routes";
   export * from "next/dist/client/router";
   export { default } from "next/dist/client/router";
 
@@ -174,8 +178,8 @@ declare module "next/router" {
 // prettier-ignore
 declare module "next/navigation" {
   export * from "next/dist/client/components/navigation";
-  import type { Route, RouteLiteral, RoutedQuery } from "nextjs-routes";
-  import type { AppRouterInstance as NextAppRouterInstance, NavigateOptions, PrefetchOptions } from "next/dist/shared/lib/app-router-context.shared-runtime";
+  import type { NavigateOptions, AppRouterInstance as NextAppRouterInstance, PrefetchOptions } from "next/dist/shared/lib/app-router-context.shared-runtime";
+  import type { Route, RoutedQuery, RouteLiteral } from "nextjs-routes";
 
   type StaticRoute = Exclude<Route, { query: any }>["pathname"];
 

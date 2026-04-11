@@ -749,5 +749,6 @@
     "test": "Тест",
     "additional": "Дополнительно:",
     "priceModel": "Модель цены",
-    "forTourCompanies": "Для туристических компаний"
+    "forTourCompanies": "Для туристических компаний",
+    "getTheCode": "Получить код"
 }

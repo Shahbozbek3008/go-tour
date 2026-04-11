@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils/shadcn"
 import { motion } from "framer-motion"
 import { Heart, Star } from "lucide-react"
 import Image from "next/image"
@@ -22,7 +23,13 @@ interface Tour {
     discount?: number
 }
 
-export const Card = ({ tour }: { tour: Tour }) => {
+export const Card = ({
+    tour,
+    wrapperClassName,
+}: {
+    tour: Tour
+    wrapperClassName?: string
+}) => {
     const [liked, setLiked] = useState(false)
 
     return (
@@ -32,7 +39,10 @@ export const Card = ({ tour }: { tour: Tour }) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
-            className="group bg-white rounded-2xl overflow-hidden shadow-sm transition-shadow duration-300 flex-shrink-0 w-full md:w-[320px]"
+            className={cn(
+                "group bg-white rounded-2xl overflow-hidden shadow-sm transition-shadow duration-300 flex-shrink-0 w-full",
+                wrapperClassName,
+            )}
         >
             <div className="relative overflow-hidden h-[200px]">
                 <div className="absolute top-3 left-3 z-20 flex gap-2">

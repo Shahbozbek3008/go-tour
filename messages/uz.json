@@ -749,5 +749,9 @@
     "test": "Sinov",
     "additional": "Qo‘shimcha:",
     "priceModel": "Narx modeli",
-    "forTourCompanies": "Tur kompaniyalari uchun"
+    "forTourCompanies": "Tur kompaniyalari uchun",
+    "getTheCode": "Kodni oling",
+    "agreePrefix": "Men quyidagilarni tasdiqlayman:",
+    "offerLink": "Taklif shartlari",
+    "signInTitle": "Kirish"
 }

@@ -255,6 +255,7 @@ export const TourSection = () => {
                                 <Card
                                     key={`${activeTab}-${tour.id}`}
                                     tour={tour}
+                                    wrapperClassName="w-full md:w-[320px]"
                                 />
                             ))}
                         </motion.div>

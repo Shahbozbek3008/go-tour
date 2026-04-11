@@ -4,6 +4,8 @@ import PhoneField from "@/components/form/phone-field"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { MODAL_KEYS } from "@/lib/constants/modal-keys"
+import { getHref } from "@/lib/utils/get-href"
+import Link from "next/link"
 import { useForm } from "react-hook-form"
 
 export const Login = () => {
@@ -11,22 +13,45 @@ export const Login = () => {
 
     return (
         <Modal
-            className="max-w-[500px]"
+            className="max-w-[400px]"
             modalKey={MODAL_KEYS.SIGN_IN_MODAL}
             title="Tizimga kirish"
         >
             <Form {...methods}>
                 <form onSubmit={methods.handleSubmit(() => {})}>
-                    <div className="space-y-4 mt-10">
-                        <PhoneField
-                            name="phone"
-                            methods={methods}
-                            inputClassName="rounded-lg"
-                        />
-                        <div className="flex items-center justify-end">
-                            <Button type="submit">
-                                <ClientTranslate translationKey="signIn" />
+                    <div className="flex flex-col items-center">
+                        <div className="w-full space-y-4 mt-6">
+                            <PhoneField
+                                name="phone"
+                                methods={methods}
+                                inputClassName="rounded-xl h-[52px] text-base"
+                            />
+                            <Button type="submit" className="w-full">
+                                <ClientTranslate translationKey="getTheCode" />
                             </Button>
+                        </div>
+
+                        <div className="mt-8 flex flex-col items-center gap-3 pb-2">
+                            <p className="text-[13px] text-[#8a8a8a] text-center leading-relaxed max-w-[280px]">
+                                <ClientTranslate translationKey="agreePrefix" />{" "}
+                                <Link
+                                    href={getHref({
+                                        pathname: "/[locale]/privacy-policy",
+                                    })}
+                                    className="text-[#1a1a1a] underline underline-offset-2 decoration-[#1a1a1a]/40 hover:decoration-[#1a1a1a] transition-all duration-150"
+                                >
+                                    <ClientTranslate translationKey="privacyPolicy" />
+                                </Link>{" "}
+                                <ClientTranslate translationKey="and" />{" "}
+                                <Link
+                                    href={getHref({
+                                        pathname: "/[locale]/offer",
+                                    })}
+                                    className="text-[#1a1a1a] underline underline-offset-2 decoration-[#1a1a1a]/40 hover:decoration-[#1a1a1a] transition-all duration-150"
+                                >
+                                    <ClientTranslate translationKey="offerLink" />
+                                </Link>
+                            </p>
                         </div>
                     </div>
                 </form>

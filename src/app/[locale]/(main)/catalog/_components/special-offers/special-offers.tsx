@@ -21,7 +21,11 @@ export const SpecialOffers = () => {
                 <AnimatePresence mode="popLayout">
                     <motion.div className="flex gap-4 pl-0.5 pb-2">
                         {TOURS.map((tour) => (
-                            <Card key={`${tour.id}`} tour={tour} />
+                            <Card
+                                key={`${tour.id}`}
+                                tour={tour}
+                                wrapperClassName="w-full md:w-[320px]"
+                            />
                         ))}
                     </motion.div>
                 </AnimatePresence>

@@ -86,8 +86,8 @@ export const CatalogHeader = () => {
     const slide = slides[current]
 
     return (
-        <div className="relative w-full min-h-[450px] lg:h-[10vh] mb-[220px] md:mb-16">
-            <div className="relative w-full h-full overflow-hidden select-none group">
+        <div className="relative w-full mb-[220px] md:mb-16">
+            <div className="relative w-full h-[450px] lg:h-[60vh] overflow-hidden select-none group">
                 <div
                     className={cn(
                         "absolute inset-0 transition-all duration-500 ease-[0.25,1,0.5,1]",
@@ -98,7 +98,7 @@ export const CatalogHeader = () => {
                         :   "translate-x-0 opacity-100",
                     )}
                 >
-                    <div className="relative w-full h-full overflow-hidden">
+                    <div className="relative w-full h-full">
                         <Image
                             src={slide.image}
                             alt={slide.title}
@@ -111,10 +111,7 @@ export const CatalogHeader = () => {
                     </div>
                 </div>
 
-                {/* Dark Overlay for better text readability */}
                 <div className="absolute inset-0 bg-[#0F1B2D]/40 z-10 pointer-events-none" />
-
-                {/* Content */}
                 <div
                     className={cn(
                         "absolute inset-0 z-20 flex flex-col items-center justify-center transition-all duration-300 ease-out px-4",
@@ -123,12 +120,11 @@ export const CatalogHeader = () => {
                         ),
                     )}
                 >
-                    <h1 className="text-white font-bold text-5xl sm:text-6xl md:text-7xl lg:text-6xl  leading-tight tracking-wider drop-shadow-xl text-center uppercase mb-3">
+                    <h1 className="text-white font-bold text-5xl sm:text-6xl md:text-7xl lg:text-6xl leading-tight tracking-wider drop-shadow-xl text-center uppercase mb-3">
                         {slide.title}
                     </h1>
                 </div>
 
-                {/* Prev / Next arrows */}
                 <button
                     onClick={handlePrev}
                     aria-label="Previous slide"
