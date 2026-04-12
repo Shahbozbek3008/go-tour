@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils/shadcn"
 import { AnimatePresence, motion } from "framer-motion"
 import { Check, ChevronDown } from "lucide-react"
 import * as React from "react"
+import { useFilter } from "../../_hooks"
+import { FilterTriggerButton } from "../left-side/filter-trigger-button"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -301,10 +303,13 @@ function SortDropdown({ value, onChange }: SortDropdownProps) {
     )
 }
 
-// ─── Main Component ───────────────────────────────────────────────────────────
+interface CatalogRightSideProps {
+    setSheetOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
 
-export const CatalogRightSide = () => {
+export const CatalogRightSide = ({ setSheetOpen }: CatalogRightSideProps) => {
     const [sortKey, setSortKey] = React.useState<SortKey>("popular")
+    const { activeFiltersCount } = useFilter()
 
     const sorted = React.useMemo(
         () => sortTours(MOCK_TOURS, sortKey),
@@ -313,7 +318,13 @@ export const CatalogRightSide = () => {
 
     return (
         <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-end mb-6">
+            <div className="flex items-center lg:justify-end justify-between  mb-6">
+                <div className="flex items-center justify-between lg:hidden">
+                    <FilterTriggerButton
+                        activeCount={activeFiltersCount}
+                        onClick={() => setSheetOpen(true)}
+                    />
+                </div>
                 <SortDropdown value={sortKey} onChange={setSortKey} />
             </div>
             <motion.div

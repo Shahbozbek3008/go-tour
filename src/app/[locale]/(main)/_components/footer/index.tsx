@@ -164,7 +164,7 @@ const Footer = () => {
             {/* Scroll To Top Fixed Button */}
             <button
                 onClick={scrollToTop}
-                className={`fixed bottom-6 right-6 md:bottom-10 md:right-10 z-[100] flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-white text-slate-800 rounded-full border border-slate-200/80 shadow-[0_10px_40px_-5px_rgba(0,0,0,0.15)] hover:shadow-[0_15px_40px_-5px_rgba(0,0,0,0.2)] hover:bg-slate-50 active:scale-90 transition-all duration-500 group ${
+                className={`fixed bottom-6 right-6 md:bottom-10 md:right-10 z-[50] flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-white text-slate-800 rounded-full border border-slate-200/80 shadow-[0_10px_40px_-5px_rgba(0,0,0,0.15)] hover:shadow-[0_15px_40px_-5px_rgba(0,0,0,0.2)] hover:bg-slate-50 active:scale-90 transition-all duration-500 group ${
                     isVisible ?
                         "opacity-100 translate-y-0"
                     :   "opacity-0 translate-y-12 pointer-events-none"
