@@ -10,8 +10,10 @@ import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
+import { FormProvider, useForm } from "react-hook-form"
 import { LanguageSwitcher } from "../language-switcher"
 import { Login } from "../login"
+import { Verify } from "../login/verify"
 import { DesktopNavLinks, MobileMenu, NavList } from "./nav-list"
 
 export const Navbar = () => {
@@ -22,6 +24,15 @@ export const Navbar = () => {
     const lastScrollY = useRef(0)
     const navRef = useRef<HTMLElement>(null)
     const { isOpen, openModal } = useModal(MODAL_KEYS.SIGN_IN_MODAL)
+    const { isOpen: isVerifyOpen, openModal: openVerifyModal } = useModal(
+        MODAL_KEYS.VERIFY_PHONE_MODAL,
+    )
+    const methods = useForm({
+        defaultValues: {
+            phoneNumber: "",
+            smsCode: "",
+        },
+    })
 
     const isCatalog =
         pathname.includes("/catalog") || pathname.includes("/agents")
@@ -88,7 +99,7 @@ export const Navbar = () => {
                                 alt="Travel logo"
                                 priority
                                 className={cn(
-                                    "transition-all duration-300",
+                                    "transition-all duration-300 sm:w-24 w-auto mt-2",
                                     isTransparent && "brightness-0 invert",
                                 )}
                             />
@@ -124,7 +135,10 @@ export const Navbar = () => {
                         </div>
                     </nav>
                 </div>
-                {isOpen && <Login />}
+                <FormProvider {...methods}>
+                    {isOpen && <Login />}
+                    {isVerifyOpen && <Verify />}
+                </FormProvider>
             </header>
 
             <MobileMenu

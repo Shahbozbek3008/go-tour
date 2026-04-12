@@ -17,4 +17,5 @@ export const MODAL_KEYS = {
     CLEAR_CHAT: "clear-chat",
     CHAT_EXTRA_MEDIA_MODAL: "chat-extra-media-modal",
     SIGN_IN_MODAL: "sign-in-modal",
+    VERIFY_PHONE_MODAL: "verify-phone-modal",
 } as const

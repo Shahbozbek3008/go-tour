@@ -3,10 +3,10 @@
 import ClientTranslate from "@/components/common/translation/client-translate"
 import { Button } from "@/components/ui/button"
 import { useModal } from "@/hooks/use-modal"
+import { Link } from "@/i18n/navigation"
 import { NAV_LIST } from "@/lib/constants"
 import { MODAL_KEYS } from "@/lib/constants/modal-keys"
 import { cn } from "@/lib/utils/shadcn"
-import Link from "next/link"
 
 // getHref() already returns a resolved string like "/uz/catalog"
 // Strip the locale segment to compare: "/uz/catalog" => "/catalog"
@@ -14,7 +14,13 @@ function stripLocale(path: string) {
     return path.replace(/^\/[a-z]{2}(?=\/|$)/, "") || "/"
 }
 
-function BurgerIcon({ open, isTransparent }: { open: boolean; isTransparent?: boolean }) {
+function BurgerIcon({
+    open,
+    isTransparent,
+}: {
+    open: boolean
+    isTransparent?: boolean
+}) {
     const bgColor = isTransparent && !open ? "bg-white" : "bg-gray-800"
     return (
         <div className="flex flex-col justify-center items-center gap-[5px] w-full h-full">
@@ -176,7 +182,13 @@ export function MobileMenu({ open, pathname, onClose }: MobileMenuProps) {
     )
 }
 
-export function DesktopNavLinks({ pathname, isTransparent }: { pathname: string; isTransparent?: boolean }) {
+export function DesktopNavLinks({
+    pathname,
+    isTransparent,
+}: {
+    pathname: string
+    isTransparent?: boolean
+}) {
     const normalizedPathname = stripLocale(pathname)
 
     return (
@@ -194,15 +206,21 @@ export function DesktopNavLinks({ pathname, isTransparent }: { pathname: string;
                             href={item.href}
                             className={cn(
                                 "relative pb-[3px] font-semibold transition-colors duration-150",
-                                isTransparent ? "text-white/90 hover:text-white" : "text-slate-800 hover:text-primary",
+                                isTransparent ?
+                                    "text-white/90 hover:text-white"
+                                :   "text-slate-800 hover:text-primary",
                                 "after:content-[''] after:absolute after:-bottom-[5px]",
                                 "after:left-0 after:right-0 after:h-[2px]",
-                                isTransparent ? "after:bg-white" : "after:bg-primary",
+                                isTransparent ? "after:bg-white" : (
+                                    "after:bg-primary"
+                                ),
                                 "after:rounded-full",
                                 "after:scale-x-0 after:transition-transform after:duration-200 after:origin-left",
                                 "hover:after:scale-x-100",
                                 isActive && [
-                                    isTransparent ? "text-white" : "text-primary",
+                                    isTransparent ? "text-white" : (
+                                        "text-primary"
+                                    ),
                                     "after:scale-x-100",
                                 ],
                             )}
@@ -222,7 +240,11 @@ interface NavListProps {
     isTransparent?: boolean
 }
 
-export function NavList({ onMenuToggle, menuOpen, isTransparent }: NavListProps) {
+export function NavList({
+    onMenuToggle,
+    menuOpen,
+    isTransparent,
+}: NavListProps) {
     return (
         <button
             aria-label={menuOpen ? "Menyuni yopish" : "Menyuni ochish"}
@@ -230,11 +252,11 @@ export function NavList({ onMenuToggle, menuOpen, isTransparent }: NavListProps)
             onClick={() => onMenuToggle(!menuOpen)}
             className={cn(
                 "md:hidden flex items-center justify-center",
-                "w-9 h-9 rounded-lg border",
+                "w-10 h-10 rounded-lg border",
                 "cursor-pointer transition-colors",
-                isTransparent && !menuOpen ? 
-                    "border-white/30 bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm" 
-                 : "border-gray-200 bg-white hover:bg-gray-50 active:bg-gray-100",
+                isTransparent && !menuOpen ?
+                    "border-white/30 bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm"
+                :   "border-gray-200 bg-white hover:bg-gray-50 active:bg-gray-100",
                 menuOpen && !isTransparent && "bg-gray-50",
             )}
         >

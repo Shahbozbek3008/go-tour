@@ -1,4 +1,5 @@
 "use client"
+
 import { cn } from "@/lib/utils/shadcn"
 import { ReactNode } from "react"
 import {
@@ -17,13 +18,14 @@ import {
     OtpProps,
 } from "../ui/input-otp"
 import { Label } from "../ui/label"
-// import { Label } from "../ui/label"
 
 interface IProps<IForm extends FieldValues> {
     methods: UseFormReturn<IForm>
     name: Path<IForm>
     label?: ReactNode
     wrapperClassName?: string
+    slotClassName?: string
+    groupClassName?: string
     showError?: boolean
     optional?: boolean
     registerOptions?: RegisterOptions<IForm>
@@ -35,12 +37,13 @@ export default function OtpField<IForm extends FieldValues>({
     maxLength,
     label,
     wrapperClassName,
+    slotClassName,
+    groupClassName,
     optional = false,
     showError = false,
     registerOptions,
     ...props
 }: IProps<IForm> & Omit<OtpProps, "children" | "render">) {
-    // const t = useTranslations()
     const {
         field: { onChange, value, ...field },
         fieldState: { error },
@@ -50,7 +53,6 @@ export default function OtpField<IForm extends FieldValues>({
         rules: {
             required: {
                 value: !optional,
-                // message: t("importantField"),
                 message: "required",
             },
             minLength: maxLength,
@@ -86,12 +88,13 @@ export default function OtpField<IForm extends FieldValues>({
                 {...props}
                 maxLength={maxLength}
             >
-                <InputOTPGroup className="gap-4">
+                <InputOTPGroup className={cn("gap-4", groupClassName)}>
                     {Array.from({ length: maxLength }).map((_, index) => (
                         <InputOTPSlot
                             key={index}
                             index={index}
                             aria-invalid={!!error}
+                            className={slotClassName}
                         />
                     ))}
                 </InputOTPGroup>

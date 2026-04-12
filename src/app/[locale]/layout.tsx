@@ -9,6 +9,7 @@ import { notFound } from "next/navigation"
 import { Suspense } from "react"
 import Providers from "../_providers"
 import "../globals.css"
+import FallbackLoader from "./_components/fallback-loader"
 
 const publicSans = Public_Sans({
     variable: "--font-public-sans",
@@ -42,7 +43,7 @@ export default async function LocaleLayout({
                 suppressHydrationWarning
                 className={`${publicSans.variable} antialiased`}
             >
-                <Suspense fallback={<p>loading...</p>}>
+                <Suspense fallback={<FallbackLoader />}>
                     <Providers>
                         {children}
                         <Toaster />

@@ -1,6 +1,8 @@
 export const API = {
     AUTH: {
         TOKEN_REFRESH: "auth/token-refresh",
+        SMS_ASK: "secure/sms-ask",
+        SMS_CHECK: "secure/sms/check",
         REGISTER: {
             EMAIL: "auth/register/email",
             EMAIL_VERIFY: "auth/register/email-verify",

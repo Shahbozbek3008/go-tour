@@ -753,5 +753,8 @@
     "getTheCode": "Получить код",
     "allView": "Посмотреть все",
     "specialOffers": "Специальные предложения",
-    "tours": "Туры"
+    "tours": "Туры",
+    "smsCodeSent": "SMS-код отправлен",
+    "resend": "Отправить снова",
+    "changePhoneNumber": "Изменить номер телефона"
 }
