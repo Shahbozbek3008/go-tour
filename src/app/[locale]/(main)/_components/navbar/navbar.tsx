@@ -15,6 +15,7 @@ import { LanguageSwitcher } from "../language-switcher"
 import { Login } from "../login"
 import { Verify } from "../login/verify"
 import { DesktopNavLinks, MobileMenu, NavList } from "./nav-list"
+import { Profile } from "./profile"
 
 export const Navbar = () => {
     const pathname = usePathname()
@@ -35,7 +36,9 @@ export const Navbar = () => {
     })
 
     const isCatalog =
-        pathname.includes("/catalog") || pathname.includes("/agents")
+        pathname.includes("/catalog") ||
+        pathname.includes("/agents") ||
+        pathname.includes("/my-profile")
     const isTransparent = isCatalog && !scrolled
 
     useEffect(() => {
@@ -89,9 +92,10 @@ export const Navbar = () => {
                     }`}
                 >
                     <nav
-                        className={`mx-auto px-6 lg:px-15 flex items-center justify-between transition-all duration-300 ${
-                            scrolled ? "py-2.5" : "py-4"
-                        }`}
+                        className={cn(
+                            "mx-auto px-6 lg:px-15 flex items-center justify-between transition-all duration-300",
+                            scrolled ? "py-2.5" : "py-4",
+                        )}
                     >
                         <Link href="/" className="flex-shrink-0">
                             <Image
@@ -112,7 +116,7 @@ export const Navbar = () => {
 
                         <div className="flex items-center gap-2.5">
                             <LanguageSwitcher isTransparent={isTransparent} />
-
+                            <Profile />
                             <Button
                                 size="default"
                                 variant="default"

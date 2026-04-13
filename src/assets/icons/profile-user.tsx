@@ -2,6 +2,7 @@ import { type IconProps } from "./types"
 
 const IconProfileUser = ({
     stroke = "var(--text-secondary)",
+    strokeWidth = 1.5,
     ...props
 }: IconProps) => {
     return (
@@ -19,7 +20,7 @@ const IconProfileUser = ({
                 r="4"
                 stroke={stroke}
                 strokeOpacity="0.7"
-                strokeWidth="1.5"
+                strokeWidth={strokeWidth}
                 strokeLinecap="round"
                 strokeLinejoin="round"
             />
@@ -27,7 +28,7 @@ const IconProfileUser = ({
                 d="M6 21V19C6 16.7909 7.79086 15 10 15H14C16.2091 15 18 16.7909 18 19V21"
                 stroke={stroke}
                 strokeOpacity="0.7"
-                strokeWidth="1.5"
+                strokeWidth={strokeWidth}
                 strokeLinecap="round"
                 strokeLinejoin="round"
             />

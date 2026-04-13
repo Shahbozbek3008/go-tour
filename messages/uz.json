@@ -759,5 +759,7 @@
     "tours": "Turlar",
     "changePhoneNumber": "Telefon raqamini o'zgartirish",
     "smsCodeSent": "SMS kod yuborildi",
-    "resend": "Qayta yuborish"
+    "resend": "Qayta yuborish",
+    "myAccount": "Mening profilim",
+    "myOrders": "Mening buyurtmalarim"
 }

@@ -16,6 +16,9 @@ declare module "nextjs-routes" {
     | DynamicRoute<"/[locale]/about-us", { "locale": string }>
     | DynamicRoute<"/[locale]/agents", { "locale": string }>
     | DynamicRoute<"/[locale]/catalog", { "locale": string }>
+    | DynamicRoute<"/[locale]/my-profile", { "locale": string }>
+    | DynamicRoute<"/[locale]/my-profile/[slug]/my-account", { "locale": string; "slug": string }>
+    | DynamicRoute<"/[locale]/my-profile/[slug]/my-orders", { "locale": string; "slug": string }>
     | DynamicRoute<"/[locale]/tour-companies", { "locale": string }>;
 
   interface StaticRoute<Pathname> {
