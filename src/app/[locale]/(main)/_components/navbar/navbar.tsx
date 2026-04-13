@@ -5,8 +5,11 @@ import ClientTranslate from "@/components/common/translation/client-translate"
 import { Button } from "@/components/ui/button"
 import { useProfileQuery } from "@/hooks/react-query/use-profile-query"
 import { useModal } from "@/hooks/use-modal"
+import { useRouter } from "@/i18n/navigation"
 import { MODAL_KEYS } from "@/lib/constants/modal-keys"
+import { getHref } from "@/lib/utils/get-href"
 import { cn } from "@/lib/utils/shadcn"
+import { Heart } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -20,22 +23,21 @@ import { Profile } from "./profile"
 
 export const Navbar = () => {
     const pathname = usePathname()
+    const router = useRouter()
     const [menuOpen, setMenuOpen] = useState(false)
     const [scrolled, setScrolled] = useState(false)
     const [hidden, setHidden] = useState(false)
     const lastScrollY = useRef(0)
     const navRef = useRef<HTMLElement>(null)
     const { isOpen, openModal } = useModal(MODAL_KEYS.SIGN_IN_MODAL)
-    const { isOpen: isVerifyOpen, openModal: openVerifyModal } = useModal(
-        MODAL_KEYS.VERIFY_PHONE_MODAL,
-    )
+    const { isOpen: isVerifyOpen } = useModal(MODAL_KEYS.VERIFY_PHONE_MODAL)
     const methods = useForm({
         defaultValues: {
             phoneNumber: "",
             smsCode: "",
         },
     })
-    const { isAuthenticated, data } = useProfileQuery()
+    const { isAuthenticated } = useProfileQuery()
 
     const isCatalog =
         pathname.includes("/catalog") ||
@@ -74,6 +76,18 @@ export const Navbar = () => {
     useEffect(() => {
         setMenuOpen(false)
     }, [pathname])
+
+    const handleHeartClick = () => {
+        if (!isAuthenticated) {
+            openModal()
+        } else {
+            router.push(
+                getHref({
+                    pathname: "/[locale]/favourites",
+                }),
+            )
+        }
+    }
 
     return (
         <>
@@ -118,6 +132,14 @@ export const Navbar = () => {
 
                         <div className="flex items-center gap-2.5">
                             <LanguageSwitcher isTransparent={isTransparent} />
+                            <Button
+                                size="icon"
+                                variant="outline"
+                                className="rounded-full w-10 h-10 bg-[#f4f4f4] border-none"
+                                onClick={handleHeartClick}
+                            >
+                                <Heart className="w-5 h-5" />
+                            </Button>
                             {isAuthenticated && <Profile />}
                             {!isAuthenticated && (
                                 <Button

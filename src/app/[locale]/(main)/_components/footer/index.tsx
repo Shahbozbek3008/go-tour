@@ -170,6 +170,7 @@ const Footer = () => {
                     className="transition-transform duration-300 group-hover:-translate-y-1 text-slate-600 group-hover:text-blue-600"
                 />
             </button>
+            {/* <BottomNav /> */}
         </footer>
     )
 }

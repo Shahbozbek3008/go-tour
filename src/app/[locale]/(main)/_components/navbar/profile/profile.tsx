@@ -26,6 +26,7 @@ export const Profile = () => {
         ClientTokenService.removeAccessToken()
         ClientTokenService.removeRefreshToken()
         queryClient.clear()
+        router.replace(getHref({ pathname: "/[locale]" }))
         router.refresh()
     }
 

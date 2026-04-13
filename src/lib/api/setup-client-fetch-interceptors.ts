@@ -12,7 +12,6 @@ export function setupClientFetchInterceptors({
 }) {
     const accessToken = ClientTokenService.getAccessToken()
 
-    console.log(accessToken, "accesstoken")
     // Request interceptor
     fetchInstance.addRequestInterceptor((config) => {
         // Add language header from cookie
