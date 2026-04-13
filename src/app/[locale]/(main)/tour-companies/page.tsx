@@ -4,6 +4,7 @@ import { TourCompaniesForm } from "./_components"
 
 const TourCompanies = ({ params }: PropsWithLocaleParams) => {
     setLocale(params)
+
     return <TourCompaniesForm />
 }
 

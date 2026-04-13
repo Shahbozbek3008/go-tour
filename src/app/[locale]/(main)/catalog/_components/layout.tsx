@@ -23,7 +23,7 @@ export const CatalogLayout = () => {
                 </div>
             </div>
 
-            <div className="p-15">
+            <div className="lg:p-15 p-6 py-10">
                 <SpecialOffers />
             </div>
             <div className="lg:hidden">

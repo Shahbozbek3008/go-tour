@@ -1,4 +1,3 @@
-import PushNotificationsProvider from "@/app/[locale]/(main)/_components/push-notifications-provider"
 import PrefetchProvider from "@/app/_providers/prefetch-provider"
 import { API } from "@/lib/constants/api-endpoints"
 import { setLocale } from "@/lib/next-intl/set-locale"
@@ -15,24 +14,22 @@ export default async function Layout({
     setLocale(params)
 
     return (
-        <PushNotificationsProvider>
-            <PrefetchProvider
-                endpoint={API.BLOG.NEWS}
-                options={{ params: { page_size: 13 } }}
-            >
-                <PrefetchProvider endpoint={API.EXTRA.MAIN_SITE_INFO}>
-                    <PrefetchProvider
-                        endpoint={API.EXTRA.ADDITIONAL_PAGES}
-                        options={{ params: { page_size: 100 } }}
-                    >
-                        <div className="min-h-screen flex flex-col justify-between">
-                            <Navbar />
-                            <main className="flex-1">{children}</main>
-                            <Footer />
-                        </div>
-                    </PrefetchProvider>
+        <PrefetchProvider
+            endpoint={API.BLOG.NEWS}
+            options={{ params: { page_size: 13 } }}
+        >
+            <PrefetchProvider endpoint={API.EXTRA.MAIN_SITE_INFO}>
+                <PrefetchProvider
+                    endpoint={API.EXTRA.ADDITIONAL_PAGES}
+                    options={{ params: { page_size: 100 } }}
+                >
+                    <div className="min-h-screen flex flex-col justify-between">
+                        <Navbar />
+                        <main className="flex-1">{children}</main>
+                        <Footer />
+                    </div>
                 </PrefetchProvider>
             </PrefetchProvider>
-        </PushNotificationsProvider>
+        </PrefetchProvider>
     )
 }

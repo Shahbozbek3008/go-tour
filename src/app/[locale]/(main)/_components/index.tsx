@@ -16,7 +16,9 @@ export default function Index() {
             <Categories />
             <UnforgettableCities />
             <Agents />
-            <SpecialOffers />
+            <div className="lg:p-15 px-6 py-10">
+                <SpecialOffers />
+            </div>
             <WhyUs />
         </main>
     )
