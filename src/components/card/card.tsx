@@ -1,3 +1,5 @@
+"use client"
+
 import { cn } from "@/lib/utils/shadcn"
 import { motion } from "framer-motion"
 import { Heart, Star } from "lucide-react"
