@@ -69,37 +69,22 @@ interface PostType {
     total: number
 }
 
-export interface ProfileInfo {
-    id: string
-    user_id: string
-    first_name: string
-    last_name: string
-    job_title: string
-    business_type: string
-    about: string
-    company_name: string
-    profile_image: string | null
-    banner_image: string | null
-    address: string
-    phone_number: string
-    email: string
-    time_zone: string
-    joined_at: string
-    chat_status: ChatStatus
-    contact_permission: ContactPermissionType
-    verification: VerificationType
-    is_2fa_enabled: boolean
-    business: BusinessType
-    connection_status: Connection_StatusType | null
-    chat_messages_count: number
-    unread_notifications_count: number
-    tabs_data_count: {
-        bookmark: BookmarkType
-        investment: InvestmentType
-        marketplace: MarketplaceType
-        network: NetworkType
-        outreach_hub: OutreachHubType
-        post: PostType
-    } | null
-    connections_count: number
+interface UserProfile {
+    fullName: string
+    phoneNumber: string
+    imageUrl: string | null
+    id: number
+    birthDate: string | null
+    gender: string | null
+    email: string | null
+}
+
+export interface AuthResponse {
+    status: number
+    message: string
+    data: {
+        userProfile: UserProfile
+        token: string | null
+        roles: string[] | null
+    }
 }

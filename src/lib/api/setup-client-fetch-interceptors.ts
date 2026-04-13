@@ -11,6 +11,8 @@ export function setupClientFetchInterceptors({
     locale: Locale
 }) {
     const accessToken = ClientTokenService.getAccessToken()
+
+    console.log(accessToken, "accesstoken")
     // Request interceptor
     fetchInstance.addRequestInterceptor((config) => {
         // Add language header from cookie
@@ -33,7 +35,7 @@ export function setupClientFetchInterceptors({
         fulfilled: (response) => {
             if (response?.status === 401) {
                 // Remove access token on unauthorized response
-                ClientTokenService.removeAccessToken()
+                // ClientTokenService.removeAccessToken()
             }
 
             return response

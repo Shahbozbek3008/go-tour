@@ -3,6 +3,7 @@
 import logo from "@/assets/images/logo.png"
 import ClientTranslate from "@/components/common/translation/client-translate"
 import { Button } from "@/components/ui/button"
+import { useProfileQuery } from "@/hooks/react-query/use-profile-query"
 import { useModal } from "@/hooks/use-modal"
 import { MODAL_KEYS } from "@/lib/constants/modal-keys"
 import { cn } from "@/lib/utils/shadcn"
@@ -34,6 +35,7 @@ export const Navbar = () => {
             smsCode: "",
         },
     })
+    const { isAuthenticated, data } = useProfileQuery()
 
     const isCatalog =
         pathname.includes("/catalog") ||
@@ -116,20 +118,22 @@ export const Navbar = () => {
 
                         <div className="flex items-center gap-2.5">
                             <LanguageSwitcher isTransparent={isTransparent} />
-                            <Profile />
-                            <Button
-                                size="default"
-                                variant="default"
-                                className={cn(
-                                    "hidden md:flex rounded-lg font-semibold transition-all shadow-sm",
-                                    isTransparent ?
-                                        "bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/30"
-                                    :   "bg-blue-600 hover:bg-blue-700 text-white",
-                                )}
-                                onClick={openModal}
-                            >
-                                <ClientTranslate translationKey="signIn" />
-                            </Button>
+                            {isAuthenticated && <Profile />}
+                            {!isAuthenticated && (
+                                <Button
+                                    size="default"
+                                    variant="default"
+                                    className={cn(
+                                        "hidden md:flex rounded-lg font-semibold transition-all shadow-sm",
+                                        isTransparent ?
+                                            "bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/30"
+                                        :   "bg-blue-600 hover:bg-blue-700 text-white",
+                                    )}
+                                    onClick={openModal}
+                                >
+                                    <ClientTranslate translationKey="signIn" />
+                                </Button>
+                            )}
 
                             <NavList
                                 menuOpen={menuOpen}

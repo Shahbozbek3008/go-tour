@@ -2,6 +2,7 @@
 
 import ClientTranslate from "@/components/common/translation/client-translate"
 import { Button } from "@/components/ui/button"
+import { useProfileQuery } from "@/hooks/react-query/use-profile-query"
 import { useModal } from "@/hooks/use-modal"
 import { Link } from "@/i18n/navigation"
 import { NAV_LIST } from "@/lib/constants"
@@ -81,6 +82,7 @@ interface MobileMenuProps {
 export function MobileMenu({ open, pathname, onClose }: MobileMenuProps) {
     const normalizedPathname = stripLocale(pathname)
     const { openModal } = useModal(MODAL_KEYS.SIGN_IN_MODAL)
+    const { isAuthenticated } = useProfileQuery()
 
     return (
         <>
@@ -165,18 +167,20 @@ export function MobileMenu({ open, pathname, onClose }: MobileMenuProps) {
                     </ul>
                 </div>
 
-                <div className="p-6 border-t border-gray-100 bg-white">
-                    <Button
-                        type="button"
-                        onClick={() => {
-                            openModal()
-                            onClose()
-                        }}
-                        className="flex w-full items-center justify-center bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3.5 font-bold shadow-lg shadow-blue-600/20 active:scale-[0.98] transition-all text-[15px]"
-                    >
-                        <ClientTranslate translationKey="signIn" />
-                    </Button>
-                </div>
+                {!isAuthenticated && (
+                    <div className="p-6 border-t border-gray-100 bg-white">
+                        <Button
+                            type="button"
+                            onClick={() => {
+                                openModal()
+                                onClose()
+                            }}
+                            className="flex w-full items-center justify-center bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3.5 font-bold shadow-lg shadow-blue-600/20 active:scale-[0.98] transition-all text-[15px]"
+                        >
+                            <ClientTranslate translationKey="signIn" />
+                        </Button>
+                    </div>
+                )}
             </div>
         </>
     )

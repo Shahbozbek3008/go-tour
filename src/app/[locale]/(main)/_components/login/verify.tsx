@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { useRequest } from "@/hooks/react-query/use-request"
 import { useModal } from "@/hooks/use-modal"
+import { useRouter } from "@/i18n/navigation"
 import { API } from "@/lib/constants/api-endpoints"
 import { MODAL_KEYS } from "@/lib/constants/modal-keys"
+import { ClientTokenService } from "@/lib/cookies/client-token-service"
 import { cn } from "@/lib/utils/shadcn"
 import { Phone, RotateCcw } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
@@ -41,6 +43,7 @@ const formatTime = (s: number): string => {
 }
 
 export const Verify = () => {
+    const router = useRouter()
     const methods = useFormContext<FormValues>()
     const { openModal } = useModal(MODAL_KEYS.SIGN_IN_MODAL)
     const { closeModal } = useModal(MODAL_KEYS.VERIFY_PHONE_MODAL)
@@ -97,7 +100,16 @@ export const Verify = () => {
         }
 
         post(API.AUTH.SMS_CHECK, payload, {
-            onSuccess: () => {
+            onSuccess: (res) => {
+                if (res?.data?.token) {
+                    ClientTokenService.setAccessToken(
+                        res.data?.token?.accessToken,
+                    )
+                    ClientTokenService.setRefreshToken(
+                        res.data?.token?.refreshToken,
+                    )
+                }
+                router.refresh()
                 closeModal()
                 methods.reset()
             },

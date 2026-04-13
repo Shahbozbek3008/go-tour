@@ -28,7 +28,7 @@ export const API = {
     PROFILE: {
         INDEX: "profile",
         INFO: {
-            ME: "profile/info/me",
+            ME: "profile/get-me",
             DISPLAY_PERMISSION: "profile/info-display-permissions",
         },
         BLOG: {

@@ -1,1 +1,1 @@
-export const PREFIX = "iNexLynk_"
+export const PREFIX = "GoTour_"
