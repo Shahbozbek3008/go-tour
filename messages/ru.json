@@ -758,5 +758,13 @@
     "resend": "Отправить снова",
     "changePhoneNumber": "Изменить номер телефона",
     "myAccount": "Мой аккаунт",
-    "myOrders": "Мои заказы"
+    "myOrders": "Мои заказы",
+    "personalInformation2": "Личная информация",
+    "personalInformation2Desc": "Загрузите фото и обновите личные данные здесь.",
+    "messengerConnect": "Подключить мессенджер",
+    "basicInformation": "Основные данные",
+    "yourPhoto": "Ваше фото",
+    "yourPhotoDesc": "Отображается в вашем профиле",
+    "gender": "Пол",
+    "birthDate": "Дата рождения"
 }

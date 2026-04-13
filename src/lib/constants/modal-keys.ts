@@ -18,4 +18,5 @@ export const MODAL_KEYS = {
     CHAT_EXTRA_MEDIA_MODAL: "chat-extra-media-modal",
     SIGN_IN_MODAL: "sign-in-modal",
     VERIFY_PHONE_MODAL: "verify-phone-modal",
+    TELEGRAM_CONNECT: "telegram-connect",
 } as const

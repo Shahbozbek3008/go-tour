@@ -24,6 +24,8 @@ export default function PageTabs({ tabs, className }: Props) {
     const pathname = usePathname()
     const activeHref = tabs.find((el) => pathname.includes(el.href))?.href
 
+    console.log(pathname)
+
     return (
         <Tabs value={activeHref}>
             <div className="overflow-x-auto">

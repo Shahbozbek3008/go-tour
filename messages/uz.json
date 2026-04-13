@@ -212,7 +212,7 @@
     "lastName": "Familiya",
     "jobTitle": "Lavozim",
     "phoneNumber": "Telefon raqami",
-    "address": "Manzil",
+    "address": "Yashash joyi",
     "chatStatus": "Chat holati",
     "selectTimezone": "Vaqt mintaqasini tanlang",
     "timeZone": "Vaqt mintaqasi",
@@ -761,5 +761,13 @@
     "smsCodeSent": "SMS kod yuborildi",
     "resend": "Qayta yuborish",
     "myAccount": "Mening profilim",
-    "myOrders": "Mening buyurtmalarim"
+    "myOrders": "Mening buyurtmalarim",
+    "personalInformation2": "Shaxsiy ma'lumotlar",
+    "personalInformation2Desc": "Fotosurat va shaxsiy ma'lumotlaringizni shu yerda yangilang.",
+    "messengerConnect": "Messenger ulash",
+    "basicInformation": "Asosiy ma'lumotlar",
+    "yourPhoto": "Sizning fotosuratingiz",
+    "yourPhotoDesc": "Profilingizda ko'rsatiladi",
+    "gender": "Jins",
+    "birthDate": "Tug'ilgan sana"
 }

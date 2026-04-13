@@ -7,7 +7,6 @@ export const TabList = () => {
 
     return (
         <PageTabs
-            className="bg-transparent"
             tabs={[
                 {
                     href: getHref({

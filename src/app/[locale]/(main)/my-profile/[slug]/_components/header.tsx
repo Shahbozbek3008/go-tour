@@ -119,7 +119,7 @@ export const ProfileSlugHeader = () => {
                         ),
                     )}
                 >
-                    <h1 className="text-white font-bold text-5xl sm:text-6xl md:text-7xl lg:text-6xl leading-tight tracking-wider drop-shadow-xl text-center mb-3">
+                    <h1 className="text-white font-bold text-5xl sm:text-6xl md:text-7xl lg:text-6xl leading-tight  drop-shadow-xl text-center mb-3">
                         {slide.title}
                     </h1>
                 </div>
