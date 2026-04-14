@@ -1,6 +1,6 @@
 import { setLocale } from "@/lib/next-intl/set-locale"
 import { PropsWithLocaleParams } from "@/types/common"
-import { AgentsLayout } from "./_components/layout"
+import { AgentsLayout } from "./_components/agents-layout"
 
 const Agents = ({ params }: PropsWithLocaleParams) => {
     setLocale(params)
