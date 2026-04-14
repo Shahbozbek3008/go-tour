@@ -52,6 +52,86 @@ function isBetween(date: Date, from: Date, to: Date) {
     return date > from && date < to
 }
 
+// Sana formatlash funksiyasi
+function formatDate(date: Date): string {
+    const d = date.getDate().toString().padStart(2, "0")
+    const m = MONTHS[date.getMonth()].slice(0, 3)
+    const y = date.getFullYear()
+    return `${d} ${m} ${y}`
+}
+
+// Presetdan sana range olish funksiyasi
+function getPresetRange(label: string): { from: Date; to: Date } | null {
+    const currentYear = new Date().getFullYear()
+
+    // Oylar
+    const monthIndex = MONTHS.indexOf(label)
+    if (monthIndex !== -1) {
+        return {
+            from: new Date(currentYear, monthIndex, 1),
+            to: new Date(
+                currentYear,
+                monthIndex,
+                getDaysInMonth(currentYear, monthIndex),
+            ),
+        }
+    }
+
+    // Mavsumlar
+    if (label === "Qish 2026") {
+        return { from: new Date(2026, 0, 1), to: new Date(2026, 1, 28) }
+    }
+    if (label === "Bahor 2026") {
+        return { from: new Date(2026, 2, 1), to: new Date(2026, 4, 31) }
+    }
+    if (label === "Yoz 2026") {
+        return { from: new Date(2026, 5, 1), to: new Date(2026, 7, 31) }
+    }
+    if (label === "Kuz 2026") {
+        return { from: new Date(2026, 8, 1), to: new Date(2026, 10, 30) }
+    }
+
+    // Davrlar
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    if (label === "30 kunlar") {
+        const to = new Date(today)
+        to.setDate(to.getDate() + 29)
+        return { from: today, to }
+    }
+    if (label === "60 kunlar") {
+        const to = new Date(today)
+        to.setDate(to.getDate() + 59)
+        return { from: today, to }
+    }
+    if (label === "90 kunlar") {
+        const to = new Date(today)
+        to.setDate(to.getDate() + 89)
+        return { from: today, to }
+    }
+    if (label === "120 kunlar") {
+        const to = new Date(today)
+        to.setDate(to.getDate() + 119)
+        return { from: today, to }
+    }
+
+    // Bayramlar
+    if (label === "8 Mart") {
+        return { from: new Date(2026, 2, 8), to: new Date(2026, 2, 9) }
+    }
+    if (label === "May bayramlari") {
+        return { from: new Date(2026, 4, 9), to: new Date(2026, 4, 11) }
+    }
+    if (label === "12–14 Iyun") {
+        return { from: new Date(2026, 5, 12), to: new Date(2026, 5, 14) }
+    }
+    if (label === "1 Sentabr") {
+        return { from: new Date(2026, 8, 1), to: new Date(2026, 8, 1) }
+    }
+
+    return null
+}
+
 interface MonthCalendarProps {
     year: number
     month: number
@@ -191,7 +271,6 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
     const wrapperRef = useRef<HTMLDivElement>(null)
     const dropdownRef = useRef<HTMLDivElement>(null)
 
-    // Recalculate horizontal offset to prevent viewport overflow
     useEffect(() => {
         if (!open || !wrapperRef.current) return
 
@@ -261,15 +340,22 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
         [range, onChange],
     )
 
+    // O'ZGARTIRILGAN: Endi sana ko'rsatadi
     const handlePeriodSelect = (label: string) => {
-        setSelected(label)
-        onChange?.(label)
+        const range = getPresetRange(label)
+        if (range) {
+            const dateLabel = `${formatDate(range.from)} – ${formatDate(range.to)}`
+            setSelected(dateLabel)
+            onChange?.(dateLabel)
+        } else {
+            setSelected(label)
+            onChange?.(label)
+        }
         setOpen(false)
     }
 
     return (
         <div ref={wrapperRef} className="relative w-full">
-            {/* Trigger button */}
             <button
                 onClick={() => setOpen((o) => !o)}
                 className={cn(
@@ -306,7 +392,6 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
                 </svg>
             </button>
 
-            {/* Dropdown panel */}
             <div
                 ref={dropdownRef}
                 style={{ left: offset }}
@@ -321,7 +406,6 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
                     :   "opacity-0 scale-95 pointer-events-none",
                 )}
             >
-                {/* Tab switcher */}
                 <div className="flex items-center justify-center gap-2 p-3 border-b border-gray-200">
                     <button
                         onClick={() => setTab("period")}
@@ -349,7 +433,6 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
                     </button>
                 </div>
 
-                {/* Period tab content */}
                 {tab === "period" && (
                     <div className="p-3 md:p-4">
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-4">
@@ -374,7 +457,7 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
                                                 }
                                                 className={cn(
                                                     "text-left text-sm px-3 py-2 rounded-lg transition-all duration-150 font-medium",
-                                                    selected === item ?
+                                                    selected?.includes(item) ?
                                                         "bg-blue-500 text-white"
                                                     :   "text-gray-700 hover:bg-gray-100",
                                                 )}
@@ -389,7 +472,6 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
                     </div>
                 )}
 
-                {/* Exact dates tab content */}
                 {tab === "exact" && (
                     <div className="p-4">
                         {range.from && !range.to && (
