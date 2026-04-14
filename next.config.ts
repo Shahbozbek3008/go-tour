@@ -61,7 +61,7 @@ const nextConfig: NextConfig = {
         // ESLint during build
         ignoreDuringBuilds: true,
     },
-}
+} as any
 
 const withNextIntl = createNextIntlPlugin()
 const withRoutes = nextRoutes()
