@@ -3,7 +3,6 @@
 import Link from "next/link"
 import { route } from "nextjs-routes"
 import { Suspense } from "react"
-import CanvasBackground from "./[locale]/(main)/_components/header/bg-animation"
 
 // This page renders when a route like `/unknown.txt` is requested.
 // In this case, the layout at `app/[locale]/layout.tsx` receives
@@ -21,7 +20,6 @@ export default function GlobalNotFound() {
                             overflow: "hidden",
                         }}
                     >
-                        <CanvasBackground />
                         <div
                             style={{
                                 zIndex: 10,
