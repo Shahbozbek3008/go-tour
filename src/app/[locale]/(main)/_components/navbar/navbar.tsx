@@ -41,7 +41,7 @@ export const Navbar = () => {
     const isCatalog =
         pathname.includes("/catalog") ||
         pathname.includes("/agents") ||
-        pathname.includes("/my-profile")
+        pathname.includes("/profile")
     const isTransparent = isCatalog && !scrolled
 
     useEffect(() => {
