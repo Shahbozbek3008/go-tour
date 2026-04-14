@@ -1,6 +1,5 @@
 import type { NextConfig } from "next"
 import createNextIntlPlugin from "next-intl/plugin"
-import nextRoutes from "nextjs-routes/config"
 
 const nextConfig: NextConfig = {
     // Image optimization for marketplace
@@ -63,6 +62,6 @@ const nextConfig: NextConfig = {
 } as any
 
 const withNextIntl = createNextIntlPlugin()
-const withRoutes = nextRoutes()
+// const withRoutes = nextRoutes()  // ← COMMENT OUT
 
-export default withRoutes(withNextIntl(nextConfig))
+export default withNextIntl(nextConfig)
