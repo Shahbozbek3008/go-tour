@@ -68,9 +68,9 @@ export function BottomNav() {
     const isActive = (href: string): boolean => {
         const normalizedHref = stripLocaleSegment(href)
         if (normalizedHref === "/") return pathname === "/"
-        return pathname.startsWith(normalizedHref)
+        const baseSegment = normalizedHref.split("/").slice(0, 2).join("/")
+        return pathname.startsWith(baseSegment)
     }
-
     const handleNavClick = (
         e: React.MouseEvent<HTMLAnchorElement>,
         item: NavItem,
