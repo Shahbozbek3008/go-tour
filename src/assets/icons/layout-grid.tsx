@@ -1,0 +1,63 @@
+import { type IconProps } from "./types"
+
+export const IconLayoutGrid = (props: IconProps) => {
+    return (
+        <svg
+            width="18"
+            height="18"
+            viewBox="0 0 18 18"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            {...props}
+        >
+            <rect
+                x="3"
+                y="3"
+                width="4.5"
+                height="4.5"
+                rx="1"
+                stroke="#2F2B3D"
+                strokeOpacity="0.9"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+            <rect
+                x="10.5"
+                y="3"
+                width="4.5"
+                height="4.5"
+                rx="1"
+                stroke="#2F2B3D"
+                strokeOpacity="0.9"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+            <rect
+                x="3"
+                y="10.5"
+                width="4.5"
+                height="4.5"
+                rx="1"
+                stroke="#2F2B3D"
+                strokeOpacity="0.9"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+            <rect
+                x="10.5"
+                y="10.5"
+                width="4.5"
+                height="4.5"
+                rx="1"
+                stroke="#2F2B3D"
+                strokeOpacity="0.9"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </svg>
+    )
+}

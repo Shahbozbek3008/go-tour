@@ -1,0 +1,14 @@
+import { setLocale } from "@/lib/next-intl/set-locale"
+import { PropsWithLocaleSlug } from "@/types/common"
+import { ComponentIndex } from "./_components"
+
+export default function MyOrders({ params }: PropsWithLocaleSlug) {
+    setLocale(params)
+    return (
+        // <PrefetchProvider endpoint={API.PROFILE.INFO.DISPLAY_PERMISSION}>
+        //     <PrefetchProvider endpoint={API.PROFILE.BUSINESS}>
+        <ComponentIndex />
+        //     </PrefetchProvider>
+        // </PrefetchProvider>
+    )
+}
