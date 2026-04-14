@@ -42,7 +42,7 @@ const NAV_ITEMS: NavItem[] = [
     },
     {
         id: "profile",
-        href: "/[locale]/my-profile/me/my-account",
+        href: "/[locale]/profile/me/my-account",
         label: "Kabinet",
         icon: <User className="w-6 h-6" />,
         requiresAuth: true,
@@ -92,6 +92,7 @@ export function BottomNav() {
                     return (
                         <Link
                             key={id}
+                            // @ts-expect-error
                             href={getHref({ pathname: href })}
                             className="flex-1"
                             onClick={(e) => handleNavClick(e, item)}

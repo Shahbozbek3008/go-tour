@@ -76,12 +76,10 @@ export const Profile = () => {
 
                 <DropdownMenuItem
                     className="gap-2 py-2 px-3 text-sm"
-                    //   onClick={() =>
                     onClick={() =>
                         router.push(
                             getHref({
-                                pathname:
-                                    "/[locale]/my-profile/[slug]/my-account",
+                                pathname: "/[locale]/profile/[slug]/my-account",
                                 query: { slug: "me" },
                             }),
                         )

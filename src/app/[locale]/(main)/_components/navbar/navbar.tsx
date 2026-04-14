@@ -9,7 +9,6 @@ import { useRouter } from "@/i18n/navigation"
 import { MODAL_KEYS } from "@/lib/constants/modal-keys"
 import { getHref } from "@/lib/utils/get-href"
 import { cn } from "@/lib/utils/shadcn"
-import { Heart } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -132,14 +131,14 @@ export const Navbar = () => {
 
                         <div className="flex items-center gap-2.5">
                             <LanguageSwitcher isTransparent={isTransparent} />
-                            <Button
+                            {/* <Button
                                 size="icon"
                                 variant="outline"
                                 className="rounded-full w-10 h-10 bg-[#f4f4f4] border-none md:flex hidden"
                                 // onClick={handleHeartClick}
                             >
                                 <Heart className="w-5 h-5" />
-                            </Button>
+                            </Button> */}
                             {isAuthenticated && (
                                 <div className="hidden md:block">
                                     <Profile />

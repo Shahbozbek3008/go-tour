@@ -6,6 +6,25 @@ import Link from "next/link"
 import { RouteLiteral } from "nextjs-routes"
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs"
 
+function getPathSegment(href: RouteLiteral): string {
+    const str =
+        typeof href === "string" ? href : (
+            ((href as { pathname?: string }).pathname ?? "")
+        )
+    return str.split("?")[0].split("#")[0]
+}
+
+function getLastSegment(path: string): string {
+    return path.replace(/\/+$/, "").split("/").pop() ?? ""
+}
+
+function isActive(pathname: string, href: RouteLiteral): boolean {
+    const hrefPath = getPathSegment(href)
+    const hrefSegment = getLastSegment(hrefPath)
+    const currentSegment = getLastSegment(pathname)
+    return currentSegment === hrefSegment
+}
+
 export type PageTab = {
     href: RouteLiteral
     label: string
@@ -22,12 +41,10 @@ type Props = {
 
 export default function PageTabs({ tabs, className }: Props) {
     const pathname = usePathname()
-    const activeHref = tabs.find((el) => pathname.includes(el.href))?.href
-
-    console.log(pathname)
+    const activeHref = tabs.find((el) => isActive(pathname, el.href))?.href
 
     return (
-        <Tabs value={activeHref}>
+        <Tabs value={activeHref ? getPathSegment(activeHref) : undefined}>
             <div className="overflow-x-auto">
                 <TabsList
                     className={cn(
@@ -44,10 +61,10 @@ export default function PageTabs({ tabs, className }: Props) {
                                     className="no-underline"
                                 >
                                     <TabsTrigger
-                                        value={t.href}
+                                        value={getPathSegment(t.href)}
                                         className="h-10 rounded-lg bg-transparent py-1 px-4 flex items-center gap-2 text-text-900"
                                     >
-                                        {pathname.includes(t.href) ?
+                                        {isActive(pathname, t.href) ?
                                             activeIcon && (
                                                 <span>{activeIcon}</span>
                                             )
@@ -57,7 +74,7 @@ export default function PageTabs({ tabs, className }: Props) {
                                             <span
                                                 className={cn(
                                                     "w-4 h-4 rounded-full flex items-center justify-center text-[0.625rem]",
-                                                    pathname.includes(t.href) ?
+                                                    isActive(pathname, t.href) ?
                                                         "bg-background text-primary"
                                                     :   "bg-primary text-background",
                                                 )}

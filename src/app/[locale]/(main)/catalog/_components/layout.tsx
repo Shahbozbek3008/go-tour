@@ -11,7 +11,7 @@ export const CatalogLayout = () => {
     const [sheetOpen, setSheetOpen] = useState(false)
 
     return (
-        <div className="w-full overflow-x-hidden">
+        <div className="w-full overflow-x-hidden md:overflow-visible">
             <CatalogHeader />
 
             <div className="flex items-start gap-8 lg:p-15 p-6">

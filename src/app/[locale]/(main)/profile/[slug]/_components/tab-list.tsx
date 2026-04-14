@@ -10,7 +10,7 @@ export const TabList = () => {
             tabs={[
                 {
                     href: getHref({
-                        pathname: "/[locale]/my-profile/[slug]/my-account",
+                        pathname: "/[locale]/profile/[slug]/my-account",
                         query: {
                             locale: "uz",
                             slug: "me",
@@ -21,7 +21,7 @@ export const TabList = () => {
                 },
                 {
                     href: getHref({
-                        pathname: "/[locale]/my-profile/[slug]/my-orders",
+                        pathname: "/[locale]/profile/[slug]/my-orders",
                         query: {
                             locale: "uz",
                             slug: "me",

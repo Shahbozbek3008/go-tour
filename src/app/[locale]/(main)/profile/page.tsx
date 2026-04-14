@@ -3,12 +3,12 @@ import { PropsWithLocaleSlug } from "@/types/common"
 import { redirect } from "next/navigation"
 import { route } from "nextjs-routes"
 
-export default async function MyProfile({ params }: PropsWithLocaleSlug) {
+export default async function Profile({ params }: PropsWithLocaleSlug) {
     setLocale(params)
     const { locale } = await params
     redirect(
         route({
-            pathname: "/[locale]/my-profile/[slug]/my-account",
+            pathname: "/[locale]/profile/[slug]/my-account",
             query: { locale, slug: "me" },
         }),
     )
