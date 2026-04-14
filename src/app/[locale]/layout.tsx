@@ -2,8 +2,10 @@ import { Toaster } from "@/components/ui/sonner"
 import { routing } from "@/i18n/routing"
 import { PropsWithChildrenLocale } from "@/types/common"
 import { Metadata } from "next"
+import { hasLocale } from "next-intl"
 import { setRequestLocale } from "next-intl/server"
 import { Public_Sans } from "next/font/google"
+import { notFound } from "next/navigation"
 import { Suspense } from "react"
 import Providers from "../_providers"
 import "../globals.css"
@@ -28,9 +30,9 @@ export default async function LocaleLayout({
     params,
 }: Readonly<PropsWithChildrenLocale>) {
     const { locale } = await params
-    // if (!hasLocale(routing.locales, locale)) {
-    //     notFound()
-    // }
+    if (!hasLocale(routing.locales, locale)) {
+        notFound()
+    }
 
     setRequestLocale(locale)
     // setupServerFetchInterceptors()
