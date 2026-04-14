@@ -4,6 +4,7 @@ import { ArrowUp, Mail, MapPin, Phone } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import { BottomNav } from "../navigation-bar"
 
 const Footer = () => {
     const [isVisible, setIsVisible] = useState(false)
@@ -170,7 +171,7 @@ const Footer = () => {
                     className="transition-transform duration-300 group-hover:-translate-y-1 text-slate-600 group-hover:text-blue-600"
                 />
             </button>
-            {/* <BottomNav /> */}
+            <BottomNav />
         </footer>
     )
 }

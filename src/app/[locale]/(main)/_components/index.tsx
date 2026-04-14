@@ -8,7 +8,7 @@ import { WhyUs } from "./why-us"
 
 export default function Index() {
     return (
-        <main className="flex flex-col w-full bg-white text-slate-900">
+        <main className="flex flex-col w-full bg-white overflow-x-hidden">
             <section className="w-full mx-auto px-4 sm:px-6 lg:px-15 pt-6 pb-12 md:pb-20">
                 <Header />
             </section>

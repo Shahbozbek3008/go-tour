@@ -119,7 +119,7 @@ export const Navbar = () => {
                                 alt="Travel logo"
                                 priority
                                 className={cn(
-                                    "transition-all duration-300 sm:w-24 w-auto mt-2",
+                                    "transition-all duration-300  mt-2 w-24",
                                     isTransparent && "brightness-0 invert",
                                 )}
                             />
@@ -135,12 +135,16 @@ export const Navbar = () => {
                             <Button
                                 size="icon"
                                 variant="outline"
-                                className="rounded-full w-10 h-10 bg-[#f4f4f4] border-none"
-                                onClick={handleHeartClick}
+                                className="rounded-full w-10 h-10 bg-[#f4f4f4] border-none md:flex hidden"
+                                // onClick={handleHeartClick}
                             >
                                 <Heart className="w-5 h-5" />
                             </Button>
-                            {isAuthenticated && <Profile />}
+                            {isAuthenticated && (
+                                <div className="hidden md:block">
+                                    <Profile />
+                                </div>
+                            )}
                             {!isAuthenticated && (
                                 <Button
                                     size="default"
