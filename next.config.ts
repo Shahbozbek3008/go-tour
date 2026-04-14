@@ -1,6 +1,5 @@
 import type { NextConfig } from "next"
 import createNextIntlPlugin from "next-intl/plugin"
-import { withNextVideo } from "next-video/process"
 import nextRoutes from "nextjs-routes/config"
 
 const nextConfig: NextConfig = {
@@ -66,6 +65,4 @@ const nextConfig: NextConfig = {
 const withNextIntl = createNextIntlPlugin()
 const withRoutes = nextRoutes()
 
-export default withRoutes({
-    ...withNextIntl(withNextVideo(nextConfig)),
-})
+export default withRoutes(withNextIntl(nextConfig))
