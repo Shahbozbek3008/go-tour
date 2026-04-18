@@ -77,8 +77,8 @@ export const TourCompaniesForm = () => {
     }
 
     return (
-        <section className="bg-[#F5F6FA] flex items-center justify-center lg:px-15 sm: px-6 lg:py-24 py-16">
-            <div className="w-full">
+        <section className="bg-[#F5F6FA] flex items-center justify-center  lg:py-24 py-16">
+            <div className="w-full home-container">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
                     <div className="space-y-10">
                         <div className="space-y-4">

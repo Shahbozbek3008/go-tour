@@ -9,5 +9,4 @@ export const CURRENCIES: {
 }[] = [
     { id: "usd", iso: "USD", symbol: "$", name: "usd" },
     { id: "uzs", iso: "UZS", symbol: "UZS", name: "uzs" },
-    { id: "rub", iso: "RUB", symbol: "₽", name: "rub" },
 ]

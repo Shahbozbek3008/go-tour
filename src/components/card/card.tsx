@@ -1,5 +1,7 @@
 "use client"
 
+import { useRouter } from "@/i18n/navigation"
+import { getHref } from "@/lib/utils/get-href"
 import { cn } from "@/lib/utils/shadcn"
 import { motion } from "framer-motion"
 import { Heart, Star } from "lucide-react"
@@ -35,6 +37,7 @@ export const Card = ({
     wrapperClassName?: string
     hasLike?: boolean
 }) => {
+    const router = useRouter()
     const [liked, setLiked] = useState(false)
 
     return (
@@ -45,12 +48,20 @@ export const Card = ({
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
             className={cn(
-                "group bg-white rounded-2xl overflow-hidden shadow-sm transition-shadow duration-300 flex-shrink-0 w-full",
+                "group bg-white rounded-2xl overflow-hidden shadow-sm transition-shadow duration-300 flex-shrink-0 w-full cursor-pointer",
                 wrapperClassName,
             )}
+            onClick={() =>
+                router.push(
+                    getHref({
+                        pathname: "/[locale]/tour/[slug]",
+                        query: { slug: String(tour?.id) },
+                    }),
+                )
+            }
         >
-            <div className="relative overflow-hidden h-[200px]">
-                <div className="absolute top-3 left-3 z-20 flex gap-2">
+            <div className="relative overflow-hidden h-[200px] z-1">
+                <div className="absolute top-3 left-3 z-1 flex gap-2">
                     <span className="bg-blue-500 text-white text-[11px] font-semibold px-2.5 py-1 rounded-full">
                         {tour.badge}
                     </span>
@@ -58,8 +69,11 @@ export const Card = ({
 
                 {hasLike && (
                     <button
-                        onClick={() => setLiked((p) => !p)}
-                        className="absolute top-3 right-3 z-20 w-8 h-8  bg-transparent flex items-center justify-center transition-transform duration-200 hover:scale-110 active:scale-95"
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            setLiked((p) => !p)
+                        }}
+                        className="absolute top-3 right-3 z-1 w-8 h-8  bg-transparent flex items-center justify-center transition-transform duration-200 hover:scale-110 active:scale-95"
                     >
                         <Heart
                             size={28}

@@ -4,8 +4,10 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { RadioGroup } from "@/components/ui/radio-group"
+import { Switch } from "@/components/ui/switch"
 import { Slider } from "@/components/ui/slider"
 import { cn } from "@/lib/utils/shadcn"
+import { Info } from "lucide-react"
 import {
     CATEGORIES,
     DURATIONS,
@@ -49,6 +51,36 @@ export const CatalogLeftSide = () => {
                 </div>
 
                 <div className="divide-y divide-zinc-100">
+                    <div className="py-2.5 flex flex-col gap-2">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-1.5 cursor-pointer select-none">
+                                <span className="text-[14px] text-zinc-900 font-medium">
+                                    Faqat skidkali turlar
+                                </span>
+                                <Info strokeWidth={1.5} className="w-[18px] h-[18px] text-zinc-400" />
+                            </div>
+                            <Switch 
+                                checked={filters.onlyDiscounted}
+                                onCheckedChange={(val) => setFilters(p => ({ ...p, onlyDiscounted: val }))}
+                                className="data-[state=checked]:bg-blue-600"
+                            />
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-1.5 cursor-pointer select-none">
+                                <span className="text-[14px] text-zinc-900 font-medium">
+                                    Ishonchli turlar
+                                </span>
+                                <Info strokeWidth={1.5} className="w-[18px] h-[18px] text-zinc-400" />
+                            </div>
+                            <Switch 
+                                checked={filters.trustedTours}
+                                onCheckedChange={(val) => setFilters(p => ({ ...p, trustedTours: val }))}
+                                className="data-[state=checked]:bg-blue-600"
+                            />
+                        </div>
+                    </div>
+
                     <FilterSection title="Kategoriya">
                         <RadioGroup
                             value={filters.category}

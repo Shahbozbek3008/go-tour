@@ -12,9 +12,11 @@ export const CatalogLayout = () => {
 
     return (
         <div className="w-full overflow-x-hidden md:overflow-visible">
-            <CatalogHeader />
+            <div className="home-container w-full flex flex-col gap-6 pt-6">
+                <CatalogHeader />
+            </div>
 
-            <div className="flex items-start gap-8 lg:p-15 p-6">
+            <div className="home-container flex items-start gap-8 lg:py-16 py-6">
                 <div className="hidden lg:block sticky top-24">
                     <CatalogLeftSide />
                 </div>
@@ -23,7 +25,7 @@ export const CatalogLayout = () => {
                 </div>
             </div>
 
-            <div className="lg:p-15 p-6 py-10">
+            <div className="home-container py-10">
                 <SpecialOffers />
             </div>
             <div className="lg:hidden">

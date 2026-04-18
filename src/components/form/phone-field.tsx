@@ -1,5 +1,5 @@
 "use client"
-// @ts-nocheck
+
 import { cn } from "@/lib/utils/shadcn"
 import { PhoneNumberUtil } from "google-libphonenumber"
 import { useTranslations } from "next-intl"
@@ -108,7 +108,6 @@ export default function PhoneField<IForm extends FieldValues>({
                     <ClientTranslate translationKey={label as string} />
                 </Label>
             )}
-            {/* @ts-ignore */}
             <PhoneInput
                 // hideDropdown
                 // forceDialCode

@@ -147,7 +147,9 @@ function CityCard({ city }: { city: City }) {
 
                 <h3
                     className={`font-bold text-white leading-tight md:mb-2 ${
-                        city.featured ? "text-2xl md:text-4xl" : "text-xl md:text-2xl"
+                        city.featured ?
+                            "text-2xl md:text-4xl"
+                        :   "text-xl md:text-2xl"
                     }`}
                 >
                     {city.name}
@@ -186,7 +188,7 @@ function CityCard({ city }: { city: City }) {
 export function UnforgettableCities() {
     return (
         <section className="w-full bg-[#F8FAFC] py-16 md:py-24 overflow-hidden">
-            <div className="w-full mx-auto px-4 sm:px-6 lg:px-15">
+            <div className="w-full home-container">
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6 w-full">
                     <motion.h2
                         variants={headerVariants}

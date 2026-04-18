@@ -14,6 +14,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
+import { CurrencySwitcher } from "../currency-switcher"
 import { LanguageSwitcher } from "../language-switcher"
 import { Login } from "../login"
 import { Verify } from "../login/verify"
@@ -38,10 +39,7 @@ export const Navbar = () => {
     })
     const { isAuthenticated } = useProfileQuery()
 
-    const isCatalog =
-        pathname.includes("/catalog") ||
-        pathname.includes("/agents") ||
-        pathname.includes("/profile")
+    const isCatalog = pathname.includes("/agents")
     const isTransparent = isCatalog && !scrolled
 
     useEffect(() => {
@@ -93,7 +91,7 @@ export const Navbar = () => {
             <header
                 ref={navRef}
                 className={cn(
-                    "top-0 z-[50] w-full transition-transform duration-300",
+                    "top-0 z-[50] w-full transition-transform duration-300 ",
                     isCatalog ? "fixed" : "sticky",
                     hidden ? "-translate-y-full" : "translate-y-0",
                 )}
@@ -108,7 +106,7 @@ export const Navbar = () => {
                 >
                     <nav
                         className={cn(
-                            "mx-auto px-6 lg:px-15 flex items-center justify-between transition-all duration-300",
+                            "flex items-center justify-between transition-all duration-300 home-container",
                             scrolled ? "py-2.5" : "py-4",
                         )}
                     >
@@ -131,6 +129,7 @@ export const Navbar = () => {
 
                         <div className="flex items-center gap-2.5">
                             <LanguageSwitcher isTransparent={isTransparent} />
+                            <CurrencySwitcher isTransparent={isTransparent} />
                             {/* <Button
                                 size="icon"
                                 variant="outline"

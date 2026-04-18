@@ -42,8 +42,8 @@ function StepText({ step }: { step: Step }) {
 }
 
 export const TelegramConnect = () => {
-    const { closeModal } = useModal(MODAL_KEYS.TELEGRAM_CONNECT)
     const [code, setCode] = useState("")
+    const { closeModal } = useModal(MODAL_KEYS.TELEGRAM_CONNECT)
 
     return (
         <Modal

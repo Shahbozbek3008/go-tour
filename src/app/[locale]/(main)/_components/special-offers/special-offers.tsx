@@ -198,8 +198,8 @@ export const SpecialOffers = () => {
     }
 
     return (
-        <section className="w-full pt-8 pb-16  overflow-hidden select-none">
-            <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="w-full py-16  overflow-hidden select-none">
+            <div className="w-full home-container">
                 <h2 className="text-3xl md:text-[40px] font-bold text-slate-900 tracking-tight text-center mb-12 md:mb-16">
                     Maxsus takliflar
                 </h2>

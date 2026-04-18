@@ -84,7 +84,7 @@ export const AgentsLeftSide = ({
     }
 
     return (
-        <aside className="w-full md:w-[272px] md:shrink-0 mt-10 lg:mt-0">
+        <aside className="w-full md:w-[272px] md:shrink-0 sticky top-24">
             <h5 className="text-base font-semibold mb-3 px-1 uppercase hidden md:block">
                 Agentlar
             </h5>

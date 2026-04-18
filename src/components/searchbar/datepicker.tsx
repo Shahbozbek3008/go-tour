@@ -1,7 +1,13 @@
 "use client"
 
 import { cn } from "@/lib/utils/shadcn"
-import { Calendar, CalendarDays, ChevronLeft, ChevronRight } from "lucide-react"
+import {
+    Calendar,
+    CalendarDays,
+    ChevronLeft,
+    ChevronRight,
+    X,
+} from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
 
 type TabType = "period" | "exact"
@@ -374,6 +380,16 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
                 >
                     {selected ?? "Oy yoki sanalar"}
                 </span>
+                {selected && (
+                    <X
+                        className="w-3.5 h-3.5 text-gray-400 hover:text-gray-600 transition-colors"
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            setSelected(null)
+                            onChange?.("")
+                        }}
+                    />
+                )}
                 <svg
                     className={cn(
                         "w-4 h-4 text-gray-400 transition-transform duration-200 shrink-0",
@@ -396,7 +412,7 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
                 ref={dropdownRef}
                 style={{ left: offset }}
                 className={cn(
-                    "absolute top-[calc(100%+8px)] -left-2 md:left-auto z-[100] bg-white rounded-2xl shadow-2xl border border-gray-100",
+                    "absolute top-[calc(100%+8px)] -left-2 md:left-auto z-[500] bg-white rounded-2xl shadow-2xl border border-gray-100",
                     "transition-all duration-200 origin-top overflow-y-auto max-h-[75vh] md:max-h-none md:overflow-visible",
                     tab === "exact" ?
                         "w-[calc(100vw-32px)] md:w-[560px]"

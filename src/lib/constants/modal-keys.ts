@@ -19,4 +19,5 @@ export const MODAL_KEYS = {
     SIGN_IN_MODAL: "sign-in-modal",
     VERIFY_PHONE_MODAL: "verify-phone-modal",
     TELEGRAM_CONNECT: "telegram-connect",
+    ALL_REVIEWS_MODAL: "all-reviews-modal",
 } as const

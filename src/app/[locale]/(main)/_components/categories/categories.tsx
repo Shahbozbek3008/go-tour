@@ -77,7 +77,7 @@ function CategoryCard({
         <motion.div
             variants={cardVariants}
             className={cn(
-                "group relative overflow-hidden rounded-xl cursor-pointer w-full h-full min-h-[160px] md:min-h-0",
+                "group relative overflow-hidden rounded-xl cursor-pointer w-full h-full min-h-[160px] md:min-h-0 ",
                 gridClass,
                 className,
             )}
@@ -116,7 +116,7 @@ function CategoryCard({
 export const Categories = () => {
     return (
         <section className="w-full bg-white py-16 md:py-24 overflow-hidden">
-            <div className="w-full mx-auto px-4 sm:px-6 lg:px-15">
+            <div className="w-full home-container">
                 <motion.div
                     initial={{ opacity: 0, y: -12 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -135,13 +135,18 @@ export const Categories = () => {
                     className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-[1fr_2fr_1fr_1fr] lg:grid-rows-2 gap-3 w-full h-auto lg:h-[360px]"
                 >
                     {categories.map((cat) => {
-                        const gridClass = 
-                            cat.id === "beach" ? "lg:col-start-1 lg:row-start-1" :
-                            cat.id === "city" ? "col-span-2 lg:col-span-1 lg:col-start-2 lg:row-span-2" :
-                            cat.id === "nature" ? "md:col-span-2 lg:col-span-2 lg:col-start-3 lg:row-start-1" :
-                            cat.id === "adventure" ? "lg:col-start-1 lg:row-start-2" :
-                            cat.id === "hiking" ? "lg:col-start-3 lg:row-start-2" :
-                            cat.id === "ski" ? "lg:col-start-4 lg:row-start-2" : "";
+                        const gridClass =
+                            cat.id === "beach" ? "lg:col-start-1 lg:row-start-1"
+                            : cat.id === "city" ?
+                                "col-span-2 lg:col-span-1 lg:col-start-2 lg:row-span-2"
+                            : cat.id === "nature" ?
+                                "md:col-span-2 lg:col-span-2 lg:col-start-3 lg:row-start-1"
+                            : cat.id === "adventure" ?
+                                "lg:col-start-1 lg:row-start-2"
+                            : cat.id === "hiking" ?
+                                "lg:col-start-3 lg:row-start-2"
+                            : cat.id === "ski" ? "lg:col-start-4 lg:row-start-2"
+                            : ""
 
                         return (
                             <CategoryCard

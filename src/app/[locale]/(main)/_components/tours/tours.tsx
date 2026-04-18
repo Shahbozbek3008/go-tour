@@ -46,7 +46,7 @@ export const TourSection = () => {
 
     return (
         <section className="w-full bg-[#F8FAFC] py-16 md:py-24 overflow-hidden">
-            <div className="w-full mx-auto px-4 sm:px-6 lg:px-15">
+            <div className="w-full home-container">
                 <div className="flex flex-col items-center justify-center mb-10">
                     <motion.h2
                         initial={{ opacity: 0, y: -8 }}

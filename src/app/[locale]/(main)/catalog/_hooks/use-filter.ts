@@ -7,6 +7,8 @@ export type FilterState = {
     duration: string
     rating: string
     tags: string[]
+    onlyDiscounted: boolean
+    trustedTours: boolean
 }
 
 const DEFAULT_FILTERS: FilterState = {
@@ -15,6 +17,8 @@ const DEFAULT_FILTERS: FilterState = {
     duration: "all",
     rating: "all",
     tags: [],
+    onlyDiscounted: false,
+    trustedTours: false,
 }
 
 export const useFilter = () => {
@@ -28,6 +32,8 @@ export const useFilter = () => {
         filters.priceRange[1] !== PRICE_MAX ||
         filters.duration !== "all" ||
         filters.rating !== "all" ||
+        filters.onlyDiscounted ||
+        filters.trustedTours ||
         filters.tags.length > 0
 
     const handlePriceSlider = (values: number[]) => {
@@ -84,6 +90,8 @@ export const useFilter = () => {
                 filters.priceRange[1] !== PRICE_MAX,
             filters.duration !== "all",
             filters.rating !== "all",
+            filters.onlyDiscounted,
+            filters.trustedTours,
         ].filter(Boolean).length + filters.tags.length
 
     return {

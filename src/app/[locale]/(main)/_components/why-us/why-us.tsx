@@ -1,12 +1,6 @@
 "use client"
 
-import {
-    BookOpen,
-    ChevronDown,
-    MapPin,
-    Plane,
-    Shield,
-} from "lucide-react"
+import { BookOpen, ChevronDown, MapPin, Plane, Shield } from "lucide-react"
 import { useState } from "react"
 
 interface ServiceCardProps {
@@ -117,12 +111,10 @@ function FaqItem({ question, answer }: FaqItemProps) {
     )
 }
 
-
-
 export const WhyUs = () => {
     return (
-        <section className="relative bg-slate-50/60 py-20 sm:py-28 lg:px-15 px-4">
-            <div className="space-y-20 sm:space-y-28">
+        <section className="relative bg-slate-50/60 py-20 sm:py-28">
+            <div className="space-y-20 sm:space-y-28 home-container">
                 {/* Why Us */}
                 <div>
                     <div className="text-center mb-12">
