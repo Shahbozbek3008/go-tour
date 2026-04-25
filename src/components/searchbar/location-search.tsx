@@ -1,54 +1,28 @@
 "use client"
 
+import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils/shadcn"
-import { ChevronRight, MapPin, X } from "lucide-react"
+import { MapPin, X } from "lucide-react"
+import { useParams } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
-
-interface Location {
-    id: number
-    name: string
-    region: string
-    count: number
-}
-
-type FilterType = "all" | "foreign" | "uzbekistan"
-
-const LOCATIONS: Location[] = [
-    { id: 1, name: "Samarqand", region: "Samarqand viloyati", count: 108 },
-    { id: 2, name: "Buxoro", region: "Buxoro viloyati", count: 42 },
-    { id: 3, name: "Xiva", region: "Xorazm viloyati", count: 35 },
-    { id: 4, name: "Toshkent", region: "Toshkent shahri", count: 89 },
-    { id: 5, name: "Namangan", region: "Namangan viloyati", count: 21 },
-    { id: 6, name: "Andijon", region: "Andijon viloyati", count: 15 },
-    { id: 7, name: "Farg'ona", region: "Farg'ona viloyati", count: 28 },
-    { id: 8, name: "Shahrisabz", region: "Qashqadaryo viloyati", count: 19 },
-    { id: 9, name: "Termiz", region: "Surxondaryo viloyati", count: 12 },
-    { id: 10, name: "Nukus", region: "Qoraqalpog'iston", count: 9 },
-]
-
-const FOREIGN_LOCATIONS: Location[] = [
-    { id: 11, name: "Dubay", region: "BAA", count: 156 },
-    { id: 12, name: "Istanbul", region: "Turkiya", count: 203 },
-    { id: 13, name: "Moskva", region: "Rossiya", count: 88 },
-    { id: 14, name: "Pekin", region: "Xitoy", count: 44 },
-    { id: 15, name: "Bangkok", region: "Tailand", count: 67 },
-]
-
-const FILTERS = [
-    { key: "all" as FilterType, label: "Barchasi" },
-    { key: "foreign" as FilterType, label: "Xorijiy" },
-]
+import ClientTranslate from "../common/translation/client-translate"
+import { Destination, useTourShortListQuery } from "./_hooks"
 
 interface LocationSearchProps {
     value: string | null
-    onChange: (value: string | null) => void
+    onSelect: (item: Destination | null) => void
+    onQueryChange?: (query: string) => void
 }
 
-export function LocationSearch({ value, onChange }: LocationSearchProps) {
+export function LocationSearch({
+    value,
+    onSelect,
+    onQueryChange,
+}: LocationSearchProps) {
+    const { locale } = useParams() as { locale: string }
+    const { tourShortList, isLoading } = useTourShortListQuery()
     const [open, setOpen] = useState(false)
     const [query, setQuery] = useState("")
-    const [filter, setFilter] = useState<FilterType>("all")
-    const [excludeMode, setExcludeMode] = useState(false)
 
     const wrapperRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLInputElement>(null)
@@ -66,30 +40,29 @@ export function LocationSearch({ value, onChange }: LocationSearchProps) {
         return () => document.removeEventListener("mousedown", handler)
     }, [])
 
-    const allLocations =
-        filter === "foreign" ? FOREIGN_LOCATIONS : (
-            [...LOCATIONS, ...FOREIGN_LOCATIONS]
-        )
-
-    const filtered = allLocations.filter((l) =>
-        l.name.toLowerCase().includes(query.toLowerCase()),
-    )
+    const filtered = tourShortList.filter((item) => {
+        const name =
+            locale === "ru" ? item.destination.nameRu : item.destination.nameUz
+        return name?.toLowerCase().includes(query.toLowerCase())
+    })
 
     const handleOpen = () => {
         setOpen(true)
         setTimeout(() => inputRef.current?.focus(), 50)
     }
 
-    const handleSelect = (name: string) => {
-        onChange(name)
+    const handleSelect = (item: Destination) => {
+        onSelect(item)
         setQuery("")
+        onQueryChange?.("")
         setOpen(false)
     }
 
     const handleClear = (e: React.MouseEvent) => {
         e.stopPropagation()
-        onChange(null)
+        onSelect(null)
         setQuery("")
+        onQueryChange?.("")
     }
 
     return (
@@ -113,8 +86,12 @@ export function LocationSearch({ value, onChange }: LocationSearchProps) {
                     <input
                         ref={inputRef}
                         value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        placeholder="Qidirish..."
+                        onChange={(e) => {
+                            const val = e.target.value
+                            setQuery(val)
+                            onQueryChange?.(val)
+                        }}
+                        placeholder="Qidirish"
                         className="flex-1 text-sm outline-none text-gray-800 placeholder-gray-400 bg-transparent"
                         onClick={(e) => e.stopPropagation()}
                     />
@@ -124,7 +101,7 @@ export function LocationSearch({ value, onChange }: LocationSearchProps) {
                             value ? "text-gray-800" : "text-gray-400",
                         )}
                     >
-                        {value ?? "Manzil"}
+                        {value ?? (locale === "ru" ? "Адрес" : "Manzil")}
                     </span>
                 }
                 {value && !open && (
@@ -162,74 +139,65 @@ export function LocationSearch({ value, onChange }: LocationSearchProps) {
                 )}
             >
                 <div className="p-2">
-                    <div className="flex gap-1.5 mb-2 px-1">
-                        {FILTERS.map((f) => (
-                            <button
-                                key={f.key}
-                                onClick={() => setFilter(f.key)}
-                                className={cn(
-                                    "flex-1 py-1.5 px-2 rounded-lg text-xs font-medium transition-all duration-150 border",
-                                    filter === f.key ?
-                                        "bg-primary text-white"
-                                    :   "border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50",
-                                )}
-                            >
-                                {f.label}
-                            </button>
-                        ))}
-                    </div>
-
-                    <button
-                        onClick={() => setExcludeMode(!excludeMode)}
-                        className="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-gray-50 transition-colors mb-1"
-                    >
-                        <span className="text-sm text-gray-700">
-                            Joylarni istisno qilish
-                        </span>
-                        <ChevronRight
-                            className={cn(
-                                "w-4 h-4 text-gray-400 transition-transform duration-200",
-                                excludeMode && "rotate-90",
-                            )}
-                        />
-                    </button>
-
-                    {filtered.length > 0 && (
-                        <div className="pt-1 border-t border-gray-100">
-                            <p className="text-[10px] font-bold tracking-wider text-gray-400 uppercase px-3 py-1.5">
-                                Eng yaxshi moslik
-                            </p>
-                            <div className="max-h-52 overflow-y-auto">
-                                {filtered.map((loc) => (
+                    {isLoading ?
+                        <LocationSkeleton />
+                    : filtered.length > 0 ?
+                        <div className="max-h-52 overflow-y-auto">
+                            {filtered.map((item) => {
+                                const name =
+                                    locale === "ru" ?
+                                        item.destination.nameRu
+                                    :   item.destination.nameUz
+                                return (
                                     <button
-                                        key={loc.id}
-                                        onClick={() => handleSelect(loc.name)}
+                                        key={item.destination.id}
+                                        onClick={() =>
+                                            handleSelect(item.destination)
+                                        }
                                         className={cn(
                                             "w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-150 text-left",
-                                            value === loc.name ?
+                                            value === name ?
                                                 "bg-blue-50 text-blue-600"
                                             :   "hover:bg-gray-50 text-gray-700",
                                         )}
                                     >
-                                        <span className="text-sm font-medium">
-                                            {loc.name}
-                                        </span>
+                                        <div className="flex flex-col">
+                                            <span className="text-sm font-medium">
+                                                {name}
+                                            </span>
+                                        </div>
                                         <span className="text-xs text-gray-400">
-                                            {loc.count} tur
+                                            {item?.tourCount}{" "}
+                                            <ClientTranslate translationKey="tour" />
                                         </span>
                                     </button>
-                                ))}
-                            </div>
+                                )
+                            })}
                         </div>
-                    )}
-
-                    {filtered.length === 0 && (
-                        <p className="text-sm text-gray-400 text-center py-4">
-                            Natija topilmadi
+                    :   <p className="text-sm text-gray-400 text-center py-4">
+                            <ClientTranslate translationKey="noResultsFound" />
                         </p>
-                    )}
+                    }
                 </div>
             </div>
+        </div>
+    )
+}
+
+const LocationSkeleton = () => {
+    return (
+        <div className="space-y-1">
+            {[...Array(5)].map((_, i) => (
+                <div
+                    key={i}
+                    className="flex items-center justify-between px-3 py-2.5"
+                >
+                    <div className="space-y-2 w-full">
+                        <Skeleton className="h-4 w-3/4 rounded" />
+                        <Skeleton className="h-3 w-1/2 rounded" />
+                    </div>
+                </div>
+            ))}
         </div>
     )
 }

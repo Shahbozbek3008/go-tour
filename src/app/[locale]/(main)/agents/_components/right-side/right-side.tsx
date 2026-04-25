@@ -1,15 +1,12 @@
 "use client"
 
-import { Card } from "@/components/card"
-import { SortDropdown, SortKey } from "@/components/common/sort-dropdown"
+import { ProductCard } from "@/components/card"
+import { SortDropdown } from "@/components/common/sort-dropdown"
 import { Badge } from "@/components/ui/badge"
 import { MOCK_TOURS } from "@/lib/constants/mockdata"
 import { motion } from "framer-motion"
-import { useState } from "react"
 
 export const AgentsRightSide = () => {
-    const [sortKey, setSortKey] = useState<SortKey>("popular")
-
     return (
         <div className="flex flex-col gap-6 min-w-0 w-full">
             <div className="flex items-center justify-between">
@@ -22,7 +19,7 @@ export const AgentsRightSide = () => {
                         Asia Travel Group
                     </Badge>
                 </div>
-                <SortDropdown value={sortKey} onChange={setSortKey} />
+                <SortDropdown />
             </div>
             <motion.div
                 layout
@@ -45,7 +42,7 @@ export const AgentsRightSide = () => {
                             delay: i * 0.04,
                         }}
                     >
-                        <Card tour={tour} />
+                        <ProductCard tour={tour} />
                     </motion.div>
                 ))}
             </motion.div>

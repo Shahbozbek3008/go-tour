@@ -1,34 +1,44 @@
 "use client"
 
-import { INCLUSIONS } from "@/app/[locale]/(main)/tour/[slug]/_constants/mockdata"
 import { IconCheck } from "@/assets/icons/check"
 import { Button } from "@/components/ui/button"
+import { useLanguage } from "@/hooks/use-language"
+import { cn } from "@/lib/utils/shadcn"
 import { AnimatePresence, motion } from "framer-motion"
 import { ChevronDown } from "lucide-react"
 import { useState } from "react"
+import { LocalizedItem } from "../../../_types"
 
-export const InclusionList = () => {
+interface InclusionListProps {
+    items: LocalizedItem[]
+}
+
+export const InclusionList = ({ items }: InclusionListProps) => {
+    const { isRussian } = useLanguage()
+
     const [showAll, setShowAll] = useState(false)
 
     const toggleAll = () => {
         setShowAll((prev) => !prev)
     }
 
-    const visibleItems = INCLUSIONS.slice(0, 6)
-    const hiddenItems = INCLUSIONS.slice(6)
+    const visibleItems = items.slice(0, 6)
+    const hiddenItems = items.slice(6)
 
     return (
         <div className="flex flex-col gap-4">
-            <p className="text-sm font-semibold text-foreground">Included</p>
+            <p className="text-sm font-semibold text-foreground">
+                {isRussian ? "Включено" : "Kiritilgan"}
+            </p>
             <div className="flex flex-col gap-4">
                 <ul className="flex flex-col gap-4">
-                    {visibleItems.map((inclusion) => (
+                    {visibleItems.map((item, index) => (
                         <li
-                            key={inclusion.id}
+                            key={index}
                             className="flex items-center gap-2.5 text-sm"
                         >
                             <IconCheck />
-                            {inclusion.label}
+                            {isRussian ? item?.ru : item?.uz}
                         </li>
                     ))}
                 </ul>
@@ -42,28 +52,37 @@ export const InclusionList = () => {
                             transition={{ duration: 0.3, ease: "easeInOut" }}
                             className="flex flex-col gap-4 overflow-hidden"
                         >
-                            {hiddenItems.map((inclusion) => (
+                            {hiddenItems?.map((item, index) => (
                                 <li
-                                    key={inclusion.id}
+                                    key={index + 6}
                                     className="flex items-center gap-2.5 text-sm"
                                 >
                                     <IconCheck />
-                                    {inclusion.label}
+                                    {isRussian ? item?.ru : item?.uz}
                                 </li>
                             ))}
                         </motion.ul>
                     )}
                 </AnimatePresence>
-                {INCLUSIONS.length > 6 && (
+                {items.length > 6 && (
                     <Button
                         size="sm"
                         variant="link"
                         onClick={toggleAll}
                         className="w-fit text-[13px] p-0!"
                     >
-                        {showAll ? "Show less" : "Show all"}
+                        {showAll ?
+                            isRussian ?
+                                "Скрыть"
+                            :   "Kamroq ko'rish"
+                        : isRussian ?
+                            "Показать все"
+                        :   "Barchasini ko'rish"}
                         <ChevronDown
-                            className={`size-4 transition-transform duration-200 ${showAll ? "rotate-180" : ""}`}
+                            className={cn(
+                                "size-4 transition-transform duration-200",
+                                showAll && "rotate-180",
+                            )}
                         />
                     </Button>
                 )}

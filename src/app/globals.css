@@ -394,6 +394,15 @@
         @apply clamp-[text,4xl,6xl] font-medium;
     }
 
+    .no-scrollbar {
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+        display: none; /* Chrome, Safari and Opera */
+    }
+
     /* ================================== // ============================================= */
 
     /* Asosiy: ichki fill — background bilan */

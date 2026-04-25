@@ -1,14 +1,12 @@
-export interface DayImage {
-    src: string
-    alt: string
-}
-
 export interface TourDay {
-    id: string
+    id: number
+    tourId: number
     dayNumber: number
-    title: string
-    images: DayImage[]
-    description: string
+    titleUz: string
+    titleRu: string
+    descriptionUz: string
+    descriptionRu: string
+    imageUrls: string[]
 }
 
 export interface TourProgram {

@@ -2,31 +2,36 @@
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { RadioGroup } from "@/components/ui/radio-group"
-import { Switch } from "@/components/ui/switch"
 import { Slider } from "@/components/ui/slider"
+import { Switch } from "@/components/ui/switch"
 import { cn } from "@/lib/utils/shadcn"
 import { Info } from "lucide-react"
+import { useState } from "react"
 import {
     CATEGORIES,
     DURATIONS,
+    LANGUAGES,
     PRICE_MAX,
     PRICE_MIN,
     RATINGS,
-    TAGS,
 } from "../../_constants"
 import { useFilter } from "../../_hooks"
 import { FilterSection } from "./filter-section"
 import { RadioItem } from "./radio-item"
 import { StarDisplay } from "./star-display"
 
+const CATEGORIES_DEFAULT_COUNT = 6
+const LANGUAGES_DEFAULT_COUNT = 4
+
 export const CatalogLeftSide = () => {
     const {
         filters,
         minInput,
         maxInput,
-        toggleTag,
         setFilters,
         resetFilters,
         handleMinInput,
@@ -34,7 +39,27 @@ export const CatalogLeftSide = () => {
         hasActiveFilters,
         handlePriceSlider,
         activeFiltersCount,
+        toggleLanguage,
     } = useFilter()
+
+    const [showAllCategories, setShowAllCategories] = useState(false)
+    const [showAllLanguages, setShowAllLanguages] = useState(false)
+
+    const visibleCategories =
+        showAllCategories ? CATEGORIES : (
+            CATEGORIES.slice(0, CATEGORIES_DEFAULT_COUNT)
+        )
+
+    const visibleLanguages =
+        showAllLanguages ? LANGUAGES : (
+            LANGUAGES.slice(0, LANGUAGES_DEFAULT_COUNT)
+        )
+
+    const hasMoreCategories = CATEGORIES.length > CATEGORIES_DEFAULT_COUNT
+    const hiddenCount = CATEGORIES.length - CATEGORIES_DEFAULT_COUNT
+
+    const hasMoreLanguages = LANGUAGES.length > LANGUAGES_DEFAULT_COUNT
+    const hiddenLanguageCount = LANGUAGES.length - LANGUAGES_DEFAULT_COUNT
 
     return (
         <div className="w-full">
@@ -57,11 +82,19 @@ export const CatalogLeftSide = () => {
                                 <span className="text-[14px] text-zinc-900 font-medium">
                                     Faqat skidkali turlar
                                 </span>
-                                <Info strokeWidth={1.5} className="w-[18px] h-[18px] text-zinc-400" />
+                                <Info
+                                    strokeWidth={1.5}
+                                    className="w-[18px] h-[18px] text-zinc-400"
+                                />
                             </div>
-                            <Switch 
-                                checked={filters.onlyDiscounted}
-                                onCheckedChange={(val) => setFilters(p => ({ ...p, onlyDiscounted: val }))}
+                            <Switch
+                                checked={filters.promotional}
+                                onCheckedChange={(val) =>
+                                    setFilters((p) => ({
+                                        ...p,
+                                        promotional: val,
+                                    }))
+                                }
                                 className="data-[state=checked]:bg-blue-600"
                             />
                         </div>
@@ -71,11 +104,19 @@ export const CatalogLeftSide = () => {
                                 <span className="text-[14px] text-zinc-900 font-medium">
                                     Ishonchli turlar
                                 </span>
-                                <Info strokeWidth={1.5} className="w-[18px] h-[18px] text-zinc-400" />
+                                <Info
+                                    strokeWidth={1.5}
+                                    className="w-[18px] h-[18px] text-zinc-400"
+                                />
                             </div>
-                            <Switch 
-                                checked={filters.trustedTours}
-                                onCheckedChange={(val) => setFilters(p => ({ ...p, trustedTours: val }))}
+                            <Switch
+                                checked={filters.guaranteed}
+                                onCheckedChange={(val) =>
+                                    setFilters((p) => ({
+                                        ...p,
+                                        guaranteed: val,
+                                    }))
+                                }
                                 className="data-[state=checked]:bg-blue-600"
                             />
                         </div>
@@ -89,19 +130,38 @@ export const CatalogLeftSide = () => {
                             }
                             className="gap-0"
                         >
-                            {CATEGORIES.map(({ id, label }) => (
-                                <RadioItem
-                                    key={id}
-                                    id={`cat-${id}`}
-                                    value={id}
-                                    label={label}
-                                    isActive={filters.category === id}
-                                />
-                            ))}
+                            <div
+                                className={cn(
+                                    "overflow-hidden transition-all duration-300 ease-in-out",
+                                    showAllCategories ? "max-h-[1000px]" : (
+                                        "max-h-[220px]"
+                                    ),
+                                )}
+                            >
+                                {visibleCategories.map(({ id, label }) => (
+                                    <RadioItem
+                                        key={id}
+                                        id={`cat-${id}`}
+                                        value={id}
+                                        label={label}
+                                        isActive={filters.category === id}
+                                    />
+                                ))}
+                            </div>
                         </RadioGroup>
+
+                        {hasMoreCategories && (
+                            <button
+                                onClick={() => setShowAllCategories((p) => !p)}
+                                className="cursor-pointer mt-2 w-full rounded-lg bg-zinc-100 py-2 text-[13px] font-medium text-zinc-600 transition-colors duration-150 focus-visible:outline-none"
+                            >
+                                {showAllCategories ?
+                                    "Kamroq ko'rsatish"
+                                :   `Barcha turlar (${hiddenCount})`}
+                            </button>
+                        )}
                     </FilterSection>
 
-                    {/* ── Narx ── */}
                     <FilterSection title="Narx">
                         <div className="space-y-3 pt-1">
                             <Slider
@@ -173,9 +233,9 @@ export const CatalogLeftSide = () => {
 
                     <FilterSection title="Reyting">
                         <RadioGroup
-                            value={filters.rating}
+                            value={filters.rate}
                             onValueChange={(val) =>
-                                setFilters((p) => ({ ...p, rating: val }))
+                                setFilters((p) => ({ ...p, rate: val }))
                             }
                             className="gap-0"
                         >
@@ -184,7 +244,7 @@ export const CatalogLeftSide = () => {
                                     key={value}
                                     id={`rat-${value}`}
                                     value={value}
-                                    isActive={filters.rating === value}
+                                    isActive={filters.rate === value}
                                     label={
                                         <span className="flex items-center gap-2">
                                             <span>{label}</span>
@@ -203,28 +263,49 @@ export const CatalogLeftSide = () => {
                             Tez kunda…
                         </p>
                     </FilterSection>
-
-                    <FilterSection title="Mashhur teglar">
-                        <div className="flex flex-wrap gap-1.5 pt-0.5">
-                            {TAGS.map((tag) => {
-                                const active = filters.tags.includes(tag)
+                    <FilterSection title="Til bo'yicha">
+                        <div className="flex flex-wrap gap-2 pt-0.5 transition-all duration-300 ease-in-out">
+                            {visibleLanguages.map((lang) => {
+                                const active = filters.languages.includes(
+                                    lang.id,
+                                )
                                 return (
-                                    <button
-                                        key={tag}
-                                        onClick={() => toggleTag(tag)}
-                                        className={cn(
-                                            "inline-flex items-center rounded-full px-2.5 py-1",
-                                            "text-[12px] font-medium transition-all duration-150",
-                                            "focus-visible:outline-none",
-                                            active ?
-                                                "bg-primary text-white"
-                                            :   "bg-zinc-100 text-zinc-500 hover:bg-zinc-200 hover:text-zinc-700",
-                                        )}
+                                    <FieldGroup
+                                        className="w-full"
+                                        key={lang.id}
                                     >
-                                        {tag}
-                                    </button>
+                                        <Field orientation="horizontal">
+                                            <Checkbox
+                                                id={`lang-${lang.id}`}
+                                                name={`lang-${lang.id}`}
+                                                checked={active}
+                                                onCheckedChange={() =>
+                                                    toggleLanguage(lang.id)
+                                                }
+                                            />
+                                            <FieldLabel
+                                                htmlFor={`lang-${lang.id}`}
+                                                className="cursor-pointer text-zinc-500"
+                                            >
+                                                {lang.label}
+                                            </FieldLabel>
+                                        </Field>
+                                    </FieldGroup>
                                 )
                             })}
+                            {hasMoreLanguages && (
+                                <button
+                                    onClick={() =>
+                                        setShowAllLanguages((prev) => !prev)
+                                    }
+                                    className="cursor-pointer mt-2 w-full rounded-lg bg-zinc-100 py-2 text-[13px] font-medium text-zinc-600 transition-colors duration-150 focus-visible:outline-none"
+                                >
+                                    {showAllLanguages ?
+                                        "Kamroq ko'rsatish"
+                                    :   `Barcha tillar (${hiddenLanguageCount})`
+                                    }
+                                </button>
+                            )}
                         </div>
                     </FilterSection>
                 </div>

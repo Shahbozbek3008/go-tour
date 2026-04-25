@@ -9,11 +9,11 @@ export interface NotificationTabsCount {
 }
 
 export interface IPaginatedResponse<T> {
-    count: number
-    previous: string | null
-    next: string | null
-    results: T[]
-    notification_tabs_count?: NotificationTabsCount
+    page: number
+    size: number
+    totalElements: number
+    totalPages: number
+    tours: T[]
 }
 
 export type OptionIdNumber = {

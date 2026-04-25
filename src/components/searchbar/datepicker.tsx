@@ -258,10 +258,11 @@ function MonthCalendar({
 
 interface DatePickerProps {
     value?: string
-    onChange?: (value: string) => void
+    defaultRange?: DateRange
+    onChange?: (value: string, range: DateRange) => void
 }
 
-export function DatePicker({ value, onChange }: DatePickerProps) {
+export function DatePicker({ value, onChange, defaultRange }: DatePickerProps) {
     const [open, setOpen] = useState(false)
     const [tab, setTab] = useState<TabType>("period")
     const [selected, setSelected] = useState<string | null>(value ?? null)
@@ -271,8 +272,29 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
     today.setHours(0, 0, 0, 0)
     const [calYear, setCalYear] = useState(today.getFullYear())
     const [calMonth, setCalMonth] = useState(today.getMonth())
-    const [range, setRange] = useState<DateRange>({ from: null, to: null })
+    const [range, setRange] = useState<DateRange>(
+        defaultRange ?? { from: null, to: null },
+    )
     const [hovered, setHovered] = useState<Date | null>(null)
+
+    useEffect(() => {
+        if (defaultRange) {
+            setRange(defaultRange)
+            if (defaultRange.from && defaultRange.to) {
+                const fmt = (d: Date) =>
+                    `${d.getDate()} ${MONTHS[d.getMonth()]}`
+                setSelected(
+                    `${fmt(defaultRange.from)} – ${fmt(defaultRange.to)}`,
+                )
+            } else if (defaultRange.from) {
+                const fmt = (d: Date) =>
+                    `${d.getDate()} ${MONTHS[d.getMonth()]}`
+                setSelected(fmt(defaultRange.from))
+            } else {
+                setSelected(null)
+            }
+        }
+    }, [defaultRange])
 
     const wrapperRef = useRef<HTMLDivElement>(null)
     const dropdownRef = useRef<HTMLDivElement>(null)
@@ -339,7 +361,7 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
                     `${d.getDate()} ${MONTHS[d.getMonth()]}`
                 const label = `${fmt(from)} – ${fmt(to)}`
                 setSelected(label)
-                onChange?.(label)
+                onChange?.(label, { from, to })
                 setTimeout(() => setOpen(false), 250)
             }
         },
@@ -352,10 +374,10 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
         if (range) {
             const dateLabel = `${formatDate(range.from)} – ${formatDate(range.to)}`
             setSelected(dateLabel)
-            onChange?.(dateLabel)
+            onChange?.(dateLabel, range)
         } else {
             setSelected(label)
-            onChange?.(label)
+            onChange?.(label, { from: null, to: null })
         }
         setOpen(false)
     }
@@ -386,7 +408,7 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
                         onClick={(e) => {
                             e.stopPropagation()
                             setSelected(null)
-                            onChange?.("")
+                            onChange?.("", { from: null, to: null })
                         }}
                     />
                 )}
@@ -538,7 +560,7 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
                                 onClick={() => {
                                     setRange({ from: null, to: null })
                                     setSelected(null)
-                                    onChange?.("")
+                                    onChange?.("", { from: null, to: null })
                                 }}
                                 className="text-xs text-gray-400 hover:text-red-400 transition-colors font-medium"
                             >

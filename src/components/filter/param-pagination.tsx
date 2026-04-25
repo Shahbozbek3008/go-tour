@@ -3,16 +3,13 @@
 import {
     Pagination,
     PaginationContent,
-    PaginationEllipsis,
     PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
 } from "@/components/ui/pagination"
 import useSearch from "@/hooks/use-search"
 import { usePathname, useRouter } from "@/i18n/navigation"
 import { SEARCH_PARAMS } from "@/lib/constants/search-params"
 import { getHref } from "@/lib/utils/get-href"
+import { cn } from "@/lib/utils/shadcn"
 import { useSearchParams } from "next/navigation"
 
 interface Props {
@@ -21,6 +18,32 @@ interface Props {
     className?: string
     pageSize?: number
 }
+
+const pgBtn = cn(
+    "relative inline-flex items-center justify-center",
+    "size-9 rounded-lg",
+    "text-[13px] font-medium font-mono tracking-tight",
+    "text-muted-foreground bg-transparent border border-transparent",
+    "cursor-pointer select-none outline-none",
+    "transition-all duration-150 ease-out",
+    "-webkit-tap-highlight-color-transparent",
+    "hover:text-foreground hover:bg-accent hover:border-border hover:-translate-y-px",
+    "active:scale-95 active:translate-y-0",
+)
+
+const pgActive = cn(
+    "bg-primary! border-primary! text-primary-foreground!",
+    "hover:bg-primary! hover:border-primary! hover:text-primary-foreground!",
+    "hover:translate-y-0!",
+    "cursor-default",
+)
+
+const pgDisabled = "opacity-30 cursor-not-allowed pointer-events-none"
+
+const pgNav = cn(
+    "w-auto px-2.5 gap-1.5",
+    "text-[11px] tracking-widest uppercase font-sans",
+)
 
 export function ParamPagination({
     count,
@@ -34,7 +57,7 @@ export function ParamPagination({
     const params = useSearch({ jsonParse: false })
 
     const currentPage = Number(searchParams.get(pageKey)) || 1
-    const totalPages = Math.ceil(Number(count) / pageSize) || 0 // Assuming 10 items per page
+    const totalPages = Math.ceil(Number(count) / pageSize) || 0
 
     const createPageURL = (pageNumber: number | string) => {
         return getHref({
@@ -52,17 +75,13 @@ export function ParamPagination({
     }
 
     const handleEllipsisClick = (index: number) => {
-        // If it's the first ellipsis (moving backwards)
         if (pages[index - 1] === 1) {
             handlePageChange(Math.max(1, currentPage - 3))
-        }
-        // If it's the last ellipsis (moving forwards)
-        else if (pages[index + 1] === totalPages) {
+        } else if (pages[index + 1] === totalPages) {
             handlePageChange(Math.min(totalPages, currentPage + 3))
         }
     }
 
-    // Generate page numbers to display
     const generatePagination = () => {
         const pages: (number | string)[] = []
 
@@ -91,52 +110,100 @@ export function ParamPagination({
 
     const pages = generatePagination()
 
-    if (totalPages < 2) return
+    if (totalPages < 2) return null
 
     return (
-        <Pagination className={className}>
-            <PaginationContent className="gap-2">
+        <Pagination className={cn("select-none", className)}>
+            <PaginationContent className="flex items-center gap-1">
                 <PaginationItem>
-                    <PaginationPrevious
+                    <button
                         onClick={() => handlePageChange(currentPage - 1)}
-                        className={
-                            currentPage <= 1 ?
-                                "pointer-events-none opacity-50"
-                            :   ""
-                        }
-                    />
+                        className={cn(
+                            pgBtn,
+                            pgNav,
+                            "group/prev",
+                            currentPage <= 1 && pgDisabled,
+                        )}
+                        aria-label="Previous page"
+                    >
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            className="size-3.5 shrink-0 stroke-[1.75] transition-transform duration-150 group-hover/prev:-translate-x-0.5"
+                        >
+                            <path
+                                d="M15 18l-6-6 6-6"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </svg>
+                        <span>Prev</span>
+                    </button>
                 </PaginationItem>
+
+                <div className="mx-1 h-4 w-px shrink-0 bg-border" />
 
                 {pages.map((page, i) => (
                     <PaginationItem key={i}>
                         {page === "..." ?
-                            <PaginationEllipsis
+                            <button
                                 onClick={() => handleEllipsisClick(i)}
-                                className="cursor-pointer"
-                            />
-                        :   <PaginationLink
-                                onClick={() => {
-                                    if (currentPage !== page) {
-                                        handlePageChange(Number(page))
-                                    }
-                                }}
-                                isActive={currentPage === page}
+                                className={cn(
+                                    pgBtn,
+                                    "text-[11px] tracking-widest text-muted-foreground/60 hover:text-foreground",
+                                )}
+                                aria-label="Jump pages"
+                            >
+                                ···
+                            </button>
+                        :   <button
+                                onClick={() =>
+                                    currentPage !== page &&
+                                    handlePageChange(Number(page))
+                                }
+                                className={cn(
+                                    pgBtn,
+                                    currentPage === page && pgActive,
+                                )}
+                                aria-label={`Page ${page}`}
+                                aria-current={
+                                    currentPage === page ? "page" : undefined
+                                }
                             >
                                 {page}
-                            </PaginationLink>
+                            </button>
                         }
                     </PaginationItem>
                 ))}
 
+                <div className="mx-1 h-4 w-px shrink-0 bg-border" />
+
                 <PaginationItem>
-                    <PaginationNext
+                    <button
                         onClick={() => handlePageChange(currentPage + 1)}
-                        className={
-                            currentPage === totalPages ?
-                                "pointer-events-none opacity-50"
-                            :   ""
-                        }
-                    />
+                        className={cn(
+                            pgBtn,
+                            pgNav,
+                            "group/next",
+                            currentPage === totalPages && pgDisabled,
+                        )}
+                        aria-label="Next page"
+                    >
+                        <span>Next</span>
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            className="size-3.5 shrink-0 stroke-[1.75] transition-transform duration-150 group-hover/next:translate-x-0.5"
+                        >
+                            <path
+                                d="M9 18l6-6-6-6"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </svg>
+                    </button>
                 </PaginationItem>
             </PaginationContent>
         </Pagination>

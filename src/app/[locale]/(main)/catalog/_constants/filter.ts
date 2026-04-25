@@ -1,21 +1,21 @@
 export const CATEGORIES = [
     { id: "all", label: "Barcha kategoriyalar" },
-    { id: "beach", label: "Plyaj" },
-    { id: "city", label: "Shahar" },
-    { id: "nature", label: "Tabiat" },
-    { id: "adventure", label: "Sarguzasht" },
-    { id: "hiking", label: "Piyoda sayohat" },
-    { id: "ski", label: "Chang'i" },
-    { id: "safari", label: "Safari" },
-    { id: "cruise", label: "Kruiz" },
-    { id: "gastro", label: "Gastronomik" },
-    { id: "edu", label: "Ta'limiy" },
-    { id: "business", label: "Biznes" },
-    { id: "event", label: "Tadbir" },
-    { id: "honeymoon", label: "Asal oyi" },
-    { id: "family", label: "Oila" },
-    { id: "luxury", label: "Lyuks" },
-    { id: "relax", label: "Dam olish" },
+    { id: "BEACH", label: "Plyaj" },
+    { id: "CITY", label: "Shahar" },
+    { id: "NATURE", label: "Tabiat" },
+    { id: "ADVENTURE", label: "Sarguzasht" },
+    { id: "HIKING", label: "Piyoda sayohat" },
+    { id: "SKI", label: "Chang'i" },
+    { id: "SAFARI", label: "Safari" },
+    { id: "CRUISE", label: "Kruiz" },
+    { id: "GASTRONOMIC", label: "Gastronomik" },
+    { id: "EDUCATIONAL", label: "Ta'limiy" },
+    { id: "BUSINESS", label: "Biznes" },
+    { id: "EVENT", label: "Tadbir" },
+    { id: "HONEYMOON", label: "Asal oyi" },
+    { id: "FAMILY", label: "Oila" },
+    { id: "LUXURY", label: "Lyuks" },
+    { id: "WEEKEND", label: "Dam olish" },
 ] as const
 
 export const RATINGS = [
@@ -44,10 +44,43 @@ export const TAGS = [
     "Lager",
     "Okean",
     "Madaniy tur",
-    "Oila safari",
-    "Ekoturizm",
     "Chegirmali tur",
+    "Ekoturizm",
+    "Oila safari",
+] as const
+
+export const LANGUAGES = [
+    { id: "RU", label: "Ruscha" },
+    { id: "EN", label: "Inglizcha" },
+    { id: "ES", label: "Ispancha" },
+    { id: "FR", label: "Fransuzcha" },
+    { id: "DE", label: "Nemischa" },
+    { id: "IT", label: "Italyancha" },
+    { id: "TR", label: "Turkcha" },
+    { id: "UZ", label: "O'zbekcha" },
 ] as const
 
 export const PRICE_MIN = 0
 export const PRICE_MAX = 10_000
+
+export type FilterState = {
+    category: string
+    priceRange: [number, number]
+    duration: string
+    rate: string
+    tags: string[]
+    promotional: boolean
+    guaranteed: boolean
+    languages: string[]
+}
+
+export const DEFAULT_FILTERS: FilterState = {
+    category: "all",
+    priceRange: [PRICE_MIN, PRICE_MAX],
+    duration: "all",
+    rate: "all",
+    tags: [],
+    promotional: false,
+    guaranteed: false,
+    languages: [],
+}

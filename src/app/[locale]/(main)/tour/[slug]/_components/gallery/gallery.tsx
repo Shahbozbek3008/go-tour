@@ -1,17 +1,17 @@
 "use client"
 
+import MediaViewerModal from "@/components/common/media-viewer-modal"
+import { useMediaViewerModal } from "@/components/common/media-viewer-modal/use-media-viewer-modal"
 import { Button } from "@/components/ui/button"
 import {
     Carousel,
     CarouselContent,
     CarouselItem,
 } from "@/components/ui/carousel"
+import { useMediaViewerStore } from "@/hooks/store/use-media-viewer-store"
 import { ChevronLeft, Heart, Images, MessageCircle, Share2 } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { useMediaViewerStore } from "@/hooks/store/use-media-viewer-store"
-import { useMediaViewerModal } from "@/components/common/media-viewer-modal/use-media-viewer-modal"
-import MediaViewerModal from "@/components/common/media-viewer-modal"
 
 interface TourGalleryProps {
     images: {
@@ -22,8 +22,9 @@ interface TourGalleryProps {
 
 export function TourGallery({ images }: TourGalleryProps) {
     const router = useRouter()
-    const allImages = [images.main, ...images.gallery]
-    
+    const allImages = [images?.main, ...(images?.gallery || [])]
+    const isSingleImage = allImages?.length === 1
+
     const { setMediaViewerState } = useMediaViewerStore()
     const { openModal } = useMediaViewerModal()
 
@@ -50,7 +51,6 @@ export function TourGallery({ images }: TourGalleryProps) {
                 >
                     <ChevronLeft className="h-5 w-5" />
                 </Button>
-
                 <div className="flex items-center gap-2 pointer-events-auto">
                     <Button
                         variant="secondary"
@@ -78,62 +78,76 @@ export function TourGallery({ images }: TourGalleryProps) {
                     </Button>
                 </div>
             </div>
-
-            {/* Desktop Grid Layout */}
-            <div className="hidden lg:grid grid-cols-2 gap-3 h-[450px] xl:h-[500px] rounded-2xl overflow-hidden shadow-sm">
-                <div 
-                    onClick={() => handleOpenModal(0)}
-                    className="relative h-full w-full group cursor-pointer overflow-hidden rounded-l-2xl"
-                >
-                    <Image
-                        src={images.main}
-                        alt="Tour main"
-                        fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                        priority
-                        sizes="(max-width: 1024px) 100vw, 50vw"
-                    />
-                    <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-                <div className="grid grid-cols-2 grid-rows-2 gap-3 h-full">
-                    {images.gallery.slice(0, 4).map((image, index) => (
+            {
+                isSingleImage ?
+                    <div
+                        onClick={() => handleOpenModal(0)}
+                        className="hidden lg:block relative w-full h-[450px] xl:h-[500px] rounded-2xl overflow-hidden shadow-sm group cursor-pointer"
+                    >
+                        <Image
+                            src={images.main}
+                            alt="Tour main"
+                            fill
+                            className="object-cover transition-transform duration-700 group-hover:scale-105"
+                            priority
+                            sizes="100vw"
+                        />
+                        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                    // Multiple images — grid
+                :   <div className="hidden lg:grid grid-cols-2 gap-3 h-[450px] xl:h-[500px] rounded-2xl overflow-hidden shadow-sm">
                         <div
-                            key={index}
-                            onClick={() => handleOpenModal(index + 1)}
-                            className="relative h-full w-full group cursor-pointer overflow-hidden rounded-md"
+                            onClick={() => handleOpenModal(0)}
+                            className="relative h-full w-full group cursor-pointer overflow-hidden rounded-l-2xl"
                         >
                             <Image
-                                src={image}
-                                alt={`Gallery ${index}`}
+                                src={images.main}
+                                alt="Tour main"
                                 fill
                                 className="object-cover transition-transform duration-700 group-hover:scale-105"
-                                sizes="25vw"
+                                priority
+                                sizes="(max-width: 1024px) 100vw, 50vw"
                             />
                             <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                            {index === 3 && (
-                                <button className="absolute bottom-4 right-4 inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900/80 backdrop-blur-md text-white text-sm font-semibold rounded-xl hover:bg-gray-900 transition-colors shadow-lg">
-                                    <Images className="h-4 w-4" />
-                                    Все фото
-                                </button>
-                            )}
                         </div>
-                    ))}
-                </div>
-            </div>
+                        <div className="grid grid-cols-2 grid-rows-2 gap-3 h-full">
+                            {images.gallery.slice(0, 4).map((image, index) => (
+                                <div
+                                    key={index}
+                                    onClick={() => handleOpenModal(index + 1)}
+                                    className="relative h-full w-full group cursor-pointer overflow-hidden rounded-md"
+                                >
+                                    <Image
+                                        src={image}
+                                        alt={`Gallery ${index}`}
+                                        fill
+                                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                        sizes="25vw"
+                                    />
+                                    <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    {index === 3 && (
+                                        <button className="absolute bottom-4 right-4 inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900/80 backdrop-blur-md text-white text-sm font-semibold rounded-xl hover:bg-gray-900 transition-colors shadow-lg">
+                                            <Images className="h-4 w-4" />
+                                            Все фото
+                                        </button>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+            }
 
             {/* Mobile Carousel Layout */}
             <div className="lg:hidden relative sm:mx-0 sm:w-full">
                 <Carousel
-                    opts={{
-                        align: "center",
-                        loop: false,
-                    }}
+                    opts={{ align: "center", loop: false }}
                     className="w-full"
                 >
                     <CarouselContent className="m-0">
                         {allImages.map((image, index) => (
                             <CarouselItem key={index} className="p-0">
-                                <div 
+                                <div
                                     onClick={() => handleOpenModal(index)}
                                     className="relative h-[300px] sm:h-[350px] w-full overflow-hidden sm:rounded-2xl cursor-pointer"
                                 >
@@ -141,7 +155,7 @@ export function TourGallery({ images }: TourGalleryProps) {
                                         src={image}
                                         alt={`Slide ${index}`}
                                         fill
-                                        className="object-cover select-none rounded-2xl"
+                                        className="object-cover select-none rounded-2xl rounded-b-none"
                                         sizes="(max-width: 640px) 100vw, 100vw"
                                         priority={index === 0}
                                     />
@@ -152,7 +166,7 @@ export function TourGallery({ images }: TourGalleryProps) {
                     </CarouselContent>
                 </Carousel>
 
-                <button 
+                <button
                     onClick={() => handleOpenModal(0)}
                     className="cursor-pointer absolute bottom-4 right-4 lg:hidden inline-flex items-center gap-2 px-4 py-2 bg-black/60 backdrop-blur-md text-white border border-white/10 text-[13px] font-semibold rounded-[12px] hover:bg-black/70 transition-colors shadow-[0_4px_12px_rgba(0,0,0,0.15)] pointer-events-auto active:scale-95 z-10"
                 >
@@ -160,9 +174,8 @@ export function TourGallery({ images }: TourGalleryProps) {
                     Все фото
                 </button>
             </div>
-            {/* Make sure the modal is mounted */}
+
             <MediaViewerModal />
         </div>
     )
 }
-

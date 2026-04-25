@@ -1,5 +1,6 @@
 import { Activity, Bed, Calendar, Compass, Globe, Users } from "lucide-react"
-import { TourDetails } from "../../../_types"
+import { useTourDetailQuery } from "../../../_hooks"
+import { TourDetailResponse, TourDetails } from "../../../_types"
 
 interface DetailItem {
     icon: React.ElementType
@@ -7,10 +8,17 @@ interface DetailItem {
     value: string
 }
 
-function buildDetailItems(details: TourDetails): DetailItem[] {
+function buildDetailItems(
+    details: TourDetails,
+    detail: TourDetailResponse,
+): DetailItem[] {
     return [
-        { icon: Calendar, label: "Duration", value: `${details.days} days` },
-        { icon: Compass, label: "Tour type", value: details.type },
+        {
+            icon: Calendar,
+            label: "Duration",
+            value: `${detail?.durationInDays} days`,
+        },
+        { icon: Compass, label: "Tour type", value: detail?.categories?.[0] },
         { icon: Globe, label: "Language", value: details.language },
         { icon: Bed, label: "Comfort", value: details.comfort },
         { icon: Activity, label: "Activity level", value: details.activity },
@@ -23,7 +31,8 @@ interface TourDetailsGridProps {
 }
 
 export function TourDetailsGrid({ details }: TourDetailsGridProps) {
-    const items = buildDetailItems(details)
+    const { detail } = useTourDetailQuery()
+    const items = buildDetailItems(details, detail!)
 
     return (
         <div className="rounded-2xl border border-border/60 p-6 bg-[#F6F7FA]">

@@ -1,16 +1,18 @@
-export type ComfortLevel = "Economy" | "Comfort" | "Premium" | "Luxury"
-
 export interface AccommodationImage {
     src: string
     alt: string
 }
 
+export interface ApiAccommodationImage {
+    url: string
+    id: number
+}
+
 export interface AccommodationOption {
-    id: string
-    location: string
-    comfortLevel: ComfortLevel
-    comfortRating: number
-    maxRating: number
-    description: string
-    images: AccommodationImage[]
+    id: number
+    name: string
+    descriptionUz: string
+    descriptionRu: string
+    comfortLevel: number
+    images: ApiAccommodationImage[]
 }

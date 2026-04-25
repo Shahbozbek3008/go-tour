@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
     Drawer,
     DrawerClose,
@@ -9,24 +10,29 @@ import {
     DrawerHeader,
     DrawerTitle,
 } from "@/components/ui/drawer"
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { RadioGroup } from "@/components/ui/radio-group"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { cn } from "@/lib/utils/shadcn"
-import { Info } from "lucide-react"
+import { Info, X } from "lucide-react"
+import { useState } from "react"
 import {
     CATEGORIES,
     DURATIONS,
+    LANGUAGES,
     PRICE_MAX,
     PRICE_MIN,
     RATINGS,
-    TAGS,
 } from "../../_constants"
 import { useFilter } from "../../_hooks"
 import { FilterSection } from "./filter-section"
 import { RadioItem } from "./radio-item"
 import { StarDisplay } from "./star-display"
+
+const CATEGORIES_DEFAULT_COUNT = 6
+const LANGUAGES_DEFAULT_COUNT = 4
 
 interface FilterBottomSheetProps {
     open: boolean
@@ -49,36 +55,72 @@ export const FilterBottomSheet = ({
         hasActiveFilters,
         handlePriceSlider,
         activeFiltersCount,
+        toggleLanguage,
     } = useFilter()
+
+    const [showAllCategories, setShowAllCategories] = useState(false)
+    const [showAllLanguages, setShowAllLanguages] = useState(false)
+
+    const visibleCategories =
+        showAllCategories ? CATEGORIES : (
+            CATEGORIES.slice(0, CATEGORIES_DEFAULT_COUNT)
+        )
+
+    const visibleLanguages =
+        showAllLanguages ? LANGUAGES : (
+            LANGUAGES.slice(0, LANGUAGES_DEFAULT_COUNT)
+        )
+
+    const hasMoreCategories = CATEGORIES.length > CATEGORIES_DEFAULT_COUNT
+    const hiddenCount = CATEGORIES.length - CATEGORIES_DEFAULT_COUNT
+
+    const hasMoreLanguages = LANGUAGES.length > LANGUAGES_DEFAULT_COUNT
+    const hiddenLanguageCount = LANGUAGES.length - LANGUAGES_DEFAULT_COUNT
 
     return (
         <Drawer open={open} onOpenChange={onOpenChange}>
-            <DrawerContent className="max-h-[92dvh] flex flex-col">
-                <DrawerHeader className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-zinc-100 shrink-0">
-                    <div className="flex items-center gap-2">
-                        <DrawerTitle className="text-[15px] font-bold text-zinc-900 tracking-tight">
+            <DrawerContent className="h-[100vh] flex flex-col rounded-none">
+                <DrawerHeader className="sticky top-0 bg-white flex items-center justify-between z-10 pt-4 pb-3 border-b border-zinc-100 shrink-0">
+                    <div className="flex items-center w-full justify-between gap-2">
+                        <DrawerTitle className="flex items-center gap-2 text-[15px] font-bold text-zinc-900 tracking-tight">
                             Filterlar
+                            {activeFiltersCount > 0 && (
+                                <Badge className="flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-blue-600 text-white text-[11px] font-bold">
+                                    {activeFiltersCount}
+                                </Badge>
+                            )}
                         </DrawerTitle>
-                        {activeFiltersCount > 0 && (
-                            <Badge className="flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-blue-600 text-white text-[11px] font-bold">
-                                {activeFiltersCount}
-                            </Badge>
-                        )}
+                        <DrawerClose asChild>
+                            <button
+                                className="flex items-center justify-center w-8 h-8 rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-500 hover:text-zinc-700 transition-colors duration-150 focus-visible:outline-none"
+                                aria-label="Yopish"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
+                        </DrawerClose>
                     </div>
                 </DrawerHeader>
 
-                <div className="overflow-y-auto flex-1 px-5 divide-y divide-zinc-100">
+                <div className="overflow-y-auto no-scrollbar flex-1 px-5 divide-y divide-zinc-100">
                     <div className="py-2.5 flex flex-col gap-2">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-1.5 cursor-pointer select-none">
                                 <span className="text-[14px] text-zinc-900 font-medium">
                                     Faqat skidkali turlar
                                 </span>
-                                <Info strokeWidth={1.5} className="w-[18px] h-[18px] text-zinc-400" />
+                                <Info
+                                    strokeWidth={1.5}
+                                    className="w-[18px] h-[18px] text-zinc-400"
+                                />
                             </div>
-                            <Switch 
-                                checked={filters.onlyDiscounted}
-                                onCheckedChange={(val) => setFilters(p => ({ ...p, onlyDiscounted: val }))}
+                            <Switch
+                                checked={filters.promotional}
+                                onCheckedChange={(val) =>
+                                    setFilters((p) => ({
+                                        ...p,
+                                        promotional: val,
+                                    }))
+                                }
                                 className="data-[state=checked]:bg-blue-600"
                             />
                         </div>
@@ -88,11 +130,19 @@ export const FilterBottomSheet = ({
                                 <span className="text-[14px] text-zinc-900 font-medium">
                                     Ishonchli turlar
                                 </span>
-                                <Info strokeWidth={1.5} className="w-[18px] h-[18px] text-zinc-400" />
+                                <Info
+                                    strokeWidth={1.5}
+                                    className="w-[18px] h-[18px] text-zinc-400"
+                                />
                             </div>
-                            <Switch 
-                                checked={filters.trustedTours}
-                                onCheckedChange={(val) => setFilters(p => ({ ...p, trustedTours: val }))}
+                            <Switch
+                                checked={filters.guaranteed}
+                                onCheckedChange={(val) =>
+                                    setFilters((p) => ({
+                                        ...p,
+                                        guaranteed: val,
+                                    }))
+                                }
                                 className="data-[state=checked]:bg-blue-600"
                             />
                         </div>
@@ -106,16 +156,36 @@ export const FilterBottomSheet = ({
                             }
                             className="gap-0"
                         >
-                            {CATEGORIES.map(({ id, label }) => (
-                                <RadioItem
-                                    key={id}
-                                    id={`bs-cat-${id}`}
-                                    value={id}
-                                    label={label}
-                                    isActive={filters.category === id}
-                                />
-                            ))}
+                            <div
+                                className={cn(
+                                    "overflow-hidden transition-all duration-300 ease-in-out",
+                                    showAllCategories ? "max-h-[1000px]" : (
+                                        "max-h-[220px]"
+                                    ),
+                                )}
+                            >
+                                {visibleCategories.map(({ id, label }) => (
+                                    <RadioItem
+                                        key={id}
+                                        id={`bs-cat-${id}`}
+                                        value={id}
+                                        label={label}
+                                        isActive={filters.category === id}
+                                    />
+                                ))}
+                            </div>
                         </RadioGroup>
+
+                        {hasMoreCategories && (
+                            <button
+                                onClick={() => setShowAllCategories((p) => !p)}
+                                className="cursor-pointer mt-2 w-full rounded-lg bg-zinc-100 py-2 text-[13px] font-medium text-zinc-600 transition-colors duration-150 focus-visible:outline-none"
+                            >
+                                {showAllCategories ?
+                                    "Kamroq ko'rsatish"
+                                :   `Barcha turlar (${hiddenCount})`}
+                            </button>
+                        )}
                     </FilterSection>
 
                     <FilterSection title="Narx">
@@ -189,9 +259,9 @@ export const FilterBottomSheet = ({
 
                     <FilterSection title="Reyting">
                         <RadioGroup
-                            value={filters.rating}
+                            value={filters.rate}
                             onValueChange={(val) =>
-                                setFilters((p) => ({ ...p, rating: val }))
+                                setFilters((p) => ({ ...p, rate: val }))
                             }
                             className="gap-0"
                         >
@@ -200,7 +270,7 @@ export const FilterBottomSheet = ({
                                     key={value}
                                     id={`bs-rat-${value}`}
                                     value={value}
-                                    isActive={filters.rating === value}
+                                    isActive={filters.rate === value}
                                     label={
                                         <span className="flex items-center gap-2">
                                             <span>{label}</span>
@@ -220,27 +290,49 @@ export const FilterBottomSheet = ({
                         </p>
                     </FilterSection>
 
-                    <FilterSection title="Mashhur teglar">
-                        <div className="flex flex-wrap gap-1.5 pt-0.5">
-                            {TAGS.map((tag) => {
-                                const active = filters.tags.includes(tag)
+                    <FilterSection title="Til bo'yicha">
+                        <div className="flex flex-wrap gap-2 pt-0.5 transition-all duration-300 ease-in-out">
+                            {visibleLanguages.map((lang) => {
+                                const active = filters.languages.includes(
+                                    lang.id,
+                                )
                                 return (
-                                    <button
-                                        key={tag}
-                                        onClick={() => toggleTag(tag)}
-                                        className={cn(
-                                            "inline-flex items-center rounded-full px-2.5 py-1",
-                                            "text-[12px] font-medium transition-all duration-150",
-                                            "focus-visible:outline-none",
-                                            active ?
-                                                "bg-primary text-white"
-                                            :   "bg-zinc-100 text-zinc-500 hover:bg-zinc-200 hover:text-zinc-700",
-                                        )}
+                                    <FieldGroup
+                                        className="w-full"
+                                        key={lang.id}
                                     >
-                                        {tag}
-                                    </button>
+                                        <Field orientation="horizontal">
+                                            <Checkbox
+                                                id={`bs-lang-${lang.id}`}
+                                                name={`bs-lang-${lang.id}`}
+                                                checked={active}
+                                                onCheckedChange={() =>
+                                                    toggleLanguage(lang.id)
+                                                }
+                                            />
+                                            <FieldLabel
+                                                htmlFor={`bs-lang-${lang.id}`}
+                                                className="cursor-pointer text-zinc-500"
+                                            >
+                                                {lang.label}
+                                            </FieldLabel>
+                                        </Field>
+                                    </FieldGroup>
                                 )
                             })}
+                            {hasMoreLanguages && (
+                                <button
+                                    onClick={() =>
+                                        setShowAllLanguages((prev) => !prev)
+                                    }
+                                    className="cursor-pointer mt-2 w-full rounded-lg bg-zinc-100 py-2 text-[13px] font-medium text-zinc-600 transition-colors duration-150 focus-visible:outline-none"
+                                >
+                                    {showAllLanguages ?
+                                        "Kamroq ko'rsatish"
+                                    :   `Barcha tillar (${hiddenLanguageCount})`
+                                    }
+                                </button>
+                            )}
                         </div>
                     </FilterSection>
                 </div>

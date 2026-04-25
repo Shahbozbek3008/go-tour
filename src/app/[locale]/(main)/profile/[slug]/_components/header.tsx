@@ -26,7 +26,7 @@ const DESTINATIONS = [
     { id: 18, code: "ru", label: "Rossiya" },
 ]
 
-const VISIBLE_COUNT = 11
+const VISIBLE_COUNT = 14
 
 export function ProfileHeader() {
     const [active, setActive] = useState<number | null>(null)
@@ -52,11 +52,11 @@ export function ProfileHeader() {
                             "text-gray-500 hover:text-gray-900",
                         )}
                     >
-                        <img
+                        {/* <img
                             src={`https://flagcdn.com/w40/${dest.code}.png`}
                             alt={dest.label}
                             className="w-4 h-4 rounded-sm"
-                        />
+                        /> */}
 
                         <span>{dest.label}</span>
                     </button>

@@ -1,20 +1,20 @@
 import { cn } from "@/lib/utils/shadcn"
 import Image from "next/image"
-import { Reviewer } from "../../../_types"
 
 interface ReviewerAvatarProps {
-    reviewer: Reviewer
+    name: string
+    avatarUrl?: string
     className?: string
 }
 
-export function ReviewerAvatar({ reviewer, className }: ReviewerAvatarProps) {
-    const initial = reviewer.name.charAt(0).toUpperCase()
+export function ReviewerAvatar({ name, avatarUrl, className }: ReviewerAvatarProps) {
+    const initial = name.charAt(0).toUpperCase()
 
-    if (reviewer.avatarUrl) {
+    if (avatarUrl) {
         return (
             <Image
-                src={reviewer.avatarUrl}
-                alt={reviewer.name}
+                src={avatarUrl}
+                alt={name}
                 width={38}
                 height={38}
                 className={cn("rounded-full object-cover shrink-0", className)}

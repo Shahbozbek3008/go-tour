@@ -1,38 +1,55 @@
+"use client"
+
+import { usePathname, useRouter } from "@/i18n/navigation"
+import { getHref } from "@/lib/utils/get-href"
 import { cn } from "@/lib/utils/shadcn"
 import { AnimatePresence, motion } from "framer-motion"
 import { Check, ChevronDown } from "lucide-react"
+import { useSearchParams } from "next/navigation"
 import React from "react"
 
 export type SortKey =
-    | "popular"
-    | "price_asc"
-    | "price_desc"
-    | "rating"
-    | "newest"
+    | "POPULARITY"
+    | "MOST_REVIEWED"
+    | "PRICE_ASC"
+    | "PRICE_DESC"
+    | "RATING_DESC"
+    | "NEWEST"
 
 interface SortOption {
     key: SortKey
     label: string
 }
 
-interface SortDropdownProps {
-    value: SortKey
-    onChange: (key: SortKey) => void
-}
+const SORT_QUERY_KEY = "sortBy"
 
 const SORT_OPTIONS: SortOption[] = [
-    { key: "popular", label: "Mashhurlar" },
-    { key: "price_asc", label: "Arzon avval" },
-    { key: "price_desc", label: "Qimmat avval" },
-    { key: "rating", label: "Yuqori reyting" },
-    { key: "newest", label: "Yangilar" },
+    { key: "POPULARITY", label: "Mashhurlar" },
+    { key: "MOST_REVIEWED", label: "Otzivlar soni bo'yicha" },
+    { key: "PRICE_ASC", label: "Arzon avval" },
+    { key: "PRICE_DESC", label: "Qimmat avval" },
+    { key: "RATING_DESC", label: "Yuqori reyting" },
+    { key: "NEWEST", label: "Yangilar" },
 ]
 
-export const SortDropdown = ({ value, onChange }: SortDropdownProps) => {
+const VALID_SORT_KEYS = new Set(SORT_OPTIONS.map((o) => o.key))
+
+const DEFAULT_LABEL = "Saralash"
+
+export const SortDropdown = () => {
+    const router = useRouter()
+    const pathname = usePathname()
+    const searchParams = useSearchParams()
     const [open, setOpen] = React.useState(false)
     const ref = React.useRef<HTMLDivElement>(null)
 
-    const current = SORT_OPTIONS.find((o) => o.key === value)!
+    const rawParam = searchParams.get(SORT_QUERY_KEY)
+    const value: SortKey | null =
+        rawParam && VALID_SORT_KEYS.has(rawParam as SortKey) ?
+            (rawParam as SortKey)
+        :   null
+
+    const current = SORT_OPTIONS.find((o) => o.key === value) ?? null
 
     React.useEffect(() => {
         function handleClick(e: MouseEvent) {
@@ -41,8 +58,31 @@ export const SortDropdown = ({ value, onChange }: SortDropdownProps) => {
             }
         }
         document.addEventListener("mousedown", handleClick)
+
         return () => document.removeEventListener("mousedown", handleClick)
     }, [])
+
+    function handleChange(key: SortKey) {
+        const existingParams = Object.fromEntries(searchParams.entries())
+        if (pathname === "/favourites") {
+            router.push(
+                getHref({
+                    pathname: "/[locale]/favourites",
+                    query: { ...existingParams, [SORT_QUERY_KEY]: key },
+                }),
+                { scroll: false },
+            )
+        } else {
+            router.push(
+                getHref({
+                    pathname: "/[locale]/catalog",
+                    query: { ...existingParams, [SORT_QUERY_KEY]: key },
+                }),
+                { scroll: false },
+            )
+        }
+        setOpen(false)
+    }
 
     return (
         <div ref={ref} className="relative">
@@ -50,20 +90,29 @@ export const SortDropdown = ({ value, onChange }: SortDropdownProps) => {
                 onClick={() => setOpen((p) => !p)}
                 className={cn(
                     "flex items-center gap-2 px-3.5 py-2 rounded-xl",
-                    "text-[13px] font-medium text-zinc-700",
-                    "bg-white border border-zinc-200/80",
-                    "hover:border-zinc-300 hover:bg-zinc-50",
-                    "transition-all duration-150 focus-visible:outline-none",
+                    "text-[13px] font-medium",
+                    "border transition-all duration-150 focus-visible:outline-none",
                     "shadow-[0_1px_3px_rgba(0,0,0,0.06)]",
+                    current ?
+                        "bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100 hover:border-blue-300"
+                    :   "bg-white border-zinc-200/80 text-zinc-700 hover:border-zinc-300 hover:bg-zinc-50",
                 )}
             >
-                <span className="text-zinc-400 text-[12px] font-normal">
-                    Saralash:
+                <span
+                    className={cn(
+                        "text-[12px] font-normal",
+                        current ? "text-blue-400" : "text-zinc-400",
+                    )}
+                >
+                    {DEFAULT_LABEL}:
                 </span>
-                <span>{current.label}</span>
+
+                <span className="text-primary">{current?.label}</span>
+
                 <ChevronDown
                     className={cn(
-                        "h-3.5 w-3.5 text-zinc-400 transition-transform duration-200",
+                        "h-3.5 w-3.5 transition-transform duration-200",
+                        current ? "text-blue-400" : "text-zinc-400",
                         open && "rotate-180",
                     )}
                 />
@@ -87,10 +136,7 @@ export const SortDropdown = ({ value, onChange }: SortDropdownProps) => {
                         {SORT_OPTIONS.map((opt) => (
                             <button
                                 key={opt.key}
-                                onClick={() => {
-                                    onChange(opt.key)
-                                    setOpen(false)
-                                }}
+                                onClick={() => handleChange(opt.key)}
                                 className={cn(
                                     "flex items-center justify-between w-full px-4 py-2.5",
                                     "text-[13px] transition-colors duration-100",

@@ -18,11 +18,7 @@ export default async function Providers({
                     endpoint={API.PROFILE.INFO.ME}
                     enabled={!!accessToken}
                 >
-                    <PrefetchProvider
-                        endpoint={API.EXTRA.AI_CHAT_START_MESSAGE}
-                    >
-                        <ModalProvider>{children}</ModalProvider>
-                    </PrefetchProvider>
+                    <ModalProvider>{children}</ModalProvider>
                 </PrefetchProvider>
             </ReactQueryProvider>
         </NextIntlClientProvider>

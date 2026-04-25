@@ -45,7 +45,7 @@ export const useRequest = <P = any, D = any>({
                     :   payload
 
                 let response: Response
-                const finalUrl = url.endsWith("/") ? url : url + "/"
+                const finalUrl = url
 
                 switch (method) {
                     case "get":

@@ -1,20 +1,24 @@
-export interface Reviewer {
-    name: string
-    avatarUrl?: string
-    rating: number
-    date: string
-}
+export type MediaType = "IMAGE" | "VIDEO"
 
-export interface ReviewImage {
-    src: string
-    alt: string
+export interface ReviewMedia {
+    id: number
+    url: string
+    type: MediaType
+    orderIndex: number
+    isMain: boolean | null
 }
 
 export interface Review {
-    id: string
-    reviewer: Reviewer
-    text: string
-    images?: ReviewImage[]
+    id: number
+    rating: number
+    comment: string
+    reply: string | null
+    status: string
+    userId: number
+    userFullName: string
+    tourId: number
+    createdAt: number
+    mediaUrls: ReviewMedia[]
 }
 
 export interface ReviewsSectionProps {

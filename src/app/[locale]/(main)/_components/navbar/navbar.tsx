@@ -9,6 +9,7 @@ import { useRouter } from "@/i18n/navigation"
 import { MODAL_KEYS } from "@/lib/constants/modal-keys"
 import { getHref } from "@/lib/utils/get-href"
 import { cn } from "@/lib/utils/shadcn"
+import { Heart } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -37,7 +38,7 @@ export const Navbar = () => {
             smsCode: "",
         },
     })
-    const { isAuthenticated } = useProfileQuery()
+    const { isAuthenticated, data: profile } = useProfileQuery()
 
     const isCatalog = pathname.includes("/agents")
     const isTransparent = isCatalog && !scrolled
@@ -128,16 +129,26 @@ export const Navbar = () => {
                         />
 
                         <div className="flex items-center gap-2.5">
+                            <div className="relative md:flex hidden">
+                                <Button
+                                    size="icon"
+                                    variant="outline"
+                                    className={cn(
+                                        "rounded-full w-10 h-10 bg-transparent hover:bg-transparent shadow-none border-none",
+                                        isTransparent && "brightness-0 invert",
+                                    )}
+                                    onClick={handleHeartClick}
+                                >
+                                    <Heart className="w-5 h-5" />
+                                </Button>
+                                {profile?.data?.favoriteCount! > 0 && (
+                                    <span className="absolute top-0 right-0 flex items-center justify-center w-4.5 h-4.5 rounded-full bg-red-500 text-white text-[10px] font-bold leading-none pointer-events-none">
+                                        {profile?.data?.favoriteCount}
+                                    </span>
+                                )}
+                            </div>
                             <LanguageSwitcher isTransparent={isTransparent} />
                             <CurrencySwitcher isTransparent={isTransparent} />
-                            {/* <Button
-                                size="icon"
-                                variant="outline"
-                                className="rounded-full w-10 h-10 bg-[#f4f4f4] border-none md:flex hidden"
-                                // onClick={handleHeartClick}
-                            >
-                                <Heart className="w-5 h-5" />
-                            </Button> */}
                             {isAuthenticated && (
                                 <div className="hidden md:block">
                                     <Profile />

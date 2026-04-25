@@ -72,7 +72,7 @@
     "investmentOpportunities": "Investitsiya imkoniyatlari",
     "postYourRequest": "So‘rovingizni joylashtiring",
     "matchWithPartners": "Hamkorlar bilan moslash",
-    "smartSearchEngine": "Aqlli qidiruv tizimi",
+    "smart2Engine": "Aqlli qidiruv tizimi",
     "companies": "Kompaniyalar",
     "ndaPolicy": "NDA siyosati",
     "contactUs": "Biz bilan bog‘laning",
@@ -287,7 +287,7 @@
     "invitations": "Takliflar",
     "blackList": "Qora ro‘yxat",
     "show": "Ko‘rsatish",
-    "searchUser": "Foydalanuvchi qidirish",
+    "2User": "Foydalanuvchi qidirish",
     "selectRole": "Rolni tanlang",
     "nothingFound": "Hech narsa topilmadi",
     "accept": "Qabul qilish",
@@ -441,7 +441,7 @@
     "anonymousUser": "Anonim foydalanuvchi",
     "otherUsersWillNotSee": "Boshqa foydalanuvchilar sizning ismingizni, profil tafsilotlaringizni yoki aloqalaringizni ko‘rmaydi. Maxfiyligingiz to‘liq himoyalangan.",
     "myConnections": "Mening aloqalarim",
-    "search": "qidiruv...",
+    "2": "qidiruv...",
     "selected": "Tanlangan",
     "user": "Foydalanuvchi",
     "seePreview": "Oldindan ko‘rish",
@@ -769,5 +769,9 @@
     "yourPhoto": "Sizning fotosuratingiz",
     "yourPhotoDesc": "Profilingizda ko'rsatiladi",
     "gender": "Jins",
-    "birthDate": "Tug'ilgan sana"
+    "birthDate": "Tug'ilgan sana",
+    "tour": "tur",
+    "noResultsFound": "Natija topilmadi",
+    "showLess": "Kamroq ko'rsatish",
+    "search2": "Qidirish"
 }

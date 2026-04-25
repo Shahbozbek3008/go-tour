@@ -301,85 +301,27 @@ export const ACCOMODATION_OPTIONS_LIST = [
     },
 ]
 
-export const REVIEWS = [
+export const REVIEWS: any[] = [
     {
-        id: "1",
-        reviewer: {
-            name: "Victoria",
-            rating: 5.0,
-            date: "August 3, 2025",
-        },
-        text: "The tour was maximally comfortable, well-organized, and exceeded all expectations. Everything was thoughtfully planned, and the experience felt smooth from start to finish.",
-        images: [
+        id: 1,
+        rating: 5,
+        comment: "The tour was maximally comfortable, well-organized, and exceeded all expectations. Everything was thoughtfully planned, and the experience felt smooth from start to finish.",
+        reply: null,
+        status: "VISIBLE",
+        userId: 1,
+        userFullName: "Victoria",
+        tourId: 121,
+        createdAt: 1777009052000,
+        mediaUrls: [
             {
-                src: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop",
-                alt: "Mountains",
-            },
-            {
-                src: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&h=300&fit=crop",
-                alt: "Nature",
-            },
-            {
-                src: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
-                alt: "Resort",
-            },
-            {
-                src: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&h=300&fit=crop",
-                alt: "Landscape",
-            },
-            {
-                src: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=400&h=300&fit=crop",
-                alt: "Route",
-            },
-            {
-                src: "https://images.unsplash.com/photo-1470770903676-69b98201ea1c?w=400&h=300&fit=crop",
-                alt: "View",
-            },
-            {
-                src: "https://images.unsplash.com/photo-1561501900-3701fa6a0864?w=400&h=300&fit=crop",
-                alt: "Mountain view",
-            },
-        ],
-    },
-    {
-        id: "2",
-        reviewer: {
-            name: "Alex",
-            rating: 5.0,
-            date: "August 3, 2025",
-        },
-        text: "The tour was maximally comfortable, well-organized, and exceeded all expectations. Everything was thoughtfully planned, and the experience felt smooth from start to finish.",
-        images: [
-            {
-                src: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop",
-                alt: "Mountains",
-            },
-            {
-                src: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&h=300&fit=crop",
-                alt: "Nature",
-            },
-            {
-                src: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
-                alt: "Resort",
-            },
-            {
-                src: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&h=300&fit=crop",
-                alt: "Landscape",
-            },
-            {
-                src: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=400&h=300&fit=crop",
-                alt: "Route",
-            },
-            {
-                src: "https://images.unsplash.com/photo-1470770903676-69b98201ea1c?w=400&h=300&fit=crop",
-                alt: "View",
-            },
-            {
-                src: "https://images.unsplash.com/photo-1561501900-3701fa6a0864?w=400&h=300&fit=crop",
-                alt: "Mountain view",
-            },
-        ],
-    },
+                id: 1,
+                url: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop",
+                type: "IMAGE",
+                orderIndex: 0,
+                isMain: null
+            }
+        ]
+    }
 ]
 
 export const CITIES: City[] = [

@@ -1,9 +1,11 @@
 "use client"
 
-import { Card } from "@/components/card"
-import { TOURS } from "@/lib/constants/tours"
+import { useTourRecommendedQuery } from "@/app/[locale]/(main)/_components/tours/_hooks"
+import { adaptTours } from "@/lib/adapters/tour.adapter"
 import useEmblaCarousel from "embla-carousel-react"
 import { AnimatePresence, motion } from "framer-motion"
+import { useMemo } from "react"
+import { ProductCard } from "../card"
 import ClientTranslate from "../common/translation/client-translate"
 
 interface SpecialOffersProps {
@@ -15,11 +17,16 @@ export const SpecialOffers = ({
     title = "specialOffers",
     hasLike,
 }: SpecialOffersProps) => {
+    const { recommendedTours } = useTourRecommendedQuery()
     const [emblaRef] = useEmblaCarousel({
         align: "start",
         dragFree: true,
         containScroll: "trimSnaps",
     })
+
+    const specialTours = useMemo(() => {
+        return adaptTours(recommendedTours ?? [])
+    }, [recommendedTours])
 
     return (
         <div className="flex flex-col">
@@ -34,9 +41,9 @@ export const SpecialOffers = ({
             >
                 <AnimatePresence mode="popLayout">
                     <motion.div className="flex gap-4 pl-0.5 pb-2">
-                        {TOURS.map((tour) => (
-                            <Card
-                                key={`${tour.id}`}
+                        {specialTours?.map((tour) => (
+                            <ProductCard
+                                key={tour?.id}
                                 tour={tour}
                                 wrapperClassName="w-[75vw] xs:w-[300px] md:w-[320px] shrink-0"
                                 hasLike={hasLike}

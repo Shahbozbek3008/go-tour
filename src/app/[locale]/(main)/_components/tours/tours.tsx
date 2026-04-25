@@ -1,24 +1,28 @@
-// components/sections/TourSection.tsx
 "use client"
 
-import { Card } from "@/components/card"
+import { ProductCard } from "@/components/card"
 import ClientTranslate from "@/components/common/translation/client-translate"
 import { Button } from "@/components/ui/button"
+import { useTourSearch } from "@/hooks/react-query/use-tour-search-query"
 import { useRouter } from "@/i18n/navigation"
-import { TOURS } from "@/lib/constants/tours"
+import { adaptTours } from "@/lib/adapters/tour.adapter"
 import { getHref } from "@/lib/utils/get-href"
 import useEmblaCarousel from "embla-carousel-react"
 import { AnimatePresence, motion } from "framer-motion"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
+import {
+    useTourDiscountsQuery,
+    useTourRecommendedQuery,
+    useTourTopSellingQuery,
+} from "./_hooks"
 
 type Tab = {
     id: string
     label: string
-    highlight?: boolean
 }
 
-const tabs: Tab[] = [
+const TABS: Tab[] = [
     { id: "all", label: "Barchasi" },
     { id: "bestseller", label: "Eng ko'p sotiladigan" },
     { id: "discount", label: "Chegirmali turlar" },
@@ -35,14 +39,41 @@ export const TourSection = () => {
         dragFree: true,
         containScroll: "trimSnaps",
     })
+    const { tours: rawTours } = useTourSearch({
+        data: {
+            sortBy:
+                activeTab === "new" ? "NEWEST"
+                : activeTab === "best" ? "RATING_DESC"
+                : undefined,
+        },
+    })
+    const { topSellingTours } = useTourTopSellingQuery({
+        options: {
+            enabled: activeTab === "bestseller",
+        },
+    })
+    const { recommendedTours } = useTourRecommendedQuery()
+    const { discountTours } = useTourDiscountsQuery({
+        options: {
+            enabled: activeTab === "discount",
+        },
+    })
 
     const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi])
     const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi])
 
-    const filtered =
-        activeTab === "all" ? TOURS : (
-            TOURS.filter((t) => t.category === activeTab)
-        )
+    const tours = useMemo(() => {
+        if (activeTab === "bestseller") {
+            return adaptTours(topSellingTours ?? [])
+        }
+        if (activeTab === "special") {
+            return adaptTours(recommendedTours ?? [])
+        }
+        if (activeTab === "discount") {
+            return adaptTours(discountTours ?? [])
+        }
+        return adaptTours(rawTours ?? [])
+    }, [rawTours, topSellingTours, recommendedTours, discountTours, activeTab])
 
     return (
         <section className="w-full bg-[#F8FAFC] py-16 md:py-24 overflow-hidden">
@@ -58,7 +89,7 @@ export const TourSection = () => {
                     </motion.h2>
 
                     <div className="flex items-center justify-start md:justify-center gap-1 p-1.5 bg-slate-200/50 rounded-full overflow-x-auto whitespace-nowrap w-full md:w-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                        {tabs.map((tab) => (
+                        {TABS.map((tab) => (
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
@@ -80,10 +111,10 @@ export const TourSection = () => {
                 >
                     <AnimatePresence mode="popLayout">
                         <motion.div className="flex gap-4 pl-0.5 pb-2">
-                            {filtered.map((tour) => (
-                                <Card
-                                    key={`${activeTab}-${tour.id}`}
+                            {tours?.map((tour) => (
+                                <ProductCard
                                     tour={tour}
+                                    key={`${activeTab}-${tour.id}`}
                                     wrapperClassName="w-full md:w-[320px]"
                                 />
                             ))}

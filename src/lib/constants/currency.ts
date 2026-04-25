@@ -7,6 +7,6 @@ export const CURRENCIES: {
     symbol: string
     name: TranslationKey
 }[] = [
-    { id: "usd", iso: "USD", symbol: "$", name: "usd" },
-    { id: "uzs", iso: "UZS", symbol: "UZS", name: "uzs" },
+    { id: "USD", iso: "USD", symbol: "$", name: "USD" },
+    { id: "UZS", iso: "UZS", symbol: "UZS", name: "UZS" },
 ]

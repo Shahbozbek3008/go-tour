@@ -7,7 +7,7 @@ interface TourTagsProps {
 export function TourTags({ tags }: TourTagsProps) {
     return (
         <div className="flex flex-wrap gap-2">
-            {tags.map((tag) => (
+            {tags?.map((tag) => (
                 <Badge
                     key={tag}
                     variant="outline"

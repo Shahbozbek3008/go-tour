@@ -24,13 +24,18 @@ export function TourMeta({
                 variant="default"
                 className="bg-lime-50 text-lime-700 border border-lime-200"
             >
-                <StarRating rating={rating} className="mr-1" />
+                <StarRating
+                    rating={rating ? Number(rating.toFixed(1)) : 0}
+                    className="mr-1"
+                />
             </Badge>
 
-            <Badge className="bg-[#eeeef2] text-black text-sm font-medium">
-                {formatReviewCount(reviewCount)}
-                <ChevronRight className="h-3.5 w-3.5 ml-0.5 text-gray-400" />
-            </Badge>
+            {reviewCount && (
+                <Badge className="bg-[#eeeef2] text-black text-sm font-medium">
+                    {formatReviewCount(reviewCount)}
+                    <ChevronRight className="h-3.5 w-3.5 ml-0.5 text-gray-400" />
+                </Badge>
+            )}
 
             <Badge variant="gray" className="bg-[#eeeef2] text-black text-sm">
                 {country}

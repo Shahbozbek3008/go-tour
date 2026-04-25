@@ -18,10 +18,10 @@ export const Reviews = ({
         <section className="w-full">
             <RatingSummary rating={rating} totalCount={totalCount} />
             <Separator />
-            {reviews.map((review, index) => (
+            {reviews?.map((review, index) => (
                 <div key={review.id}>
                     <ReviewCard review={review} />
-                    {index < reviews.length - 1 && <Separator />}
+                    {index < reviews?.length - 1 && <Separator />}
                 </div>
             ))}
             <Separator className="mb-1" />

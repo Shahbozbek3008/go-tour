@@ -4,6 +4,7 @@ import { ChevronDown, Mail } from "lucide-react"
 import { useState } from "react"
 import { TourDay } from "../../../_types"
 import { ProgramAccordion } from "./program-accordion"
+import { useLanguage } from "@/hooks/use-language"
 
 interface ProgramProps {
     days: TourDay[]
@@ -11,7 +12,8 @@ interface ProgramProps {
 }
 
 export function Program({ days, onEmailRequest }: ProgramProps) {
-    const allIds = days.map((d) => d.id)
+    const { isRussian } = useLanguage()
+    const allIds = days.map((d) => d.id.toString())
     const [openItems, setOpenItems] = useState<string[]>([])
     const allExpanded = openItems.length === days.length
 
@@ -23,7 +25,7 @@ export function Program({ days, onEmailRequest }: ProgramProps) {
         <section className="w-full space-y-5">
             <div className="flex items-center justify-between">
                 <h2 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">
-                    Program
+                    {isRussian ? "Программа тура" : "Tur dasturi"}
                 </h2>
             </div>
             <div className="flex items-center justify-between">

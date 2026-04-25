@@ -1,6 +1,6 @@
 "use client"
 
-import { Card } from "@/components/card"
+import { ProductCard } from "@/components/card"
 import { MOCK_TOURS } from "@/lib/constants/mockdata"
 import { useState } from "react"
 import { useFilter } from "../_hooks"
@@ -32,7 +32,11 @@ export const ComponentIndex = () => {
                     }}
                 >
                     {MOCK_TOURS.map((tour) => (
-                        <Card tour={tour} key={tour.id} hasLike={false} />
+                        <ProductCard
+                            tour={tour}
+                            key={tour.id}
+                            hasLike={false}
+                        />
                     ))}
                 </div>
             </div>

@@ -11,32 +11,43 @@ export type UseGetArgs<TData, TQueryFnData = unknown, TError = any> = {
     options?: ICustomUseQueryOptions<TQueryFnData, TError, TData>
     config?: RequestInit
     params?: Record<string, unknown>
+    data?: Record<string, unknown>
 }
 
 export const useGet = <TData, TQueryFnData = unknown, TError = any>(
     url: string,
     args?: UseGetArgs<TData, TQueryFnData, TError>,
+    method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH" = "GET",
 ) => {
-    const { deps, config, options, params } = args || {}
+    const { deps, config, options, params, data } = args || {}
 
     return useQuery<TQueryFnData, TError, TData>({
         queryKey: (() => {
             const paramValues = Object.values(params || {})
+            const dataValues = Object.values(data || {})
             const hasParams = paramValues.length > 0
+            const hasData = dataValues.length > 0
 
             if (deps) {
-                return hasParams ?
-                        [url, ...deps, ...paramValues]
+                return hasParams || hasData ?
+                        [url, ...deps, ...paramValues, ...dataValues]
                     :   [url, ...deps]
             }
 
-            return hasParams ? [url, ...paramValues] : [url]
+            return hasParams || hasData ?
+                    [url, ...paramValues, ...dataValues]
+                :   [url]
         })(),
         queryFn: () => {
-            return getRequest(url, {
-                ...config,
-                params,
-            })
+            return getRequest(
+                url,
+                {
+                    ...config,
+                    params,
+                },
+                method,
+                data,
+            )
         },
         ...(options || {}),
     })
