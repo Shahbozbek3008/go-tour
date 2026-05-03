@@ -773,5 +773,22 @@
     "tour": "tur",
     "noResultsFound": "Natija topilmadi",
     "showLess": "Kamroq ko'rsatish",
-    "search2": "Qidirish"
+    "search2": "Qidirish",
+    "findTours": "Sayohatlarni topish",
+    "whereDoYouWantToGo": "Qayerga bormoqchisiz?",
+    "whenDoYouWantToGo": "Qachon bormoqchisiz?",
+    "foundToursCount": "{count} ta tur topildi",
+    "allViewDestinations": "Barcha yo'nalishlarni ko'rish",
+    "unforgettableCities": "Unutilmas shaharlar",
+    "categories": "Kategoriyalar",
+    "bookTour": "Bron qilish",
+    "participants": "Qatnashuvchilar",
+    "pleaseSelectDate": "Iltimos, sanani tanlang",
+    "installment": "Muddatli to'lov",
+    "cashless": "Naqd to'lov",
+    "month": "oy",
+    "datesAreNotAvailable": "Sanalar mavjud emas",
+    "currentlyNoDates": "Hozirgi vaqtda band qilish uchun ochiq sanalar yo'q.",
+    "selectDates": "Sanalarni tanlang",
+    "favourites": "Sevimli turlar"
 }
