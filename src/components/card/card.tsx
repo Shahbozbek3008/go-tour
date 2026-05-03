@@ -1,5 +1,6 @@
 "use client"
 
+import { useCurrency } from "@/app/_providers/currency-provider"
 import { useProfileQuery } from "@/hooks/react-query/use-profile-query"
 import { useRequest } from "@/hooks/react-query/use-request"
 import { useRevalidate } from "@/hooks/react-query/use-revalidate"
@@ -9,9 +10,12 @@ import { API } from "@/lib/constants/api-endpoints"
 import { MODAL_KEYS } from "@/lib/constants/modal-keys"
 import { getHref } from "@/lib/utils/get-href"
 import { cn } from "@/lib/utils/shadcn"
+import { useQueryClient } from "@tanstack/react-query"
 import { motion } from "framer-motion"
 import { Heart, Star } from "lucide-react"
 import Image from "next/image"
+import { toast } from "sonner"
+import ClientTranslate from "../common/translation/client-translate"
 import { Button } from "../ui/button"
 
 interface Tour {
@@ -32,6 +36,10 @@ interface Tour {
     isNew?: boolean
     discount?: number
     isFavorite?: boolean
+    installment?: {
+        hasInstallment: boolean
+        installmentAmount: number
+    }
 }
 
 interface CardProps {
@@ -46,6 +54,8 @@ export const ProductCard = ({
     hasLike = true,
 }: CardProps) => {
     const router = useRouter()
+    const { currency } = useCurrency()
+    const queryClient = useQueryClient()
     const { isAuthenticated } = useProfileQuery()
     const { openModal } = useModal(MODAL_KEYS.SIGN_IN_MODAL)
     const { post, isPending, remove } = useRequest()
@@ -63,8 +73,49 @@ export const ProductCard = ({
 
         const options = {
             onSuccess: () => {
+                queryClient.setQueriesData({ queryKey: [] }, (oldData: any) => {
+                    if (!oldData) return oldData
+
+                    const updateTour = (t: any) =>
+                        t.id === tour.id ?
+                            { ...t, isFavorite: !tour.isFavorite }
+                        :   t
+
+                    if (oldData.pages) {
+                        return {
+                            ...oldData,
+                            pages: oldData.pages.map((page: any) => ({
+                                ...page,
+                                tours: page.tours?.map(updateTour),
+                                results: page.results?.map(updateTour),
+                            })),
+                        }
+                    }
+
+                    if (Array.isArray(oldData.tours)) {
+                        return {
+                            ...oldData,
+                            tours: oldData.tours.map(updateTour),
+                        }
+                    }
+                    if (Array.isArray(oldData.results)) {
+                        return {
+                            ...oldData,
+                            results: oldData.results.map(updateTour),
+                        }
+                    }
+                    if (Array.isArray(oldData)) {
+                        return oldData.map(updateTour)
+                    }
+
+                    return oldData
+                })
+                if (tour?.isFavorite) {
+                    toast.success("Tour removed from favorites")
+                } else {
+                    toast.success("Tour added to favorites")
+                }
                 invalidateByExactMatch([
-                    API.TOUR.SEARCH,
                     API.TOUR.TOP_SELLING,
                     API.TOUR.PROMOTIONAL,
                     API.TOUR.FAVOURITES_LIST,
@@ -102,7 +153,7 @@ export const ProductCard = ({
             }
         >
             <div className="relative overflow-hidden h-[200px] shrink-0 z-1">
-                <div className="absolute top-3 left-3 z-1 flex gap-2">
+                <div className="absolute top-3 left-3 z-10 flex gap-2">
                     <span className="bg-blue-500 text-white text-[11px] font-semibold px-2.5 py-1 rounded-full">
                         {tour.badge}
                     </span>
@@ -114,12 +165,12 @@ export const ProductCard = ({
                         size="icon"
                         isLoading={isPending}
                         onClick={handleFavorite}
-                        className="absolute cursor-pointer top-3 right-3 z-100 w-8 h-8 bg-transparent hover:bg-transparent shadow-none flex items-center justify-center transition-transform duration-200 hover:scale-110 active:scale-95"
+                        className="absolute cursor-pointer top-3 right-3 z-100 w-8 h-8 bg-transparent hover:bg-transparent shadow-none flex items-center justify-center transition-transform duration-200 hover:scale-110 active:scale-95 group/heart"
                     >
                         <Heart
                             size={24}
                             className={cn(
-                                "stroke-white",
+                                "stroke-white transition-all duration-200 group-hover/heart:fill-red-500 group-hover/heart:stroke-red-500",
                                 tour?.isFavorite &&
                                     "fill-red-500 stroke-red-500",
                             )}
@@ -160,54 +211,74 @@ export const ProductCard = ({
                     />
                 </div>
             </div>
-
             <div className="p-4 flex flex-col flex-1">
-                <div className="flex items-center gap-1.5 mb-2">
+                <div className="flex items-center gap-1.5 mb-2 flex-wrap">
                     <Star
                         size={13}
-                        className="fill-amber-400 stroke-amber-400"
+                        className="fill-amber-400 stroke-amber-400 shrink-0"
                     />
-                    <span className="text-[12px] font-semibold text-slate-700">
-                        {tour?.rating === null ? "-" : tour?.rating?.toFixed(1)}
-                    </span>
-                    <span className="text-[12px] text-slate-400">
-                        ({tour?.reviews === null ? "-" : tour?.reviews} ta
-                        sharh)
-                    </span>
-                    <span className="text-slate-300 mx-1">·</span>
+                    {tour?.rating === 0 || tour?.rating === null ?
+                        <>
+                            <span className="text-[12px] font-semibold text-amber-400">
+                                <ClientTranslate translationKey="new" />
+                            </span>
+                            <span className="text-slate-300 mx-1">·</span>
+                        </>
+                    :   <>
+                            <span className="text-[12px] font-semibold text-slate-700">
+                                {tour?.rating === null ?
+                                    "-"
+                                :   tour?.rating?.toFixed(1)}
+                            </span>
+                            <span className="text-[12px] text-slate-400">
+                                ({tour?.reviews === null ? "-" : tour?.reviews}{" "}
+                                ta sharh)
+                            </span>
+                            <span className="text-slate-300 mx-1">·</span>
+                        </>
+                    }
                     <span className="text-[12px] text-slate-400">
                         {tour?.location}
                     </span>
                 </div>
-
                 <h3 className="text-[15px] font-bold text-slate-800 leading-snug mb-1 line-clamp-2">
                     {tour?.title}
                 </h3>
-
                 <p className="text-[12px] text-slate-400 mb-3 line-clamp-2 flex-1">
                     {tour?.subtitle}
                 </p>
-
-                <div className="flex items-end justify-between mt-auto">
-                    <div>
-                        <div className="flex items-baseline gap-1.5">
-                            <span className="text-[18px] font-bold text-slate-800">
-                                ${tour?.price?.toLocaleString()}
+                <div className="flex flex-col gap-2 mt-auto border-t border-slate-100 pt-3">
+                    <div className="flex items-baseline gap-1.5 flex-wrap min-w-0">
+                        <span className="text-[17px] font-bold text-slate-800 break-all min-w-0 leading-tight">
+                            {tour?.price?.toLocaleString()}
+                            {currency === "USD" ? " $" : " so'm"}
+                        </span>
+                        {tour?.originalPrice &&
+                            tour?.originalPrice !== tour?.price && (
+                                <span className="text-[13px] text-slate-400 line-through shrink-0">
+                                    {tour?.originalPrice?.toLocaleString()}
+                                    {currency === "USD" ? " $" : " so'm"}
+                                </span>
+                            )}
+                    </div>
+                    <div className="flex items-center justify-between gap-2 flex-wrap">
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                            <span className="text-[11px] text-slate-400 shrink-0">
+                                {tour?.days} kun
                             </span>
-                            {tour?.originalPrice &&
-                                tour?.originalPrice !== tour?.price && (
-                                    <span className="text-[13px] text-slate-400 line-through">
-                                        ${tour?.originalPrice?.toLocaleString()}
-                                    </span>
-                                )}
+                            {tour?.installment?.hasInstallment && (
+                                <span className="text-[10px] font-semibold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-200 truncate max-w-[140px]">
+                                    {tour?.installment?.installmentAmount?.toLocaleString()}
+                                    {currency === "USD" ?
+                                        " $/month"
+                                    :   " so'm/oyiga"}
+                                </span>
+                            )}
                         </div>
-                        <span className="text-[11px] text-slate-400">
-                            {tour?.days} kun
+                        <span className="text-xs text-slate-500 bg-slate-50 px-2.5 py-1 rounded-full border border-slate-100 shrink-0 whitespace-nowrap">
+                            {tour?.dates}
                         </span>
                     </div>
-                    <span className="text-[12px] text-slate-500 bg-slate-50 px-2.5 py-1 rounded-full border border-slate-100">
-                        {tour?.dates}
-                    </span>
                 </div>
             </div>
         </motion.div>

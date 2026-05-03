@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useCurrency } from "@/app/_providers/currency-provider"
 import { getRequest } from "@/lib/api/fetch-requests"
 import { QueryKey, useQuery, UseQueryOptions } from "@tanstack/react-query"
 
@@ -20,6 +21,7 @@ export const useGet = <TData, TQueryFnData = unknown, TError = any>(
     method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH" = "GET",
 ) => {
     const { deps, config, options, params, data } = args || {}
+    const { currency } = useCurrency()
 
     return useQuery<TQueryFnData, TError, TData>({
         queryKey: (() => {
@@ -30,13 +32,13 @@ export const useGet = <TData, TQueryFnData = unknown, TError = any>(
 
             if (deps) {
                 return hasParams || hasData ?
-                        [url, ...deps, ...paramValues, ...dataValues]
-                    :   [url, ...deps]
+                        [url, ...deps, ...paramValues, ...dataValues, currency]
+                    :   [url, ...deps, currency]
             }
 
             return hasParams || hasData ?
-                    [url, ...paramValues, ...dataValues]
-                :   [url]
+                    [url, ...paramValues, ...dataValues, currency]
+                :   [url, currency]
         })(),
         queryFn: () => {
             return getRequest(

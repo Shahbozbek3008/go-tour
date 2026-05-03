@@ -1,6 +1,6 @@
+import { TravelAgencyResponse } from "@/types/api/agents"
 import { MapPin } from "lucide-react"
 import Image from "next/image"
-import { TravelAgencyResponse } from "./_hooks"
 
 export const AgentChip = ({ agent }: { agent: TravelAgencyResponse }) => (
     <div className="group flex items-center gap-4 rounded-2xl p-4 border border-gray-100 bg-white hover:border-transparent hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 cursor-pointer h-full relative overflow-hidden select-none">

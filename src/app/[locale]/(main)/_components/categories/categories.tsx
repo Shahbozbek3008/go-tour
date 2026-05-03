@@ -1,5 +1,6 @@
 "use client"
 
+import ClientTranslate from "@/components/common/translation/client-translate"
 import { cn } from "@/lib/utils/shadcn"
 import { motion } from "framer-motion"
 import { useMemo, useState } from "react"
@@ -31,7 +32,7 @@ export const Categories = () => {
             )
     }, [normalized, showAll])
 
-    const hasMore = normalized.length > CATEGORIES_DEFAULT_VISIBLE_COUNT
+    // const hasMore = normalized.length > CATEGORIES_DEFAULT_VISIBLE_COUNT
 
     return (
         <section className="w-full bg-white py-16 md:py-24 overflow-hidden">
@@ -44,7 +45,7 @@ export const Categories = () => {
                     className="text-center mb-12"
                 >
                     <h2 className="text-3xl md:text-[40px] font-bold tracking-tight text-slate-900">
-                        Kategoriyalar
+                        <ClientTranslate translationKey="categories" />
                     </h2>
                 </motion.div>
 

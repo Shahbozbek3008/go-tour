@@ -5,6 +5,11 @@ export interface TourDestination {
     imageUrl: string | null
 }
 
+interface Installment {
+    hasInstallment: boolean
+    installmentAmount: number
+}
+
 export interface Tour {
     id: number
     nameUz: string
@@ -28,4 +33,5 @@ export interface Tour {
     hasDiscount: boolean
     maxPrice: number
     discountAmount: number
+    installment: Installment
 }

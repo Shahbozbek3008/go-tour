@@ -2,12 +2,11 @@
 
 import { SpecialOffers } from "@/components/special-offers"
 import { useState } from "react"
+import { FilterProvider } from "../_context/filter-context"
 import { CatalogHeader } from "./header"
 import { CatalogLeftSide } from "./left-side"
 import { FilterBottomSheet } from "./left-side/filter-bottom-sheet"
 import { CatalogRightSide } from "./right-side"
-
-import { FilterProvider } from "../_context/filter-context"
 
 export const CatalogLayout = () => {
     const [sheetOpen, setSheetOpen] = useState(false)

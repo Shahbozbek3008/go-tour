@@ -13,13 +13,45 @@ const CATEGORY_MAP: Record<string, string> = {
     BEACH: "bestseller",
     BUSINESS: "special",
 }
+const UZ_MONTHS = [
+    "yan",
+    "fev",
+    "mar",
+    "apr",
+    "may",
+    "iyn",
+    "iyl",
+    "avg",
+    "sen",
+    "okt",
+    "noy",
+    "dek",
+]
+const RU_MONTHS = [
+    "янв",
+    "фев",
+    "мар",
+    "апр",
+    "май",
+    "июн",
+    "июл",
+    "авг",
+    "сен",
+    "окт",
+    "ноя",
+    "дек",
+]
 
-const formatDateRange = (startMs: number, endMs: number): string => {
-    const fmt = (ms: number) =>
-        new Date(ms).toLocaleDateString("uz-UZ", {
-            day: "numeric",
-            month: "short",
-        })
+const formatDateRange = (
+    startMs: number,
+    endMs: number,
+    locale: string = "uz",
+): string => {
+    const months = locale === "ru" ? RU_MONTHS : UZ_MONTHS
+    const fmt = (ms: number) => {
+        const d = new Date(ms)
+        return `${d.getDate()} ${months[d.getMonth()]}`
+    }
     return `${fmt(startMs)} – ${fmt(endMs)}`
 }
 
@@ -68,6 +100,7 @@ export const adaptTour = (tour: Tour) => ({
     discount: tour.hasDiscount ? tour.discountPercent : undefined,
     category: resolveCategory(tour),
     isFavorite: tour?.isFavorite,
+    installment: tour?.installment,
 })
 
 export const adaptTours = (tours: Tour[]) => tours.map(adaptTour)

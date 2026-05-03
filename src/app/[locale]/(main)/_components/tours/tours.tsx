@@ -7,6 +7,7 @@ import { useTourSearch } from "@/hooks/react-query/use-tour-search-query"
 import { useRouter } from "@/i18n/navigation"
 import { adaptTours } from "@/lib/adapters/tour.adapter"
 import { getHref } from "@/lib/utils/get-href"
+import { keepPreviousData } from "@tanstack/react-query"
 import useEmblaCarousel from "embla-carousel-react"
 import { AnimatePresence, motion } from "framer-motion"
 import { ChevronLeft, ChevronRight } from "lucide-react"
@@ -46,16 +47,21 @@ export const TourSection = () => {
                 : activeTab === "best" ? "RATING_DESC"
                 : undefined,
         },
+        options: {
+            placeholderData: keepPreviousData
+        }
     })
     const { topSellingTours } = useTourTopSellingQuery({
         options: {
             enabled: activeTab === "bestseller",
+            placeholderData: keepPreviousData,
         },
     })
     const { recommendedTours } = useTourRecommendedQuery()
     const { discountTours } = useTourDiscountsQuery({
         options: {
             enabled: activeTab === "discount",
+            placeholderData: keepPreviousData,
         },
     })
 

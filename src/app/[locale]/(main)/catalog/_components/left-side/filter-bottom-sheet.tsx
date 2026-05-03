@@ -16,7 +16,7 @@ import { RadioGroup } from "@/components/ui/radio-group"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { cn } from "@/lib/utils/shadcn"
-import { Info, X } from "lucide-react"
+import { Info, Minus, Plus, X } from "lucide-react"
 import { useState } from "react"
 import {
     CATEGORIES,
@@ -141,6 +141,27 @@ export const FilterBottomSheet = ({
                                     setFilters((p) => ({
                                         ...p,
                                         guaranteed: val,
+                                    }))
+                                }
+                                className="data-[state=checked]:bg-blue-600"
+                            />
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-1.5 cursor-pointer select-none">
+                                <span className="text-[14px] text-zinc-900 font-medium">
+                                    Faqat otzivli turlar
+                                </span>
+                                <Info
+                                    strokeWidth={1.5}
+                                    className="w-[18px] h-[18px] text-zinc-400"
+                                />
+                            </div>
+                            <Switch
+                                checked={filters.hasReviews}
+                                onCheckedChange={(val) =>
+                                    setFilters((p) => ({
+                                        ...p,
+                                        hasReviews: val,
                                     }))
                                 }
                                 className="data-[state=checked]:bg-blue-600"
@@ -333,6 +354,78 @@ export const FilterBottomSheet = ({
                                     }
                                 </button>
                             )}
+                        </div>
+                    </FilterSection>
+
+                    <FilterSection title="Qo'shimcha">
+                        <div className="flex flex-col gap-4 pt-1">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-1.5 cursor-pointer select-none">
+                                    <span className="text-[14px] text-zinc-900 font-medium">
+                                        Viza talab qilinmaydi
+                                    </span>
+                                    <Info
+                                        strokeWidth={1.5}
+                                        className="w-[18px] h-[18px] text-zinc-400"
+                                    />
+                                </div>
+                                <Switch
+                                    checked={filters.visaRequired}
+                                    onCheckedChange={(val) =>
+                                        setFilters((p) => ({
+                                            ...p,
+                                            visaRequired: val,
+                                        }))
+                                    }
+                                    className="data-[state=checked]:bg-blue-600"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <span className="text-[13px] font-medium text-zinc-600 block">
+                                    Bolalar chegirmasi
+                                </span>
+                                <div className="flex items-center justify-between p-3.5 border border-zinc-200 rounded-xl bg-zinc-50/50">
+                                    <div className="flex flex-col">
+                                        <span className="text-[11px] text-zinc-400 font-medium leading-none mb-1">
+                                            Foizda (%)
+                                        </span>
+                                        <span className="text-[17px] font-bold text-zinc-900 tabular-nums">
+                                            {filters.childDiscount ?? 0}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={() =>
+                                                setFilters((p) => ({
+                                                    ...p,
+                                                    childDiscount: Math.max(
+                                                        0,
+                                                        (p.childDiscount ?? 0) -
+                                                            1,
+                                                    ),
+                                                }))
+                                            }
+                                            className="w-10 h-10 flex items-center justify-center rounded-lg bg-[#b6cc3a] text-white hover:opacity-90 transition-opacity"
+                                        >
+                                            <Minus className="w-5 h-5" />
+                                        </button>
+                                        <button
+                                            onClick={() =>
+                                                setFilters((p) => ({
+                                                    ...p,
+                                                    childDiscount:
+                                                        (p.childDiscount ?? 0) +
+                                                        1,
+                                                }))
+                                            }
+                                            className="w-10 h-10 flex items-center justify-center rounded-lg bg-zinc-100 text-zinc-400 hover:bg-zinc-200 transition-colors"
+                                        >
+                                            <Plus className="w-5 h-5" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </FilterSection>
                 </div>

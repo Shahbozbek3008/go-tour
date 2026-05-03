@@ -71,7 +71,11 @@ export type FilterState = {
     tags: string[]
     promotional: boolean
     guaranteed: boolean
+    hasReviews: boolean
     languages: string[]
+    destinations: number[]
+    visaRequired: boolean
+    childDiscount: number | null
 }
 
 export const DEFAULT_FILTERS: FilterState = {
@@ -82,5 +86,9 @@ export const DEFAULT_FILTERS: FilterState = {
     tags: [],
     promotional: false,
     guaranteed: false,
+    hasReviews: false,
     languages: [],
+    destinations: [],
+    visaRequired: false,
+    childDiscount: null,
 }

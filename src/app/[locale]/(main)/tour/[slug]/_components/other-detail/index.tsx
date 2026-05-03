@@ -21,8 +21,13 @@ import { Inclusions } from "./inclusions"
 import { Program } from "./program"
 import { ReadMore } from "./read-more"
 import { Reviews } from "./reviews"
-import { TourNavTabs } from "./tabs"
+import { SECTION_IDS, TourNavTabs } from "./tabs"
 import { TourTags } from "./tags"
+
+/** Invisible anchor — scroll target without affecting layout */
+function Anchor({ id }: { id: string }) {
+    return <div id={id} className="scroll-mt-24" />
+}
 
 export default function TourDetailLayout() {
     const tour = MOCK_TOUR
@@ -38,14 +43,18 @@ export default function TourDetailLayout() {
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8 lg:gap-6 items-start">
                 <div className="space-y-6 min-w-0 rounded-2xl border border-border/60 bg-card p-5">
                     <TourNavTabs />
+
+                    <Anchor id={SECTION_IDS.overview} />
                     <TrustBadges />
                     <TourDetailsGrid details={tour.details} />
                     <TourTags tags={detail?.categories!} />
                     <Separator className="my-10" />
                     <ReadMore lines={2}>{detail?.descriptionUz!}</ReadMore>
                     <Separator className="my-10" />
+
                     {program?.length! > 0 && (
                         <>
+                            <Anchor id={SECTION_IDS.itinerary} />
                             <Program
                                 days={program || []}
                                 onEmailRequest={() =>
@@ -58,21 +67,33 @@ export default function TourDetailLayout() {
 
                     {included?.included?.length! > 0 && (
                         <>
+                            <Anchor id={SECTION_IDS.includes} />
                             <Inclusions />
                             <Separator className="my-10" />
                         </>
                     )}
+
+                    <Anchor id={SECTION_IDS.accommodation} />
                     <Accommodation />
                     <AccomodationOptions />
                     <AdditionalServices />
-                    {gtk?.length! > 0 && <Faq />}
-                    {/* <FlightSearchForm /> */}
+
+                    {gtk?.length! > 0 && (
+                        <>
+                            <Anchor id={SECTION_IDS.important} />
+                            <Faq />
+                        </>
+                    )}
+
                     {reviews?.content?.length! > 0 && (
-                        <Reviews
-                            rating={detail?.avgRating || 0}
-                            totalCount={reviews?.totalElements || 0}
-                            reviews={reviews?.content || []}
-                        />
+                        <>
+                            <Anchor id={SECTION_IDS.reviews} />
+                            <Reviews
+                                rating={detail?.avgRating || 0}
+                                totalCount={reviews?.totalElements || 0}
+                                reviews={reviews?.content || []}
+                            />
+                        </>
                     )}
                 </div>
 

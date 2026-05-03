@@ -42,20 +42,116 @@ export const QuickLinks = () => {
     if (!banners.length) return null
 
     const handleNavigation = (banner: Banner) => {
-        if (banner.type === "BY_DESTINATION" && banner.destinationId) {
-            router.push(
-                getHref({
-                    pathname: "/[locale]/catalog",
-                    query: { destinationId: String(banner.destinationId) },
-                }),
-            )
-        } else if (banner.tourId) {
-            router.push(
-                getHref({
-                    pathname: "/[locale]/tour/[slug]",
-                    query: { slug: String(banner.tourId) },
-                }),
-            )
+        const {
+            type,
+            tourId,
+            destinationId,
+            agentId,
+            tourCategory,
+            link,
+            androidLink,
+            iosLink,
+        } = banner
+
+        switch (type) {
+            case "LINK_FOR_MOBILE": {
+                if (typeof window === "undefined") return
+                const userAgent = navigator.userAgent.toLowerCase()
+                const isIos = /iphone|ipad|ipod/.test(userAgent)
+                const isAndroid = /android/.test(userAgent)
+
+                const targetLink = isIos ? iosLink : androidLink
+                if (targetLink) {
+                    window.open(targetLink, "_blank")
+                }
+                break
+            }
+
+            case "BY_LINK": {
+                if (link) {
+                    if (link.startsWith("http")) {
+                        window.open(link, "_blank")
+                    } else {
+                        router.push(link)
+                    }
+                }
+                break
+            }
+
+            case "PROMOTION": {
+                router.push(
+                    getHref({
+                        pathname: "/[locale]/catalog",
+                        query: { promotional: "true" },
+                    }),
+                )
+                break
+            }
+
+            case "BY_AGENT": {
+                if (agentId) {
+                    router.push(
+                        getHref({
+                            pathname: "/[locale]/catalog",
+                            query: { agentId: String(agentId) },
+                        }),
+                    )
+                }
+                break
+            }
+
+            case "BY_TOUR_CATEGORY": {
+                if (tourCategory) {
+                    router.push(
+                        getHref({
+                            pathname: "/[locale]/catalog",
+                            query: { category: tourCategory },
+                        }),
+                    )
+                }
+                break
+            }
+
+            case "BY_DESTINATION": {
+                if (destinationId) {
+                    router.push(
+                        getHref({
+                            pathname: "/[locale]/catalog",
+                            query: { destinations: String(destinationId) },
+                        }),
+                    )
+                }
+                break
+            }
+
+            case "BY_TOUR": {
+                if (tourId) {
+                    router.push(
+                        getHref({
+                            pathname: "/[locale]/tour/[slug]",
+                            query: { slug: String(tourId) },
+                        }),
+                    )
+                }
+                break
+            }
+
+            case "DEFAULT": {
+                router.push("/")
+                break
+            }
+
+            default:
+                // Existing logic or fallback
+                if (tourId) {
+                    router.push(
+                        getHref({
+                            pathname: "/[locale]/tour/[slug]",
+                            query: { slug: String(tourId) },
+                        }),
+                    )
+                }
+                break
         }
     }
 

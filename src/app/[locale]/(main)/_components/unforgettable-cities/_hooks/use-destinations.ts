@@ -31,18 +31,9 @@ function normalise(dest: Destination, featured?: boolean): Destination {
     }
 }
 
-// ─── Hook ───────────────────────────────────────────────────────────────────
-
-/**
- * Merges featured + popular destinations from the API into a single ordered
- * list, handles image / region fallbacks, and exposes pagination state.
- *
- * @param data - Raw data from useDestinationsQuery (or any data source)
- */
 export function useDestinations(data: DestinationsResponse) {
     const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT)
 
-    // Build the full ordered list once per data change (no re-render cost)
     const allDestinations: Destination[] = useMemo(() => {
         const result: Destination[] = []
 

@@ -5,7 +5,6 @@ import {
     Destination,
     useTourShortListQuery,
 } from "@/components/searchbar/_hooks"
-import { usePathname, useRouter } from "@/i18n/navigation"
 import { useParams, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
@@ -16,12 +15,10 @@ export const CatalogHeader = () => {
     const { locale } = useParams() as { locale: string }
     const { tourShortList } = useTourShortListQuery()
     const searchParams = useSearchParams()
-    const router = useRouter()
-    const pathname = usePathname()
 
     const [selectedDest, setSelectedDest] = useState<Destination | null>(null)
 
-    const urlDestinationId = searchParams.get("destination")
+    const urlDestinationId = searchParams.get("destinations")
 
     // Sync state with URL query parameter
     useEffect(() => {
@@ -38,15 +35,7 @@ export const CatalogHeader = () => {
     }, [urlDestinationId, tourShortList])
 
     const handleSelect = (dest: Destination | null) => {
-        const params = new URLSearchParams(searchParams.toString())
-
-        if (dest) {
-            params.set("destination", String(dest.id))
-        } else {
-            params.delete("destination")
-        }
-
-        router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+        setSelectedDest(dest)
     }
 
     const backgroundImage =

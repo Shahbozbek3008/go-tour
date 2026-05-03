@@ -92,7 +92,7 @@ export const Navbar = () => {
             <header
                 ref={navRef}
                 className={cn(
-                    "top-0 z-[50] w-full transition-transform duration-300 ",
+                    "top-0 z-[50] w-full transition-transform duration-300",
                     isCatalog ? "fixed" : "sticky",
                     hidden ? "-translate-y-full" : "translate-y-0",
                 )}

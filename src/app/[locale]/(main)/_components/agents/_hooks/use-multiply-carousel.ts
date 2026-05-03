@@ -1,7 +1,7 @@
+import { TravelAgencyResponse } from "@/types/api/agents"
 import Autoplay from "embla-carousel-autoplay"
 import useEmblaCarousel from "embla-carousel-react"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { TravelAgencyResponse } from "./use-all-agents-query"
 
 const AUTOPLAY_DELAY = 3000
 const REPEAT = 3

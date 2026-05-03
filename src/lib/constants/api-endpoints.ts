@@ -1,5 +1,6 @@
 export const API = {
     BANNER: "banner",
+    ALL_LANGUAGES: "additionally/all-languages",
     TOUR: {
         REVIEWS: "tours/{slug}/reviews",
         SHORT_DATA: "tour/tour-short-data",
@@ -16,6 +17,7 @@ export const API = {
         INCLUDED: "tours/{slug}/included",
         PROGRAM: "tours/{slug}/program",
         TOUR_SESSIONS: "tour-sessions/{slug}",
+        INSTALLMENT_SESSION: "tour/installment/session/{slug}",
     },
     CATEGORIES: {
         ALL: "additionally/all-categories",
@@ -25,6 +27,7 @@ export const API = {
     },
     DESTINATION: {
         HOME: "destination/home",
+        ALL_DESTINATIONS: "tour/all-destinations",
     },
     AUTH: {
         TOKEN_REFRESH: "auth/token-refresh",
@@ -49,8 +52,12 @@ export const API = {
     },
     PROFILE: {
         INDEX: "profile",
+        UPDATE: "profile/update",
         INFO: {
             ME: "profile/get-me",
         },
+    },
+    BOOKING: {
+        MY: "bookings/my",
     },
 } as const

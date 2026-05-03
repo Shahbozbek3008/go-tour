@@ -1,5 +1,6 @@
 "use client"
 
+import ClientTranslate from "@/components/common/translation/client-translate"
 import { motion } from "framer-motion"
 import { ChevronDown, LayoutGrid } from "lucide-react"
 import { memo } from "react"
@@ -27,7 +28,9 @@ export const LoadMoreButton = memo(function LoadMoreButton({
             <button
                 onClick={onToggle}
                 disabled={isLoading}
-                aria-label={isExpanded ? "Yopish" : "Barcha manzillarni ko'rsatish"}
+                aria-label={
+                    isExpanded ? "Yopish" : "Barcha manzillarni ko'rsatish"
+                }
                 className="
                     inline-flex items-center gap-2
                     bg-slate-900 hover:bg-slate-800 active:scale-95
@@ -45,11 +48,11 @@ export const LoadMoreButton = memo(function LoadMoreButton({
                             size={15}
                             className="rotate-180 transition-transform duration-300"
                         />
-                        Yopish
+                        <ClientTranslate translationKey="close" />
                     </>
                 :   <>
                         <LayoutGrid size={15} />
-                        Barchasini yuklash
+                        <ClientTranslate translationKey="allViewDestinations" />
                         <span className="text-slate-400 text-[11px] ml-1">
                             ({remaining})
                         </span>

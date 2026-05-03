@@ -28,10 +28,20 @@ export const FilterProvider = ({ children }: { children: React.ReactNode }) => {
     const router = useRouter()
 
     // URL'dan initial state olish
-    const getInitialFilters = (): FilterState => ({
-        ...DEFAULT_FILTERS,
-        category: searchParams.get("category") ?? DEFAULT_FILTERS.category,
-    })
+    const getInitialFilters = (): FilterState => {
+        const destinationsStr = searchParams.get("destinations")
+        return {
+            ...DEFAULT_FILTERS,
+            category: searchParams.get("category") ?? DEFAULT_FILTERS.category,
+            promotional: searchParams.get("promotional") === "true",
+            guaranteed: searchParams.get("guaranteed") === "true",
+            hasReviews: searchParams.get("hasReviews") === "true",
+            destinations:
+                destinationsStr ?
+                    destinationsStr.split(",").map(Number).filter(Boolean)
+                :   [],
+        }
+    }
 
     const [filters, setFilters] = useState<FilterState>(getInitialFilters)
 
@@ -41,9 +51,14 @@ export const FilterProvider = ({ children }: { children: React.ReactNode }) => {
     // Flag: hozirgi o'zgarish state'danmi yoki URL'danmi
     const isUpdatingFromState = useRef(false)
 
+    // Store latest searchParams in a ref to avoid triggering the first effect when only URL changes
+    const searchParamsRef = useRef(searchParams)
+    searchParamsRef.current = searchParams
+
     // State o'zgarganda URL'ni yangilash
     useEffect(() => {
-        const params = new URLSearchParams(searchParams.toString())
+        const currentSearchParams = searchParamsRef.current
+        const params = new URLSearchParams(currentSearchParams.toString())
 
         if (filters.category && filters.category !== DEFAULT_FILTERS.category) {
             params.set("category", filters.category)
@@ -51,10 +66,66 @@ export const FilterProvider = ({ children }: { children: React.ReactNode }) => {
             params.delete("category")
         }
 
-        // Agar URL allaqachon shunday bo'lsa, replace qilmaymiz
+        if (filters.promotional) {
+            params.set("promotional", "true")
+        } else {
+            params.delete("promotional")
+        }
+
+        if (filters.guaranteed) {
+            params.set("guaranteed", "true")
+        } else {
+            params.delete("guaranteed")
+        }
+
+        if (filters.hasReviews) {
+            params.set("hasReviews", "true")
+        } else {
+            params.delete("hasReviews")
+        }
+
+        if (filters.visaRequired) {
+            params.set("visaRequired", "true")
+        } else {
+            params.delete("visaRequired")
+        }
+
+        if (filters.childDiscount) {
+            params.set("childDiscount", "true")
+        } else {
+            params.delete("childDiscount")
+        }
+
+        if (filters.destinations.length > 0) {
+            params.set("destinations", filters.destinations.join(","))
+        } else {
+            params.delete("destinations")
+        }
+
+        // Check if anything actually changed
         const currentCategory =
-            searchParams.get("category") ?? DEFAULT_FILTERS.category
-        if (currentCategory === filters.category) return
+            currentSearchParams.get("category") ?? DEFAULT_FILTERS.category
+        const currentPromotional = currentSearchParams.get("promotional") === "true"
+        const currentGuaranteed = currentSearchParams.get("guaranteed") === "true"
+        const currentHasReviews = currentSearchParams.get("hasReviews") === "true"
+        const currentVisaRequired = currentSearchParams.get("visaRequired") === "true"
+        const currentChildDiscount =
+            currentSearchParams.get("childDiscount") ?
+                Number(currentSearchParams.get("childDiscount"))
+            :   null
+        const currentDestinations = currentSearchParams.get("destinations") ?? ""
+
+        if (
+            currentCategory === filters.category &&
+            currentPromotional === filters.promotional &&
+            currentGuaranteed === filters.guaranteed &&
+            currentHasReviews === filters.hasReviews &&
+            currentVisaRequired === filters.visaRequired &&
+            currentChildDiscount === filters.childDiscount &&
+            currentDestinations === filters.destinations.join(",")
+        ) {
+            return
+        }
 
         isUpdatingFromState.current = true
         router.replace(
@@ -64,7 +135,17 @@ export const FilterProvider = ({ children }: { children: React.ReactNode }) => {
             }),
             { scroll: false },
         )
-    }, [filters.category, router, searchParams])
+    }, [
+        filters.category,
+        filters.promotional,
+        filters.guaranteed,
+        filters.hasReviews,
+        filters.visaRequired,
+        filters.childDiscount,
+        filters.destinations,
+        router,
+        // searchParams olib tashlandi, faqat filters o'zgarganda ishlaydi
+    ])
 
     // URL o'zgarganda state'ni yangilash (faqat external o'zgarishlarda)
     useEffect(() => {
@@ -75,8 +156,40 @@ export const FilterProvider = ({ children }: { children: React.ReactNode }) => {
 
         const categoryFromUrl =
             searchParams.get("category") ?? DEFAULT_FILTERS.category
-        if (categoryFromUrl !== filters.category) {
-            setFilters((prev) => ({ ...prev, category: categoryFromUrl }))
+        const promotionalFromUrl = searchParams.get("promotional") === "true"
+        const guaranteedFromUrl = searchParams.get("guaranteed") === "true"
+        const hasReviewsFromUrl = searchParams.get("hasReviews") === "true"
+        const visaRequiredFromUrl = searchParams.get("visaRequired") === "true"
+        const childDiscountFromUrl =
+            searchParams.get("childDiscount") ?
+                Number(searchParams.get("childDiscount"))
+            :   null
+        const destinationsFromUrl =
+            searchParams
+                .get("destinations")
+                ?.split(",")
+                .map(Number)
+                .filter(Boolean) ?? []
+
+        if (
+            categoryFromUrl !== filters.category ||
+            promotionalFromUrl !== filters.promotional ||
+            guaranteedFromUrl !== filters.guaranteed ||
+            hasReviewsFromUrl !== filters.hasReviews ||
+            visaRequiredFromUrl !== filters.visaRequired ||
+            childDiscountFromUrl !== filters.childDiscount ||
+            destinationsFromUrl.join(",") !== filters.destinations.join(",")
+        ) {
+            setFilters((prev) => ({
+                ...prev,
+                category: categoryFromUrl,
+                promotional: promotionalFromUrl,
+                guaranteed: guaranteedFromUrl,
+                hasReviews: hasReviewsFromUrl,
+                visaRequired: visaRequiredFromUrl,
+                childDiscount: childDiscountFromUrl,
+                destinations: destinationsFromUrl,
+            }))
         }
     }, [searchParams])
 

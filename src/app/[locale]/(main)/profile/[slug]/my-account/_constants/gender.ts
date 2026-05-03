@@ -1,4 +1,4 @@
 export const GENDER_OPTIONS = [
-    { value: "male", label: "Erkak" },
-    { value: "female", label: "Ayol" },
+    { value: "MALE", label: "Erkak" },
+    { value: "FEMALE", label: "Ayol" },
 ]

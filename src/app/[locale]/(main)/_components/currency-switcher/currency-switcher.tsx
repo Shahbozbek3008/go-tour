@@ -1,7 +1,9 @@
+import { useCurrency } from "@/app/_providers/currency-provider"
+import { useRouter } from "@/i18n/navigation"
 import { CURRENCIES } from "@/lib/constants/currency"
-import { getStoredCurrency, setStoredCurrency } from "@/lib/cookies/currency"
 import { cn } from "@/lib/utils/shadcn"
 import { Currency } from "@/types/common/extra"
+import { useQueryClient } from "@tanstack/react-query"
 import { ChevronDown } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 
@@ -11,14 +13,10 @@ interface CurrencySwitcherProps {
 
 export const CurrencySwitcher = ({ isTransparent }: CurrencySwitcherProps) => {
     const [open, setOpen] = useState(false)
-    const [activeCurrency, setActiveCurrency] = useState<Currency>(
-        CURRENCIES[0].id,
-    )
     const ref = useRef<HTMLDivElement>(null)
-
-    useEffect(() => {
-        setActiveCurrency(getStoredCurrency())
-    }, [])
+    const router = useRouter()
+    const queryClient = useQueryClient()
+    const { currency: activeCurrency, setCurrency } = useCurrency()
 
     useEffect(() => {
         const handleOutside = (e: MouseEvent) => {
@@ -31,9 +29,9 @@ export const CurrencySwitcher = ({ isTransparent }: CurrencySwitcherProps) => {
     }, [])
 
     const handleSelect = (id: Currency) => {
-        setStoredCurrency(id)
-        setActiveCurrency(id)
+        setCurrency(id)
         setOpen(false)
+        router.refresh()
     }
 
     const active =

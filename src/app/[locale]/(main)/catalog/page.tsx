@@ -9,9 +9,9 @@ const Catalog = ({ params }: PropsWithLocaleParams) => {
     setLocale(params)
     return (
         <PrefetchProvider endpoint={API.TOUR.SEARCH}>
-            <div className="w-full">
+            <PrefetchProvider endpoint={API.DESTINATION.ALL_DESTINATIONS}>
                 <CatalogLayout />
-            </div>
+            </PrefetchProvider>
         </PrefetchProvider>
     )
 }

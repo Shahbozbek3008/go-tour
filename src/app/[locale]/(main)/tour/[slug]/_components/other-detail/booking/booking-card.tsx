@@ -1,5 +1,6 @@
 "use client"
 
+import ClientTranslate from "@/components/common/translation/client-translate"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -14,9 +15,10 @@ import { useLanguage } from "@/hooks/use-language"
 import { cn } from "@/lib/utils/shadcn"
 import { format } from "date-fns"
 import { ru, uz } from "date-fns/locale"
-import { CalendarOff, Minus, Plus, Users, Zap } from "lucide-react"
+import { CalendarOff, Check, Minus, Plus, Users, Zap } from "lucide-react"
 import { useState } from "react"
-import { TourPricing, TourSession } from "../../../_types"
+import { useTourInstallmentSessionQuery } from "../../../_hooks"
+import { InstallmentOption, TourPricing, TourSession } from "../../../_types"
 
 interface BookingCardProps {
     pricing: TourPricing
@@ -32,6 +34,27 @@ export function BookingCard({
     const { isRussian } = useLanguage()
     const [selectedSessionId, setSelectedSessionId] = useState<string>("")
     const [participants, setParticipants] = useState(1)
+    const [paymentTab, setPaymentTab] = useState<"cash" | "installment">("cash")
+    const [selectedMonths, setSelectedMonths] = useState<number | null>(null)
+
+    const { installmentSession } = useTourInstallmentSessionQuery(
+        {
+            options: {
+                enabled: !!selectedSessionId,
+            },
+        },
+        selectedSessionId,
+    )
+
+    const installmentOptions: InstallmentOption[] = installmentSession ?? []
+
+    if (
+        installmentOptions.length > 0 &&
+        selectedMonths === null &&
+        paymentTab === "installment"
+    ) {
+        setSelectedMonths(installmentOptions[0].months)
+    }
 
     const activeSession = sessions?.find(
         (s) => s.id.toString() === selectedSessionId,
@@ -89,6 +112,13 @@ export function BookingCard({
         return `${count} мест`
     }
 
+    const selectedInstallment = installmentOptions.find(
+        (opt) => opt.months === selectedMonths,
+    )
+
+    const formatNumber = (num: number) =>
+        num.toLocaleString(undefined, { maximumFractionDigits: 2 })
+
     return (
         <div className="rounded-2xl border border-border/60 bg-card p-5 space-y-4">
             <div className="flex items-baseline gap-2 flex-wrap">
@@ -129,20 +159,20 @@ export function BookingCard({
                 {isRussian ? "дней" : "kun"}
             </p>
 
+            {/* Session & participants selectors */}
             <div className="space-y-3">
                 <Select
                     value={selectedSessionId}
                     onValueChange={(val) => {
                         setSelectedSessionId(val)
                         setParticipants(1)
+                        setSelectedMonths(null)
                     }}
                 >
                     <SelectTrigger className="w-full text-foreground font-medium h-20 placeholder:text-sm rounded-xl">
                         <SelectValue
                             placeholder={
-                                isRussian ? "Выберите даты" : (
-                                    "Sanalarni tanlang"
-                                )
+                                <ClientTranslate translationKey="selectDates" />
                             }
                         />
                     </SelectTrigger>
@@ -153,15 +183,10 @@ export function BookingCard({
                                     <CalendarOff className="size-5 text-muted-foreground/70" />
                                 </div>
                                 <p className="text-sm font-semibold text-foreground">
-                                    {isRussian ?
-                                        "Нет доступных дат"
-                                    :   "Sanalar mavjud emas"}
+                                    <ClientTranslate translationKey="dateAreNotAvailable" />
                                 </p>
                                 <p className="text-xs text-muted-foreground mt-1 max-w-[200px] leading-relaxed">
-                                    {isRussian ?
-                                        "В данный момент нет открытых дат для бронирования."
-                                    :   "Hozirgi vaqtda band qilish uchun ochiq sanalar yo'q."
-                                    }
+                                    <ClientTranslate translationKey="currentlyNoDates" />
                                 </p>
                             </div>
                         :   sessions?.map((session) => (
@@ -186,7 +211,7 @@ export function BookingCard({
                                                 :   "border-[#a5c156]/40 text-[#a5c156] bg-[#a5c156]/5 dark:text-[#b4ce6a]",
                                             )}
                                         >
-                                            $ {session.price}{" "}
+                                            {session.price}{" "}
                                             <span className="opacity-40 mx-1.5">
                                                 •
                                             </span>{" "}
@@ -206,7 +231,7 @@ export function BookingCard({
                     <div className="flex items-center gap-2">
                         <Users className="size-4 text-primary" />
                         <span className="text-sm text-foreground font-medium">
-                            {isRussian ? "Участники" : "Qatnashuvchilar"}
+                            <ClientTranslate translationKey="participants" />
                         </span>
                     </div>
                     <div className="flex items-center gap-3">
@@ -252,10 +277,159 @@ export function BookingCard({
 
             {!activeSession && (
                 <p className="text-xs font-medium text-muted-foreground text-center">
-                    {isRussian ?
-                        `Пожалуйста, выберите дату`
-                    :   `Iltimos, sanani tanlang`}
+                    <ClientTranslate translationKey="pleaseSelectDate" />
                 </p>
+            )}
+
+            {/* ─── Installment / Cash payment section ─── */}
+            {selectedSessionId && installmentOptions.length > 0 && (
+                <div className="space-y-3">
+                    {/* Payment type tabs */}
+                    <div className="flex rounded-xl border border-border/60 bg-muted/30 p-1 gap-1">
+                        <button
+                            onClick={() => setPaymentTab("cash")}
+                            className={cn(
+                                "flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all duration-200",
+                                paymentTab === "cash" ?
+                                    "bg-card text-foreground shadow-sm border border-border/40"
+                                :   "text-muted-foreground hover:text-foreground",
+                            )}
+                        >
+                            <ClientTranslate translationKey="cashless" />
+                        </button>
+                        <button
+                            onClick={() => {
+                                setPaymentTab("installment")
+                                if (
+                                    selectedMonths === null &&
+                                    installmentOptions.length > 0
+                                ) {
+                                    setSelectedMonths(
+                                        installmentOptions[
+                                            installmentOptions.length - 1
+                                        ].months,
+                                    )
+                                }
+                            }}
+                            className={cn(
+                                "flex-1 py-2 px-3 rounded-lg text-sm font-semibold transition-all duration-200",
+                                paymentTab === "installment" ?
+                                    "bg-card text-foreground shadow-sm border border-border/40"
+                                :   "text-muted-foreground hover:text-foreground",
+                            )}
+                        >
+                            <ClientTranslate translationKey="installment" />
+                        </button>
+                    </div>
+
+                    {/* Installment month pills + card */}
+                    {paymentTab === "installment" && (
+                        <div className="space-y-3">
+                            {/* Month selector pills */}
+                            <div className="flex flex-wrap gap-2">
+                                {[...installmentOptions]
+                                    .sort((a, b) => b.months - a.months)
+                                    .map((opt) => (
+                                        <button
+                                            key={opt.months}
+                                            onClick={() =>
+                                                setSelectedMonths(opt.months)
+                                            }
+                                            className={cn(
+                                                "px-3 py-1.5 rounded-full text-sm font-semibold border transition-all duration-200",
+                                                selectedMonths === opt.months ?
+                                                    "bg-primary text-primary-foreground border-primary shadow-sm"
+                                                :   "bg-muted/30 border-border/60 text-muted-foreground hover:border-primary/50 hover:text-foreground",
+                                            )}
+                                        >
+                                            {opt.months}{" "}
+                                            <ClientTranslate translationKey="month" />
+                                        </button>
+                                    ))}
+                            </div>
+
+                            {/* Open installment card */}
+                            {selectedInstallment && (
+                                <div className="flex items-center justify-between px-4 py-3 rounded-xl border border-orange-300/60 bg-orange-50/60 dark:bg-orange-950/20 dark:border-orange-700/40">
+                                    <div className="flex items-center gap-3">
+                                        {/* Open logo */}
+                                        <div className="flex-shrink-0">
+                                            <svg
+                                                width="52"
+                                                height="22"
+                                                viewBox="0 0 52 22"
+                                                fill="none"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className="block"
+                                            >
+                                                <text
+                                                    x="0"
+                                                    y="18"
+                                                    fontFamily="Arial, sans-serif"
+                                                    fontWeight="700"
+                                                    fontSize="20"
+                                                    fill="url(#openGrad)"
+                                                >
+                                                    open
+                                                </text>
+                                                <defs>
+                                                    <linearGradient
+                                                        id="openGrad"
+                                                        x1="0"
+                                                        y1="0"
+                                                        x2="52"
+                                                        y2="0"
+                                                        gradientUnits="userSpaceOnUse"
+                                                    >
+                                                        <stop
+                                                            offset="0%"
+                                                            stopColor="#8B5CF6"
+                                                        />
+                                                        <stop
+                                                            offset="50%"
+                                                            stopColor="#3B82F6"
+                                                        />
+                                                        <stop
+                                                            offset="100%"
+                                                            stopColor="#06B6D4"
+                                                        />
+                                                    </linearGradient>
+                                                </defs>
+                                            </svg>
+                                        </div>
+                                        <div className="min-w-0">
+                                            <p className="text-sm font-semibold text-foreground leading-tight">
+                                                {formatNumber(
+                                                    selectedInstallment.monthlyPayment,
+                                                )}{" "}
+                                                ${"  "}
+                                                <span className="font-normal text-muted-foreground">
+                                                    ×{" "}
+                                                    {selectedInstallment.months}{" "}
+                                                    {isRussian ?
+                                                        "месяцев"
+                                                    :   "oy"}
+                                                </span>
+                                            </p>
+                                            <p className="text-xs text-muted-foreground mt-0.5">
+                                                {isRussian ? "Итого:" : "Jami:"}{" "}
+                                                {formatNumber(
+                                                    selectedInstallment.totalPayment,
+                                                )}{" "}
+                                                $
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="flex-shrink-0 ml-2">
+                                        <div className="size-6 rounded-full bg-primary/10 flex items-center justify-center">
+                                            <Check className="size-3.5 text-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
             )}
 
             {instantBooking && (
@@ -273,7 +447,7 @@ export function BookingCard({
                 disabled={!activeSession}
                 className="w-full rounded-xl h-12 text-sm font-semibold bg-primary hover:bg-primary/90 shadow-sm"
             >
-                {isRussian ? "Забронировать" : "Band qilish"}
+                <ClientTranslate translationKey="bookTour" />
             </Button>
 
             <Separator />

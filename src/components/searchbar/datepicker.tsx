@@ -9,6 +9,7 @@ import {
     X,
 } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
+import ClientTranslate from "../common/translation/client-translate"
 
 type TabType = "period" | "exact"
 
@@ -368,7 +369,6 @@ export function DatePicker({ value, onChange, defaultRange }: DatePickerProps) {
         [range, onChange],
     )
 
-    // O'ZGARTIRILGAN: Endi sana ko'rsatadi
     const handlePeriodSelect = (label: string) => {
         const range = getPresetRange(label)
         if (range) {
@@ -400,7 +400,9 @@ export function DatePicker({ value, onChange, defaultRange }: DatePickerProps) {
                         selected ? "text-gray-800" : "text-gray-400",
                     )}
                 >
-                    {selected ?? "Oy yoki sanalar"}
+                    {selected ?? (
+                        <ClientTranslate translationKey="whenDoYouWantToGo" />
+                    )}
                 </span>
                 {selected && (
                     <X

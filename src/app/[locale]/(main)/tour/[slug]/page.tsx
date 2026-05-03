@@ -47,9 +47,16 @@ export default async function TourDetail({ params }: PropsWithLocaleSlug) {
                                             slug,
                                         )}
                                     >
-                                        <SlugProvider slug={slug}>
-                                            <Index />
-                                        </SlugProvider>
+                                        <PrefetchProvider
+                                            endpoint={API.TOUR.INSTALLMENT_SESSION.replace(
+                                                "{slug}",
+                                                slug,
+                                            )}
+                                        >
+                                            <SlugProvider slug={slug}>
+                                                <Index />
+                                            </SlugProvider>
+                                        </PrefetchProvider>
                                     </PrefetchProvider>
                                 </PrefetchProvider>
                             </PrefetchProvider>

@@ -3,7 +3,8 @@
 import { ProductCard } from "@/components/card"
 import { MOCK_TOURS } from "@/lib/constants/mockdata"
 import { useState } from "react"
-import { useFilter } from "../_hooks"
+import { useFilter, useMyBookingsQuery } from "../_hooks"
+import { EmptyOrders } from "./empty"
 import { MyOrdersFilter } from "./filter"
 import { FilterBottomSheet } from "./filter/filter-bottom-sheet"
 import { FilterTriggerButton } from "./filter/filter-trigger-button"
@@ -11,6 +12,7 @@ import { FilterTriggerButton } from "./filter/filter-trigger-button"
 export const ComponentIndex = () => {
     const { activeFiltersCount } = useFilter()
     const [sheetOpen, setSheetOpen] = useState(false)
+    const { allBookings } = useMyBookingsQuery()
 
     return (
         <div className="flex items-start lg:gap-8 md:gap-4 gap-0">
@@ -24,21 +26,24 @@ export const ComponentIndex = () => {
                         onClick={() => setSheetOpen(true)}
                     />
                 </div>
-                <div
-                    className="grid gap-5"
-                    style={{
-                        gridTemplateColumns:
-                            "repeat(auto-fill, minmax(280px, 1fr))",
-                    }}
-                >
-                    {MOCK_TOURS.map((tour) => (
-                        <ProductCard
-                            tour={tour}
-                            key={tour.id}
-                            hasLike={false}
-                        />
-                    ))}
-                </div>
+                {allBookings.length === 0 ?
+                    <EmptyOrders />
+                :   <div
+                        className="grid gap-5"
+                        style={{
+                            gridTemplateColumns:
+                                "repeat(auto-fill, minmax(280px, 1fr))",
+                        }}
+                    >
+                        {MOCK_TOURS.map((tour) => (
+                            <ProductCard
+                                tour={tour}
+                                key={tour.id}
+                                hasLike={false}
+                            />
+                        ))}
+                    </div>
+                }
             </div>
             <div className="lg:hidden">
                 <FilterBottomSheet

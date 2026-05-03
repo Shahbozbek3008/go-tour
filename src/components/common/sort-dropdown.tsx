@@ -72,6 +72,14 @@ export const SortDropdown = () => {
                 }),
                 { scroll: false },
             )
+        } else if (pathname === "/agents") {
+            router.push(
+                getHref({
+                    pathname: "/[locale]/agents",
+                    query: { ...existingParams, [SORT_QUERY_KEY]: key },
+                }),
+                { scroll: false },
+            )
         } else {
             router.push(
                 getHref({

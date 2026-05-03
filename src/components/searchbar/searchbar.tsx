@@ -1,12 +1,12 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { usePathname, useRouter } from "@/i18n/navigation"
+import { useRouter } from "@/i18n/navigation"
 import { formatDate } from "@/lib/utils/format-date"
 import { getHref } from "@/lib/utils/get-href"
 import { Search } from "lucide-react"
 import { useParams, useSearchParams } from "next/navigation"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, useTransition } from "react"
 import ClientTranslate from "../common/translation/client-translate"
 import { Destination, useTourShortListQuery } from "./_hooks"
 import { DatePicker } from "./datepicker"
@@ -24,10 +24,10 @@ export function SearchBar({
     selectedDestination,
 }: SearchBarProps) {
     const router = useRouter()
-    const pathname = usePathname()
     const { locale } = useParams() as { locale: string }
     const searchParams = useSearchParams()
     const { tourShortList } = useTourShortListQuery()
+    const [isPending, startTransition] = useTransition()
 
     const [manualQuery, setManualQuery] = useState("")
     const [dateRange, setDateRange] = useState<{
@@ -53,7 +53,7 @@ export function SearchBar({
         const startDateParam = searchParams.get("startDate")
         const endDateParam = searchParams.get("endDate")
         const nameParam = searchParams.get("name")
-        const destinationParam = searchParams.get("destination")
+        const destinationParam = searchParams.get("destinations")
 
         if (startDateParam || endDateParam) {
             const from =
@@ -116,41 +116,10 @@ export function SearchBar({
                 setInternalLocValue(null)
             }
         }
-
-        // Tozalash tugmasi bosilganda URL'dan ham o'chiramiz
-        if (!dest) {
-            const params = new URLSearchParams(searchParams.toString())
-            if (params.has("destination") || params.has("name")) {
-                params.delete("destination")
-                params.delete("name")
-                router.replace(`${pathname}?${params.toString()}`, {
-                    scroll: false,
-                })
-            }
-        } else {
-            // Agar tanlangan bo'lsa, 'name' parametrini o'chirib tashlaymiz
-            const params = new URLSearchParams(searchParams.toString())
-            if (params.has("name")) {
-                params.delete("name")
-                router.replace(`${pathname}?${params.toString()}`, {
-                    scroll: false,
-                })
-            }
-        }
     }
 
     const handleQueryChange = (q: string) => {
         setManualQuery(q)
-        // Agar qo'lda yozilgan matn o'chirilsa, URL'dan 'name' ni ham o'chiramiz
-        if (q === "") {
-            const params = new URLSearchParams(searchParams.toString())
-            if (params.has("name")) {
-                params.delete("name")
-                router.replace(`${pathname}?${params.toString()}`, {
-                    scroll: false,
-                })
-            }
-        }
     }
 
     const handleDateChange = (
@@ -158,17 +127,6 @@ export function SearchBar({
         range: { from: Date | null; to: Date | null },
     ) => {
         setDateRange(range)
-        // Agar sanalar o'chirilsa, URL'dan 'startDate' va 'endDate' ni ham o'chiramiz
-        if (!range.from && !range.to) {
-            const params = new URLSearchParams(searchParams.toString())
-            if (params.has("startDate") || params.has("endDate")) {
-                params.delete("startDate")
-                params.delete("endDate")
-                router.replace(`${pathname}?${params.toString()}`, {
-                    scroll: false,
-                })
-            }
-        }
     }
     const handleSearch = () => {
         const params = new URLSearchParams(searchParams.toString())
@@ -186,27 +144,29 @@ export function SearchBar({
         }
 
         if (effectiveDest) {
-            params.set("destination", String(effectiveDest.id))
+            params.set("destinations", String(effectiveDest.id))
             params.delete("name")
         } else if (manualQuery || effectiveLocValue) {
             params.set("name", manualQuery || effectiveLocValue || "")
-            params.delete("destination")
+            params.delete("destinations")
         } else {
-            params.delete("destination")
+            params.delete("destinations")
             params.delete("name")
         }
 
-        router.push(
-            getHref({
-                pathname: "/[locale]/catalog",
-                query: Object.fromEntries(params),
-            }),
-        )
+        startTransition(() => {
+            router.push(
+                getHref({
+                    pathname: "/[locale]/catalog",
+                    query: Object.fromEntries(params),
+                }),
+            )
+        })
     }
 
     return (
         <div className="w-full">
-            <div className="flex flex-col md:flex-row md:items-stretch gap-3 md:gap-0 bg-white rounded-3xl md:rounded-2xl shadow-xl md:shadow-2xl p-4 md:p-2">
+            <div className="flex flex-col lg:min-w-full lg:w-[700px] md:flex-row md:items-stretch gap-3 md:gap-0 bg-white rounded-3xl md:rounded-2xl shadow-xl md:shadow-2xl p-4 md:p-2">
                 <LocationSearch
                     value={effectiveLocValue ?? null}
                     onSelect={handleLocationSelect}
@@ -226,10 +186,11 @@ export function SearchBar({
 
                 <Button
                     onClick={handleSearch}
+                    isLoading={isPending}
                     className="shrink-0 w-full md:w-auto mt-1 md:mt-0 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-semibold py-6 md:py-auto px-6 rounded-2xl md:rounded-xl flex items-center justify-center gap-2 text-base md:text-sm transition-all duration-200 shadow-lg shadow-blue-200"
                 >
                     <Search className="w-5 h-5 md:w-4 md:h-4" />
-                    <ClientTranslate translationKey="search2" />
+                    <ClientTranslate translationKey="findTours" />
                 </Button>
             </div>
         </div>

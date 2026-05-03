@@ -101,7 +101,9 @@ export function LocationSearch({
                             value ? "text-gray-800" : "text-gray-400",
                         )}
                     >
-                        {value ?? (locale === "ru" ? "Адрес" : "Manzil")}
+                        {value ?? (
+                            <ClientTranslate translationKey="whereDoYouWantToGo" />
+                        )}
                     </span>
                 }
                 {value && !open && (

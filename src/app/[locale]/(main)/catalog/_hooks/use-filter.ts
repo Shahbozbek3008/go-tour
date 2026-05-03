@@ -22,8 +22,11 @@ export const useFilter = () => {
         filters.rate !== "all" ||
         filters.promotional ||
         filters.guaranteed ||
+        filters.visaRequired ||
+        filters.childDiscount !== null ||
         filters.tags.length > 0 ||
-        filters.languages.length > 0
+        filters.languages.length > 0 ||
+        filters.destinations.length > 0
 
     const handlePriceSlider = (values: number[]) => {
         const [min, max] = values as [number, number]
@@ -76,6 +79,16 @@ export const useFilter = () => {
         }))
     }
 
+    const toggleDestination = (destId: number) => {
+        setFilters((prev) => ({
+            ...prev,
+            destinations:
+                prev.destinations.includes(destId) ?
+                    prev.destinations.filter((d) => d !== destId)
+                :   [...prev.destinations, destId],
+        }))
+    }
+
     const resetFilters = () => {
         setFilters(DEFAULT_FILTERS)
         setMinInput(String(PRICE_MIN))
@@ -91,9 +104,12 @@ export const useFilter = () => {
             filters.rate !== "all",
             filters.promotional,
             filters.guaranteed,
+            filters.visaRequired,
+            filters.childDiscount !== null,
         ].filter(Boolean).length +
         filters.tags.length +
-        filters.languages.length
+        filters.languages.length +
+        filters.destinations.length
 
     const activeFilterBadges = React.useMemo(() => {
         const badges: { key: string; label: string }[] = []
@@ -107,12 +123,22 @@ export const useFilter = () => {
             badges.push({ key: "promotional", label: "Skidkali" })
         if (filters.guaranteed)
             badges.push({ key: "guaranteed", label: "Ishonchli" })
+        if (filters.visaRequired)
+            badges.push({ key: "visaRequired", label: "Vizasiz" })
+        if (filters.childDiscount !== null)
+            badges.push({
+                key: "childDiscount",
+                label: `Bolalar chegirmasi: ${filters.childDiscount}`,
+            })
         filters.tags.forEach((tag) =>
             badges.push({ key: `tag-${tag}`, label: tag }),
         )
         filters.languages.forEach((lang) =>
             badges.push({ key: `lang-${lang}`, label: lang }),
         )
+        // filters.destinations.forEach((destId) =>
+        //     badges.push({ key: `dest-${destId}`, label: `Dest: ${destId}` }),
+        // )
         return badges
     }, [filters])
 
@@ -123,6 +149,8 @@ export const useFilter = () => {
             if (key === "rate") return { ...prev, rate: "all" }
             if (key === "promotional") return { ...prev, promotional: false }
             if (key === "guaranteed") return { ...prev, guaranteed: false }
+            if (key === "visaRequired") return { ...prev, visaRequired: false }
+            if (key === "childDiscount") return { ...prev, childDiscount: null }
             if (key.startsWith("tag-"))
                 return {
                     ...prev,
@@ -135,6 +163,13 @@ export const useFilter = () => {
                     ...prev,
                     languages: prev.languages.filter(
                         (l) => l !== key.replace("lang-", ""),
+                    ),
+                }
+            if (key.startsWith("dest-"))
+                return {
+                    ...prev,
+                    destinations: prev.destinations.filter(
+                        (d) => d !== Number(key.replace("dest-", "")),
                     ),
                 }
             return prev
@@ -156,5 +191,6 @@ export const useFilter = () => {
         activeFilterBadges,
         removeFilterBadge,
         toggleLanguage,
+        toggleDestination,
     }
 }

@@ -30,6 +30,6 @@ export const COUNTRY_REGION_MAP: Record<string, string> = {
     Gretsiya: "Evropa",
 }
 
-export const INITIAL_VISIBLE_COUNT = 8
+export const INITIAL_VISIBLE_COUNT = 6
 
 export const LOAD_MORE_STEP = 4

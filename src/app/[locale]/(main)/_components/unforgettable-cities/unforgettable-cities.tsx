@@ -1,5 +1,8 @@
 "use client"
 
+import ClientTranslate from "@/components/common/translation/client-translate"
+import { useRouter } from "@/i18n/navigation"
+import { getHref } from "@/lib/utils/get-href"
 import { motion } from "framer-motion"
 import { useMemo } from "react"
 import type { Destination } from "./_hooks"
@@ -48,6 +51,7 @@ function DestinationsSection({
     data,
     isLoading = false,
 }: DestinationsSectionProps) {
+    const router = useRouter()
     const { visibleDestinations, totalCount, visibleCount, showAll, showLess } =
         useDestinations(data)
 
@@ -76,7 +80,7 @@ function DestinationsSection({
                         animate="visible"
                         className="text-3xl md:text-[40px] font-bold text-slate-900 text-center leading-[1.05] tracking-tight"
                     >
-                        Unutilmas shaharlar
+                        <ClientTranslate translationKey="unforgettableCities" />
                     </motion.h2>
                 </div>
 
@@ -84,7 +88,7 @@ function DestinationsSection({
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"
-                    className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-5"
+                    className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 md:gap-4 lg:gap-5"
                 >
                     {isLoading ?
                         Array.from({ length: INITIAL_VISIBLE_COUNT }).map(
@@ -101,6 +105,18 @@ function DestinationsSection({
                             <div
                                 key={destination.id}
                                 className="relative h-[200px] md:h-[240px]"
+                                onClick={() =>
+                                    router.push(
+                                        getHref({
+                                            pathname: "/[locale]/catalog",
+                                            query: {
+                                                destinations: String(
+                                                    destination.id,
+                                                ),
+                                            },
+                                        }),
+                                    )
+                                }
                             >
                                 <CityCard destination={destination} />
                             </div>

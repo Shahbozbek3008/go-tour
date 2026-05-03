@@ -1,7 +1,6 @@
 "use client"
 
 import { ArrowUp, Mail, MapPin, Phone } from "lucide-react"
-import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { BottomNav } from "../navigation-bar"
@@ -28,7 +27,7 @@ const Footer = () => {
         <footer className="bg-[#F8FAFC] pt-24 pb-12 font-sans relative overflow-hidden border-t border-slate-200/60">
             <div className="home-container mb-20">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-10">
-                    <div className="flex flex-col gap-6">
+                    <div className="flex flex-col sm:col-span-2 gap-6">
                         <div className="flex flex-col">
                             <h3 className="text-[26px] font-bold text-slate-900 tracking-tight">
                                 Sayohat
@@ -41,11 +40,11 @@ const Footer = () => {
                         </p>
                     </div>
 
-                    <div className="flex flex-col gap-6">
+                    <div className="flex flex-col col-span-1 gap-6">
                         <h3 className="text-[22px] font-bold text-slate-900">
                             Xizmatlar
                         </h3>
-                        <ul className="flex flex-col gap-4">
+                        <ul className="flex flex-col  gap-4">
                             {[
                                 "Katalog",
                                 "Agentlar",
@@ -67,36 +66,6 @@ const Footer = () => {
                         </ul>
                     </div>
 
-                    {/* ustun 3 */}
-                    <div className="flex flex-col gap-6">
-                        <h3 className="text-[22px] font-bold text-slate-900">
-                            Agentlar
-                        </h3>
-                        <div className="grid grid-cols-2 gap-y-5 gap-x-4">
-                            {[1, 2, 3, 4].map((agent) => (
-                                <div
-                                    key={agent}
-                                    className="flex items-center gap-3 group cursor-pointer"
-                                >
-                                    <div className="w-11 h-11 rounded-full overflow-hidden shadow-sm border border-slate-200 transition-transform duration-300 group-hover:scale-105 group-hover:shadow-md group-hover:border-blue-200 relative">
-                                        <Image
-                                            src={`https://ui-avatars.com/api/?name=Ag+${agent}&background=EFF6FF&color=1D4ED8&bold=true&size=80`}
-                                            alt={`Agent ${agent}`}
-                                            className="w-full h-full object-cover"
-                                            draggable={false}
-                                            width={44}
-                                            height={44}
-                                            unoptimized
-                                        />
-                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
-                                    </div>
-                                    <span className="text-slate-700 group-hover:text-blue-600 text-sm font-semibold transition-colors">
-                                        Agent {agent}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
                     <div className="flex flex-col gap-6">
                         <h3 className="text-[22px] font-bold text-slate-900">
                             Aloqa

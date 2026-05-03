@@ -1,3 +1,4 @@
+import { getStoredCurrency } from "../cookies/currency"
 import fetchInstance from "./fetch-instance"
 import { processingResponse, serializeParams } from "./utils"
 
@@ -13,7 +14,12 @@ export const getRequest = async <T = any>(
 ): Promise<T> => {
     let finalUrl = `${url}`
 
-    const queryString = serializeParams(config?.params ?? {})
+    // Inject currency globally into every GET request (mirrors serverGetRequest behavior)
+    const params = {
+        ...config?.params,
+        currency: getStoredCurrency(),
+    }
+    const queryString = serializeParams(params)
     if (queryString) {
         finalUrl += `?${queryString}`
     }
