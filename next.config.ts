@@ -1,5 +1,6 @@
 import type { NextConfig } from "next"
 import createNextIntlPlugin from "next-intl/plugin"
+import { withNextVideo } from "next-video/process"
 import nextRoutes from "nextjs-routes/config"
 
 const nextConfig: NextConfig = {
@@ -25,6 +26,12 @@ const nextConfig: NextConfig = {
                 hostname: "ui-avatars.com",
                 pathname: "/**",
                 port: "",
+            },
+            {
+                protocol: "https",
+                hostname: "api.file.gotour.uz",
+                port: "",
+                pathname: "/**",
             },
         ],
         // Image formats
@@ -60,9 +67,11 @@ const nextConfig: NextConfig = {
         // ESLint during build
         ignoreDuringBuilds: true,
     },
-} as any
+}
 
 const withNextIntl = createNextIntlPlugin()
-const withRoutes = nextRoutes() // ← COMMENT OUT
+const withRoutes = nextRoutes()
 
-export default withRoutes(withNextIntl(nextConfig))
+export default withRoutes({
+    ...withNextIntl(withNextVideo(nextConfig)),
+})
