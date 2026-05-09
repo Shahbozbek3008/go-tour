@@ -1,6 +1,7 @@
 "use client"
 
 import { Separator } from "@/components/ui/separator"
+import ClientTranslate from "@/components/common/translation/client-translate"
 import { useLanguage } from "@/hooks/use-language"
 import { useTourIncludedQuery } from "../../../_hooks"
 import { ExclusionList } from "./exclusion-list"
@@ -17,7 +18,7 @@ export const Inclusions = () => {
         <div className="space-y-4">
             <div className="flex flex-col gap-7">
                 <h2 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">
-                    {isRussian ? "Включено в стоимость" : "Narxga kiritilgan"}
+                    <ClientTranslate translationKey="includedInPrice" />
                 </h2>
                 <Separator />
             </div>

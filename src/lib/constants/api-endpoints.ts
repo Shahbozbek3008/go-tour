@@ -18,6 +18,7 @@ export const API = {
         PROGRAM: "tours/{slug}/program",
         TOUR_SESSIONS: "tour-sessions/{slug}",
         INSTALLMENT_SESSION: "tour/installment/session/{slug}",
+        SIMILAR: "tour/{slug}/similar",
     },
     CATEGORIES: {
         ALL: "additionally/all-categories",
@@ -59,5 +60,8 @@ export const API = {
     },
     BOOKING: {
         MY: "bookings/my",
+    },
+    FILE: {
+        SAVE_IMAGE: "file-service/api/v1/images/save",
     },
 } as const

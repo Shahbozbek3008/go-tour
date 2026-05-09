@@ -1,7 +1,9 @@
 "use client"
 
+import { useCurrency } from "@/app/_providers/currency-provider"
 import React from "react"
-import { DEFAULT_FILTERS, PRICE_MAX, PRICE_MIN } from "../_constants"
+import { getPriceLimit } from "../_constants"
+import { DEFAULT_FILTERS } from "../_constants/filter"
 import { useFilterContext } from "../_context/filter-context"
 
 export const useFilter = () => {
@@ -13,6 +15,8 @@ export const useFilter = () => {
         maxInput,
         setMaxInput,
     } = useFilterContext()
+    const { currency } = useCurrency()
+    const { min: PRICE_MIN, max: PRICE_MAX } = getPriceLimit(currency)
 
     const hasActiveFilters =
         // filters.category !== "all" ||
@@ -90,7 +94,10 @@ export const useFilter = () => {
     }
 
     const resetFilters = () => {
-        setFilters(DEFAULT_FILTERS)
+        setFilters((prev) => ({
+            ...DEFAULT_FILTERS,
+            priceRange: [PRICE_MIN, PRICE_MAX],
+        }))
         setMinInput(String(PRICE_MIN))
         setMaxInput(String(PRICE_MAX))
     }
@@ -105,6 +112,7 @@ export const useFilter = () => {
             filters.promotional,
             filters.guaranteed,
             filters.visaRequired,
+            filters.hasReviews,
             filters.childDiscount !== null,
         ].filter(Boolean).length +
         filters.tags.length +
@@ -125,6 +133,8 @@ export const useFilter = () => {
             badges.push({ key: "guaranteed", label: "Ishonchli" })
         if (filters.visaRequired)
             badges.push({ key: "visaRequired", label: "Vizasiz" })
+        if (filters.hasReviews)
+            badges.push({ key: "hasReviews", label: "Otziv bor" })
         if (filters.childDiscount !== null)
             badges.push({
                 key: "childDiscount",

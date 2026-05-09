@@ -4,8 +4,8 @@ import { ProductCard, ProductGridSkeleton } from "@/components/card"
 import { SortDropdown, SortKey } from "@/components/common/sort-dropdown"
 import ClientTranslate from "@/components/common/translation/client-translate"
 import { Badge } from "@/components/ui/badge"
-import { useAllAgentsQuery } from "@/hooks/use-all-agents-query"
 import { useInfiniteTourSearch } from "@/hooks/react-query/use-tour-search-query"
+import { useAllAgentsQuery } from "@/hooks/use-all-agents-query"
 import { usePathname, useRouter } from "@/i18n/navigation"
 import { adaptTours } from "@/lib/adapters/tour.adapter"
 import { keepPreviousData } from "@tanstack/react-query"
@@ -83,12 +83,16 @@ export const AgentsRightSide = () => {
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <h5 className="text-base font-semibold">
-                        {selectedAgent ? "Tanlangan:" : "Agentlar:"}
+                        <ClientTranslate
+                            translationKey={
+                                selectedAgent ? "selected" : "agents_label"
+                            }
+                        />
                     </h5>
                     {selectedAgent ?
                         <Badge
                             variant="destructive"
-                            className="px-2 py-1 font-medium bg-white text-black text-xs border border-zinc-100 flex items-center gap-1.5"
+                            className="px-2 py-1 font-medium bg-[#f5f9ff] text-black text-xs border border-zinc-100 flex items-center gap-1.5"
                         >
                             {selectedAgent.name}
                             <button
@@ -102,7 +106,7 @@ export const AgentsRightSide = () => {
                             variant="outline"
                             className="px-2 py-1 font-medium bg-white text-black text-xs border-zinc-100"
                         >
-                            Barchasi
+                            <ClientTranslate translationKey="all2" />
                         </Badge>
                     }
                 </div>

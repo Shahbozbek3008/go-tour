@@ -1,5 +1,6 @@
 "use client"
 
+import ClientTranslate from "@/components/common/translation/client-translate"
 import { cn } from "@/lib/utils/shadcn"
 import { motion } from "framer-motion"
 import { ArrowRight, Star } from "lucide-react"
@@ -44,7 +45,7 @@ const RatingRow = memo(function RatingRow({
                 {rating > 0 ? rating.toFixed(1) : "Yangi"}
             </div>
             <span className="text-white/45 text-[13px]">
-                {toursCount}+ turlar
+                {toursCount}+ <ClientTranslate translationKey="tours" />
             </span>
         </div>
     )
@@ -87,7 +88,7 @@ export const CityCard = memo(function CityCard({ destination }: CityCardProps) {
                     className="absolute top-4 left-4 z-30 bg-amber-400 text-[#0a0f1e] text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full"
                     aria-label="Tanlangan"
                 >
-                    ✦ Tanlangan
+                    ✦ <ClientTranslate translationKey="selected" />
                 </div>
             )}
 
@@ -136,7 +137,7 @@ export const CityCard = memo(function CityCard({ destination }: CityCardProps) {
 
                 <div className="max-h-0 overflow-hidden opacity-0 group-hover:max-h-10 group-hover:opacity-100 transition-all duration-400 delay-75 ease-in-out mt-3">
                     <span className="inline-flex items-center gap-1.5 text-amber-400 text-[11px] font-semibold uppercase tracking-wider">
-                        Kashf etish
+                        <ClientTranslate translationKey="discovery" />
                         <ArrowRight
                             size={13}
                             className="group-hover:translate-x-1 transition-transform duration-300"

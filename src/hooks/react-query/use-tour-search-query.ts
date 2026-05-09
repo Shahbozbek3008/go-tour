@@ -23,6 +23,7 @@ type TourSearchBody = {
     startDate?: string | null
     endDate?: string | null
     destinationIds?: number[] | null
+    name?: string | null
 }
 
 export const useTourSearch = (

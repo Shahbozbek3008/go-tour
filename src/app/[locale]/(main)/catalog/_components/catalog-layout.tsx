@@ -13,15 +13,13 @@ export const CatalogLayout = () => {
 
     return (
         <FilterProvider>
-            <div className="w-full overflow-x-hidden md:overflow-visible">
+            <div className="w-full">
                 <div className="home-container w-full flex flex-col gap-6 pt-6">
                     <CatalogHeader />
                 </div>
 
                 <div className="home-container flex items-start gap-8 lg:py-16 py-6">
-                    <div className="hidden lg:block sticky top-24">
-                        <CatalogLeftSide />
-                    </div>
+                    <CatalogLeftSide />
                     <div className="flex-1 min-w-0 w-full">
                         <CatalogRightSide setSheetOpen={setSheetOpen} />
                     </div>

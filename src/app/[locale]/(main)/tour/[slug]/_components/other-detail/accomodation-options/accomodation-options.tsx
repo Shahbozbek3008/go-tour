@@ -1,3 +1,4 @@
+import ClientTranslate from "@/components/common/translation/client-translate"
 import { Separator } from "@/components/ui/separator"
 import {
     Tooltip,
@@ -7,13 +8,14 @@ import {
 import { InfoIcon } from "lucide-react"
 import { Fragment } from "react"
 import { ACCOMODATION_OPTIONS_LIST } from "../../../_constants/mockdata"
+import { TranslationKey } from "@/components/common/translation/types"
 
 export function AccomodationOptions() {
     return (
         <section className="w-full">
             <div className="flex flex-col gap-6">
                 <h2 className="text-2xl font-bold text-foreground tracking-tight">
-                    Accommodation options
+                    <ClientTranslate translationKey="accommodationOptions" />
                 </h2>
                 <Separator />
             </div>
@@ -30,10 +32,20 @@ export function AccomodationOptions() {
                                     className="max-w-[200px] bg-gray-800 text-white"
                                     arrowClassName="bg-gray-800 fill-gray-800"
                                 >
-                                    <p>{option.tooltip}</p>
+                                    <p>
+                                        <ClientTranslate
+                                            translationKey={
+                                                `bedRoom_${option.id + 1}_tooltip` as TranslationKey
+                                            }
+                                        />
+                                    </p>
                                 </TooltipContent>
                             </Tooltip>
-                            {option.label}
+                            <ClientTranslate
+                                translationKey={
+                                    `bedRoom_${option.id + 1}` as TranslationKey
+                                }
+                            />
                         </li>
                         <Separator />
                     </Fragment>

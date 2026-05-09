@@ -1,3 +1,4 @@
+import ClientTranslate from "@/components/common/translation/client-translate"
 import { Separator } from "@/components/ui/separator"
 import {
     Tooltip,
@@ -11,10 +12,10 @@ export const AdditionalServices = () => {
         <section className="w-full my-15">
             <div className="flex flex-col gap-3 mb-7">
                 <h2 className="text-2xl font-bold text-foreground tracking-tight">
-                    Additional services
+                    <ClientTranslate translationKey="additionalServices" />
                 </h2>
                 <p className="text-muted-foreground text-sm font-medium">
-                    Can be purchased during the booking process
+                    <ClientTranslate translationKey="canBePurchasedDuringBooking" />
                 </p>
             </div>
             <ul className="flex flex-col">
@@ -30,10 +31,12 @@ export const AdditionalServices = () => {
                                 className="max-w-[200px] bg-gray-800 text-white"
                                 arrowClassName="bg-gray-800 fill-gray-800"
                             >
-                                <p>Optional</p>
+                                <p>
+                                    <ClientTranslate translationKey="optional" />
+                                </p>
                             </TooltipContent>
                         </Tooltip>
-                        Single occupancy
+                        <ClientTranslate translationKey="singleOccupancy" />
                     </div>
                     <span>$ 20 000</span>
                 </li>

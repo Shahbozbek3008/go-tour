@@ -2,6 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import ClientTranslate from "@/components/common/translation/client-translate"
 import { MessageCircle, Star } from "lucide-react"
 import { TourOrganizer } from "../../../_types"
 
@@ -29,12 +30,14 @@ export function OrganizerCard({ organizer }: OrganizerCardProps) {
                             {organizer.rating}
                         </span>
                     </div>
-                    <p className="text-xs text-muted-foreground">Organizer</p>
+                    <p className="text-xs text-muted-foreground">
+                        <ClientTranslate translationKey="organizer_label" />
+                    </p>
                 </div>
             </div>
             <Button size="lg" className="gap-2">
                 <MessageCircle className="size-4" />
-                Message
+                <ClientTranslate translationKey="message_label" />
             </Button>
         </div>
     )

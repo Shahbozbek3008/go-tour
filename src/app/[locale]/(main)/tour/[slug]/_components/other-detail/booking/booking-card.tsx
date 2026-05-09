@@ -1,5 +1,6 @@
 "use client"
 
+import { useCurrency } from "@/app/_providers/currency-provider"
 import ClientTranslate from "@/components/common/translation/client-translate"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -32,9 +33,12 @@ export function BookingCard({
     instantBooking,
 }: BookingCardProps) {
     const { isRussian } = useLanguage()
+    const { currency } = useCurrency()
     const [selectedSessionId, setSelectedSessionId] = useState<string>("")
     const [participants, setParticipants] = useState(1)
-    const [paymentTab, setPaymentTab] = useState<"cash" | "installment">("cash")
+    const [paymentTab, setPaymentTab] = useState<"cash" | "installment">(
+        "installment",
+    )
     const [selectedMonths, setSelectedMonths] = useState<number | null>(null)
 
     const { installmentSession } = useTourInstallmentSessionQuery(
@@ -122,27 +126,27 @@ export function BookingCard({
     return (
         <div className="rounded-2xl border border-border/60 bg-card p-5 space-y-4">
             <div className="flex items-baseline gap-2 flex-wrap">
-                {!activeSession && isRussian && sessions?.length > 0 && (
+                {!activeSession && sessions?.length > 0 && (
                     <span className="text-2xl font-bold text-foreground mr-1">
-                        от
-                    </span>
-                )}
-                {!activeSession && !isRussian && sessions?.length > 0 && (
-                    <span className="text-2xl font-bold text-foreground mr-1">
-                        dan
+                        <ClientTranslate translationKey="from" />
                     </span>
                 )}
                 <span className="text-2xl font-bold text-foreground">
-                    $ {totalPrice.toLocaleString()}
+                    {totalPrice.toLocaleString()}{" "}
+                    {currency === "USD" ?
+                        "$"
+                    :   <ClientTranslate translationKey="uzs" />}
                 </span>
 
                 {hasDiscount && originalPrice ?
                     <>
                         <span className="text-base text-muted-foreground line-through">
-                            ${" "}
                             {originalPrice.toLocaleString(undefined, {
                                 maximumFractionDigits: 0,
-                            })}
+                            })}{" "}
+                            {currency === "USD" ?
+                                "$"
+                            :   <ClientTranslate translationKey="uzs" />}
                         </span>
                         <Badge className="bg-rose-500 text-white text-xs font-bold px-2 py-0.5 rounded-lg">
                             {activeSession?.discountPercent ??
@@ -155,11 +159,10 @@ export function BookingCard({
 
             <p className="text-xs text-muted-foreground -mt-2">
                 $ {pricing.pricePerDay.toLocaleString()} /{" "}
-                {isRussian ? "день" : "kun"} · {pricing.totalDays}{" "}
-                {isRussian ? "дней" : "kun"}
+                <ClientTranslate translationKey="day_label" /> · {pricing.totalDays}{" "}
+                <ClientTranslate translationKey="days_label" />
             </p>
 
-            {/* Session & participants selectors */}
             <div className="space-y-3">
                 <Select
                     value={selectedSessionId}
@@ -287,17 +290,6 @@ export function BookingCard({
                     {/* Payment type tabs */}
                     <div className="flex rounded-xl border border-border/60 bg-muted/30 p-1 gap-1">
                         <button
-                            onClick={() => setPaymentTab("cash")}
-                            className={cn(
-                                "flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all duration-200",
-                                paymentTab === "cash" ?
-                                    "bg-card text-foreground shadow-sm border border-border/40"
-                                :   "text-muted-foreground hover:text-foreground",
-                            )}
-                        >
-                            <ClientTranslate translationKey="cashless" />
-                        </button>
-                        <button
                             onClick={() => {
                                 setPaymentTab("installment")
                                 if (
@@ -320,12 +312,21 @@ export function BookingCard({
                         >
                             <ClientTranslate translationKey="installment" />
                         </button>
+                        <button
+                            onClick={() => setPaymentTab("cash")}
+                            className={cn(
+                                "flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all duration-200",
+                                paymentTab === "cash" ?
+                                    "bg-card text-foreground shadow-sm border border-border/40"
+                                :   "text-muted-foreground hover:text-foreground",
+                            )}
+                        >
+                            <ClientTranslate translationKey="cashless" />
+                        </button>
                     </div>
 
-                    {/* Installment month pills + card */}
                     {paymentTab === "installment" && (
                         <div className="space-y-3">
-                            {/* Month selector pills */}
                             <div className="flex flex-wrap gap-2">
                                 {[...installmentOptions]
                                     .sort((a, b) => b.months - a.months)
@@ -412,7 +413,7 @@ export function BookingCard({
                                                 </span>
                                             </p>
                                             <p className="text-xs text-muted-foreground mt-0.5">
-                                                {isRussian ? "Итого:" : "Jami:"}{" "}
+                                                <ClientTranslate translationKey="total_label" />{" "}
                                                 {formatNumber(
                                                     selectedInstallment.totalPayment,
                                                 )}{" "}
@@ -436,9 +437,7 @@ export function BookingCard({
                 <div className="flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg border border-dashed border-primary/40 bg-primary/5">
                     <Zap className="size-3.5 text-primary" />
                     <span className="text-xs font-medium text-primary">
-                        {isRussian ?
-                            "Мгновенное бронирование"
-                        :   "Darhol band qilish"}
+                        <ClientTranslate translationKey="instant_booking" />
                     </span>
                 </div>
             )}
@@ -454,7 +453,7 @@ export function BookingCard({
 
             <div className="text-center space-y-0.5">
                 <p className="text-xs text-muted-foreground">
-                    {isRussian ? "Предоплата" : "Oldindan to'lov"} – ${" "}
+                    <ClientTranslate translationKey="prepayment" /> – ${" "}
                     {activeSession ?
                         (
                             ((activeSession.price * pricing.prepayment) /
@@ -466,9 +465,7 @@ export function BookingCard({
                     :   (pricing.prepayment * participants).toLocaleString()}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                    {isRussian ?
-                        "Полная отмена в течение 24 часов"
-                    :   "24 soat ichida to'liq bekor qilish"}
+                    <ClientTranslate translationKey="cancellation_24h" />
                 </p>
             </div>
         </div>

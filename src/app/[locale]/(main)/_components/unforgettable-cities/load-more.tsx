@@ -2,7 +2,7 @@
 
 import ClientTranslate from "@/components/common/translation/client-translate"
 import { motion } from "framer-motion"
-import { ChevronDown, LayoutGrid } from "lucide-react"
+import { ChevronDown } from "lucide-react"
 import { memo } from "react"
 
 interface LoadMoreButtonProps {
@@ -34,7 +34,7 @@ export const LoadMoreButton = memo(function LoadMoreButton({
                 className="
                     inline-flex items-center gap-2
                     bg-slate-900 hover:bg-slate-800 active:scale-95
-                    text-white text-[13px] font-semibold uppercase tracking-wider
+                    text-white text-[13px] font-medium
                     px-8 py-3.5 rounded-full
                     transition-all duration-200
                     disabled:opacity-50 disabled:cursor-not-allowed
@@ -50,14 +50,7 @@ export const LoadMoreButton = memo(function LoadMoreButton({
                         />
                         <ClientTranslate translationKey="close" />
                     </>
-                :   <>
-                        <LayoutGrid size={15} />
-                        <ClientTranslate translationKey="allViewDestinations" />
-                        <span className="text-slate-400 text-[11px] ml-1">
-                            ({remaining})
-                        </span>
-                    </>
-                }
+                :   <ClientTranslate translationKey="allViewDestinations" />}
             </button>
         </motion.div>
     )

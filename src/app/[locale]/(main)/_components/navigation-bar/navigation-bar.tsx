@@ -7,7 +7,7 @@ import { usePathname } from "@/i18n/navigation"
 import { MODAL_KEYS } from "@/lib/constants/modal-keys"
 import { getHref } from "@/lib/utils/get-href"
 import { cn } from "@/lib/utils/shadcn"
-import { Heart, Home, Search, User } from "lucide-react"
+import { Heart, Home, Search, User, Users } from "lucide-react"
 import Link from "next/link"
 import { FormProvider, useForm } from "react-hook-form"
 import { Login } from "../login"
@@ -25,25 +25,31 @@ const NAV_ITEMS: NavItem[] = [
     {
         id: "home",
         href: "/[locale]",
-        label: "Bosh sahifa",
+        label: "home",
         icon: <Home className="w-6 h-6" />,
     },
     {
         id: "catalog",
         href: "/[locale]/catalog",
-        label: "Katalog",
+        label: "catalog",
         icon: <Search className="w-6 h-6" />,
+    },
+    {
+        id: "agents",
+        href: "/[locale]/agents",
+        label: "agents",
+        icon: <Users className="w-6 h-6" />,
     },
     {
         id: "saved",
         href: "/[locale]/favourites",
-        label: "Sevimlilar",
+        label: "favourites",
         icon: <Heart className="w-6 h-6" />,
     },
     {
         id: "profile",
         href: "/[locale]/profile/me/my-account",
-        label: "Kabinet",
+        label: "profile",
         icon: <User className="w-6 h-6" />,
         requiresAuth: true,
     },
@@ -82,8 +88,8 @@ export function BottomNav() {
     }
 
     return (
-        <nav className="fixed z-[50] bottom-0 left-0 right-0 bg-white border-t border-gray-200 md:hidden overflow-x-hidden">
-            <div className="flex items-center justify-around h-20">
+        <nav className="fixed z-[50] bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t border-gray-200 md:hidden pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+            <div className="flex items-center justify-between px-1 h-[72px]">
                 {NAV_ITEMS.map((item) => {
                     const { id, href, label, icon } = item
                     const active = isActive(href)
@@ -94,31 +100,29 @@ export function BottomNav() {
                             key={id}
                             // @ts-expect-error
                             href={getHref({ pathname: href })}
-                            className="flex-1"
+                            className="flex-1 min-w-0"
                             onClick={(e) => handleNavClick(e, item)}
                         >
-                            <div className="flex flex-col items-center justify-center h-20 gap-1">
+                            <div className="flex flex-col items-center justify-center h-full gap-1.5 px-0.5">
                                 <div
                                     className={cn(
-                                        "transition-colors duration-200",
-                                        active ? "text-primary" : (
-                                            "text-gray-400"
-                                        ),
+                                        "transition-all duration-300 transform",
+                                        active ? 
+                                            "text-primary scale-110" : 
+                                            "text-gray-400 scale-100"
                                     )}
                                 >
                                     {icon}
                                 </div>
                                 <span
                                     className={cn(
-                                        "text-xs font-medium transition-colors duration-200",
-                                        active ? "text-primary" : (
-                                            "text-gray-600"
-                                        ),
+                                        "text-[10px] sm:text-xs font-medium transition-colors duration-200 text-center w-full truncate px-0.5",
+                                        active ? "text-primary" : "text-gray-500"
                                     )}
                                 >
                                     {showLoginLabel ?
                                         <ClientTranslate translationKey="signInTitle" />
-                                    :   label}
+                                    :   <ClientTranslate translationKey={label as any} />}
                                 </span>
                             </div>
                         </Link>

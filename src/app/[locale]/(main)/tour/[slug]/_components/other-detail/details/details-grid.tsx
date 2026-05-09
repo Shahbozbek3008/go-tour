@@ -1,3 +1,5 @@
+import ClientTranslate from "@/components/common/translation/client-translate"
+import { TranslationKey } from "@/components/common/translation/types"
 import { Activity, Bed, Calendar, Compass, Globe, Users } from "lucide-react"
 import { useTourDetailQuery } from "../../../_hooks"
 import { TourDetailResponse, TourDetails } from "../../../_types"
@@ -15,14 +17,14 @@ function buildDetailItems(
     return [
         {
             icon: Calendar,
-            label: "Duration",
-            value: `${detail?.durationInDays} days`,
+            label: "duration",
+            value: `${detail?.durationInDays}`,
         },
-        { icon: Compass, label: "Tour type", value: detail?.categories?.[0] },
-        { icon: Globe, label: "Language", value: details.language },
-        { icon: Bed, label: "Comfort", value: details.comfort },
-        { icon: Activity, label: "Activity level", value: details.activity },
-        { icon: Users, label: "Age group", value: details.ageGroup },
+        { icon: Compass, label: "tourType", value: detail?.categories?.[0] },
+        { icon: Globe, label: "language", value: details.language },
+        { icon: Bed, label: "comfort", value: details.comfort },
+        { icon: Activity, label: "activityLevel", value: details.activity },
+        { icon: Users, label: "ageGroup", value: details.ageGroup },
     ]
 }
 
@@ -37,7 +39,7 @@ export function TourDetailsGrid({ details }: TourDetailsGridProps) {
     return (
         <div className="rounded-2xl border border-border/60 p-6 bg-[#F6F7FA]">
             <h2 className="text-lg font-semibold text-foreground mb-5">
-                Tour Details
+                <ClientTranslate translationKey="tourDetails" />
             </h2>
             <div className="grid grid-cols-2 gap-4">
                 {items.map(({ icon: Icon, label, value }) => (
@@ -50,10 +52,22 @@ export function TourDetailsGrid({ details }: TourDetailsGridProps) {
                         </div>
                         <div>
                             <p className="text-xs text-muted-foreground">
-                                {label}
+                                <ClientTranslate translationKey={label} />
                             </p>
                             <p className="text-sm font-medium text-foreground">
-                                {value}
+                                {label === "duration" ?
+                                    <>
+                                        {value}{" "}
+                                        <ClientTranslate translationKey="days_label" />
+                                    </>
+                                : label === "tourType" ?
+                                    <ClientTranslate
+                                        translationKey={
+                                            `cat_${value}` as TranslationKey
+                                        }
+                                        // fallback={value}
+                                    />
+                                :   value}
                             </p>
                         </div>
                     </div>

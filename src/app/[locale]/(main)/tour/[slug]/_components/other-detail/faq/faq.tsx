@@ -1,5 +1,5 @@
-"use client"
-
+import ClientTranslate from "@/components/common/translation/client-translate"
+import { useLanguage } from "@/hooks/use-language"
 import {
     Accordion,
     AccordionContent,
@@ -12,6 +12,7 @@ import { useTourGoodToKnowQuery } from "../../../_hooks"
 import { GTKItem } from "../../../_types"
 
 export const Faq = () => {
+    const { isRussian } = useLanguage()
     const { gtk, isLoading } = useTourGoodToKnowQuery()
     const [openItems, setOpenItems] = useState<string[]>([])
 
@@ -20,7 +21,7 @@ export const Faq = () => {
     return (
         <section className="w-full my-15">
             <h2 className="text-2xl font-bold text-foreground mb-6 tracking-tight">
-                Good to know
+                <ClientTranslate translationKey="goodToKnow" />
             </h2>
             <div className="space-y-4">
                 <Accordion
@@ -31,8 +32,9 @@ export const Faq = () => {
                 >
                     {(gtk as GTKItem[])?.map((item) => {
                         const id = item?.id?.toString()
-                        const title = item?.titleUz
-                        const content = item?.descriptionUz
+                        const title = isRussian ? item?.titleRu : item?.titleUz
+                        const content =
+                            isRussian ? item?.descriptionRu : item?.descriptionUz
 
                         return (
                             <AccordionItem

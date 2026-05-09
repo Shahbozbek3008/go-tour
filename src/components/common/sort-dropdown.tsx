@@ -7,6 +7,8 @@ import { AnimatePresence, motion } from "framer-motion"
 import { Check, ChevronDown } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 import React from "react"
+import ClientTranslate from "./translation/client-translate"
+import { useTranslations } from "next-intl"
 
 export type SortKey =
     | "POPULARITY"
@@ -24,19 +26,20 @@ interface SortOption {
 const SORT_QUERY_KEY = "sortBy"
 
 const SORT_OPTIONS: SortOption[] = [
-    { key: "POPULARITY", label: "Mashhurlar" },
-    { key: "MOST_REVIEWED", label: "Otzivlar soni bo'yicha" },
-    { key: "PRICE_ASC", label: "Arzon avval" },
-    { key: "PRICE_DESC", label: "Qimmat avval" },
-    { key: "RATING_DESC", label: "Yuqori reyting" },
-    { key: "NEWEST", label: "Yangilar" },
+    { key: "POPULARITY", label: "sort_popularity" },
+    { key: "MOST_REVIEWED", label: "sort_most_reviewed" },
+    { key: "PRICE_ASC", label: "sort_price_asc" },
+    { key: "PRICE_DESC", label: "sort_price_desc" },
+    { key: "RATING_DESC", label: "sort_rating_desc" },
+    { key: "NEWEST", label: "sort_newest" },
 ]
 
 const VALID_SORT_KEYS = new Set(SORT_OPTIONS.map((o) => o.key))
 
-const DEFAULT_LABEL = "Saralash"
+const DEFAULT_LABEL = "sort_label"
 
 export const SortDropdown = () => {
+    const t = useTranslations()
     const router = useRouter()
     const pathname = usePathname()
     const searchParams = useSearchParams()
@@ -112,10 +115,14 @@ export const SortDropdown = () => {
                         current ? "text-blue-400" : "text-zinc-400",
                     )}
                 >
-                    {DEFAULT_LABEL}:
+                    <ClientTranslate translationKey={DEFAULT_LABEL} />:
                 </span>
 
-                <span className="text-primary">{current?.label}</span>
+                <span className="text-primary">
+                    {current ?
+                        <ClientTranslate translationKey={current.label} />
+                    :   null}
+                </span>
 
                 <ChevronDown
                     className={cn(
@@ -154,7 +161,7 @@ export const SortDropdown = () => {
                                     :   "text-zinc-500 hover:bg-zinc-50 hover:text-zinc-800",
                                 )}
                             >
-                                {opt.label}
+                                    <ClientTranslate translationKey={opt.label} />
                                 {opt.key === value && (
                                     <Check className="h-3.5 w-3.5 text-zinc-900" />
                                 )}

@@ -6,11 +6,13 @@ import { useRouter } from "@/i18n/navigation"
 import { getHref } from "@/lib/utils/get-href"
 import { TravelAgencyResponse } from "@/types/api/agents"
 import { ArrowRight } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { useMemo } from "react"
 import { useMultiplyCarousel } from "./_hooks"
 import { AgentChip } from "./agent-chip"
 
 export const Agents = () => {
+    const t = useTranslations()
     const router = useRouter()
     const { allAgents } = useAllAgentsQuery()
 
@@ -27,11 +29,36 @@ export const Agents = () => {
     return (
         <section className="w-full bg-white py-16 overflow-hidden">
             <div className="w-full home-container">
-                <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
-                    <h2 className="w-full text-3xl md:text-[40px] tracking-tight font-bold text-slate-900 text-center">
-                        <ClientTranslate translationKey="agents" />
+                <div className="flex flex-col items-center justify-center mb-10 text-center">
+                    <p className="text-[12px] uppercase tracking-widest font-semibold text-blue-600 mb-3">
+                        <ClientTranslate translationKey="agents_subtitle" />
+                    </p>
+                    <h2 className="text-3xl md:text-[40px] tracking-tight font-bold text-slate-900">
+                        <ClientTranslate translationKey="agents_title" />
                     </h2>
                 </div>
+
+                {/* Mobile: Explore All tugmasi cardlar tepasida o'ngda */}
+                {multiplied?.length > 8 && (
+                    <div className="flex justify-end mb-3 sm:hidden">
+                        <button
+                            onClick={() =>
+                                router.push(
+                                    getHref({
+                                        pathname: "/[locale]/agents",
+                                    }),
+                                )
+                            }
+                            className="flex items-center cursor-pointer gap-1.5 text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors duration-200 group"
+                        >
+                            <ClientTranslate translationKey="exploreAll" />
+                            <ArrowRight
+                                size={15}
+                                className="transition-transform duration-200 group-hover:translate-x-0.5"
+                            />
+                        </button>
+                    </div>
+                )}
 
                 <div className="overflow-hidden py-4 -my-4" ref={emblaRef}>
                     <div className="flex touch-pan-y -ml-4 sm:-ml-6">
@@ -57,10 +84,12 @@ export const Agents = () => {
                                         "w-8 h-1.5 bg-[#0F1B2D]"
                                     :   "w-2 h-1.5 bg-gray-200 hover:bg-gray-300"
                                 }`}
-                                aria-label={`Go to slide ${i + 1}`}
+                                aria-label={t("goToSlide", { slide: i + 1 })}
                             />
                         ))}
                     </div>
+
+                    {/* Desktop: o'zgarishsiz */}
                     {multiplied?.length > 8 && (
                         <button
                             onClick={() =>
@@ -70,7 +99,7 @@ export const Agents = () => {
                                     }),
                                 )
                             }
-                            className="absolute right-0 flex items-center cursor-pointer gap-1.5 text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors duration-200 group"
+                            className="hidden sm:flex absolute right-0 items-center cursor-pointer gap-1.5 text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors duration-200 group"
                         >
                             <ClientTranslate translationKey="exploreAll" />
                             <ArrowRight

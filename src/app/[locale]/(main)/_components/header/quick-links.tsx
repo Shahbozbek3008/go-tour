@@ -2,6 +2,7 @@
 
 import { IconSpeakerPhone } from "@/assets/icons/speaker-phone"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useLanguage } from "@/hooks/use-language"
 import { useRouter } from "@/i18n/navigation"
 import { getHref } from "@/lib/utils/get-href"
 import Image from "next/image"
@@ -36,6 +37,7 @@ const BannerIcon = ({ src, alt }: { src: string; alt: string }) => {
 
 export const QuickLinks = () => {
     const router = useRouter()
+    const { isRussian } = useLanguage()
     const { banners, isLoading } = useBannerListQuery()
 
     if (isLoading) return <QuickLinksSkeleton />
@@ -142,7 +144,6 @@ export const QuickLinks = () => {
             }
 
             default:
-                // Existing logic or fallback
                 if (tourId) {
                     router.push(
                         getHref({
@@ -156,12 +157,12 @@ export const QuickLinks = () => {
     }
 
     return (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mt-4">
+        <div className="flex gap-3 mt-4 overflow-x-auto pb-1 no-scrollbar">
             {banners.map((item, i) => (
                 <button
                     key={i}
                     onClick={() => handleNavigation(item)}
-                    className="group relative flex items-center gap-3 bg-[#f4f4f4] cursor-pointer hover:border-gray-200 rounded-2xl px-4 py-3.5 hover:shadow-sm transition-all duration-200 hover:-translate-y-0.5 text-left"
+                    className="group relative flex items-center gap-3 bg-[#f4f4f4] cursor-pointer hover:border-gray-200 rounded-2xl px-4 py-3.5 hover:shadow-sm transition-all duration-200 hover:-translate-y-0.5 text-left shrink-0 w-[200px]"
                 >
                     {item?.badge != null && (
                         <span className="absolute top-2 right-2 text-[9px] font-bold bg-rose-500 text-white px-1.5 py-0.5 rounded-full leading-none">
@@ -172,8 +173,8 @@ export const QuickLinks = () => {
                         <BannerIcon src={item.icon} alt={item.titleUz} />
                     </div>
                     <div className="min-w-0">
-                        <p className="text-sm font-semibold text-gray-800 leading-tight mt-0.5">
-                            {item.titleUz}
+                        <p className="text-xs font-semibold text-gray-800 leading-tight mt-0.5">
+                            {isRussian ? item?.titleRu : item.titleUz}
                         </p>
                     </div>
                 </button>
@@ -184,21 +185,19 @@ export const QuickLinks = () => {
 
 const QuickLinksSkeleton = () => {
     return (
-        <div className="mt-4 w-full">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-                {[...Array(5)].map((_, i) => (
-                    <div
-                        key={i}
-                        className="flex items-center gap-3 bg-[#f4f4f4] rounded-2xl px-4 py-3.5"
-                    >
-                        <Skeleton className="w-10 h-10 rounded-xl shrink-0" />
-                        <div className="flex flex-col gap-1.5 w-full">
-                            <Skeleton className="h-2 w-1/2 rounded" />
-                            <Skeleton className="h-3 w-3/4 rounded" />
-                        </div>
+        <div className="flex gap-3 mt-4 overflow-x-auto pb-1 no-scrollbar">
+            {[...Array(5)].map((_, i) => (
+                <div
+                    key={i}
+                    className="flex items-center gap-3 bg-[#f4f4f4] rounded-2xl px-4 py-3.5 shrink-0 w-[200px]"
+                >
+                    <Skeleton className="w-10 h-10 rounded-xl shrink-0" />
+                    <div className="flex flex-col gap-1.5 w-full">
+                        <Skeleton className="h-2 w-1/2 rounded" />
+                        <Skeleton className="h-3 w-3/4 rounded" />
                     </div>
-                ))}
-            </div>
+                </div>
+            ))}
         </div>
     )
 }

@@ -1,5 +1,6 @@
 "use client"
 
+import ClientTranslate from "@/components/common/translation/client-translate"
 import { ChevronDown, Mail } from "lucide-react"
 import { useState } from "react"
 import { TourDay } from "../../../_types"
@@ -25,7 +26,7 @@ export function Program({ days, onEmailRequest }: ProgramProps) {
         <section className="w-full space-y-5">
             <div className="flex items-center justify-between">
                 <h2 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">
-                    {isRussian ? "Программа тура" : "Tur dasturi"}
+                    <ClientTranslate translationKey="tourProgram" />
                 </h2>
             </div>
             <div className="flex items-center justify-between">
@@ -33,14 +34,14 @@ export function Program({ days, onEmailRequest }: ProgramProps) {
                     onClick={onEmailRequest}
                     className="inline-flex items-center gap-2 text-sm font-medium text-lime-600 hover:text-lime-700 transition-colors"
                 >
-                    Get it on email
+                    <ClientTranslate translationKey="getItOnEmail" />
                     <Mail className="size-4" />
                 </button>
                 <button
                     onClick={toggleAll}
                     className="inline-flex items-center gap-1.5 text-sm font-medium text-lime-600 hover:text-lime-700 transition-colors"
                 >
-                    {allExpanded ? "Hide all days" : "Show all days"}
+                    <ClientTranslate translationKey={allExpanded ? "hideAllDays" : "showAllDays"} />
                     <ChevronDown
                         className={`size-4 transition-transform duration-200 ${allExpanded ? "rotate-180" : ""}`}
                     />

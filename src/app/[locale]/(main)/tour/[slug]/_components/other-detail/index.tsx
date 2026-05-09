@@ -1,5 +1,6 @@
 "use client"
 
+import { useLanguage } from "@/hooks/use-language"
 import { Separator } from "@/components/ui/separator"
 import { MOCK_TOUR } from "../../_constants/mockdata"
 import {
@@ -30,6 +31,7 @@ function Anchor({ id }: { id: string }) {
 }
 
 export default function TourDetailLayout() {
+    const { isRussian } = useLanguage()
     const tour = MOCK_TOUR
     const { detail } = useTourDetailQuery()
     const { reviews } = useTourReviewsQuery()
@@ -43,13 +45,16 @@ export default function TourDetailLayout() {
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8 lg:gap-6 items-start">
                 <div className="space-y-6 min-w-0 rounded-2xl border border-border/60 bg-card p-5">
                     <TourNavTabs />
-
                     <Anchor id={SECTION_IDS.overview} />
                     <TrustBadges />
                     <TourDetailsGrid details={tour.details} />
                     <TourTags tags={detail?.categories!} />
                     <Separator className="my-10" />
-                    <ReadMore lines={2}>{detail?.descriptionUz!}</ReadMore>
+                    <ReadMore lines={2}>
+                        {isRussian ?
+                            detail?.descriptionRu!
+                        :   detail?.descriptionUz!}
+                    </ReadMore>
                     <Separator className="my-10" />
 
                     {program?.length! > 0 && (
@@ -103,7 +108,9 @@ export default function TourDetailLayout() {
                         sessions={sessions || []}
                         instantBooking={tour.instantBooking}
                     />
-                    <OrganizerCard organizer={tour.organizer} />
+                    {detail?.enableChat && (
+                        <OrganizerCard organizer={tour.organizer} />
+                    )}
                 </div>
             </div>
         </div>

@@ -12,6 +12,8 @@ import {
 import ErrorMessage from "../ui/error-message"
 import { Label } from "../ui/label"
 import { Textarea, TextareaProps } from "../ui/textarea"
+import ClientTranslate from "../common/translation/client-translate"
+import { useTranslations } from "next-intl"
 
 interface IProps<IForm extends FieldValues> {
     methods: UseFormReturn<IForm>
@@ -23,6 +25,7 @@ interface IProps<IForm extends FieldValues> {
     labelClassName?: string
     onValueChange?: (e: ChangeEvent<HTMLTextAreaElement>) => void
     textareaProps?: TextareaProps
+    placeholder?: string
 }
 
 export default function ControlledTextarea<IForm extends FieldValues>({
@@ -35,7 +38,9 @@ export default function ControlledTextarea<IForm extends FieldValues>({
     onValueChange,
     labelClassName,
     textareaProps,
+    placeholder,
 }: IProps<IForm>) {
+    const t = useTranslations()
     const {
         field: { onChange, ...field },
         fieldState: { error },
@@ -43,7 +48,7 @@ export default function ControlledTextarea<IForm extends FieldValues>({
         name,
         control: methods.control,
         rules: {
-            required: { value: !optional, message: "Ushbu maydon majburiy" },
+            required: { value: !optional, message: t("thisFieldRequired") },
         },
         defaultValue: "" as PathValue<IForm, Path<IForm>>,
     })
@@ -61,11 +66,16 @@ export default function ControlledTextarea<IForm extends FieldValues>({
                     )}
                     required={!optional}
                 >
-                    {label}
+                    <ClientTranslate translationKey={label} />
                 </Label>
             )}
             <Textarea
                 autoComplete="off"
+                placeholder={
+                    placeholder ?
+                        t(placeholder as any)
+                    :   undefined
+                }
                 onChange={(e) => {
                     onChange(e)
                     onValueChange?.(e)
@@ -73,6 +83,7 @@ export default function ControlledTextarea<IForm extends FieldValues>({
                 {...field}
                 {...textareaProps}
             />
+
             {!!error && showError && (
                 <ErrorMessage>
                     {error.message || error.root?.message}

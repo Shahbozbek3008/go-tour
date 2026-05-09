@@ -1,18 +1,22 @@
 "use client"
 
+import ClientTranslate from "@/components/common/translation/client-translate"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useAllAgentsQuery } from "@/hooks/use-all-agents-query"
 import { usePathname, useRouter } from "@/i18n/navigation"
 import { TravelAgencyResponse } from "@/types/api/agents"
 import { useSearchParams } from "next/navigation"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useRef, useState } from "react"
 import { AgentCard } from "./agent-card"
 
 interface AgentsLeftSideProps {
     onSelect?: (id: number) => void
 }
 
-const ITEM_HEIGHT = 100 // Card height (approx 88px) + Gap (10px) = ~100px
+// Kard balandligi (88px) + gap (10px) = 98px
+const ITEM_HEIGHT = 98
+const VISIBLE_HEIGHT = 700
+const OVERSCAN = 3
 
 export const AgentsLeftSide = ({ onSelect }: AgentsLeftSideProps) => {
     const { allAgents, isLoading } = useAllAgentsQuery()
@@ -22,24 +26,40 @@ export const AgentsLeftSide = ({ onSelect }: AgentsLeftSideProps) => {
 
     const selectedId = Number(searchParams.get("agentId")) || 0
     const [scrollTop, setScrollTop] = useState(0)
-    const viewportRef = useRef<HTMLDivElement>(null)
+    const viewportRef = useRef<HTMLElement | null>(null)
 
+    const handleSelect = useCallback(
+        (id: number) => {
+            const params = new URLSearchParams(searchParams.toString())
+            params.set("agentId", id.toString())
+            router.push(`${pathname}?${params.toString()}`, { scroll: false })
+            onSelect?.(id)
+        },
+        [searchParams, router, pathname, onSelect],
+    )
 
-    const handleSelect = (id: number) => {
-        const params = new URLSearchParams(searchParams.toString())
-        params.set("agentId", id.toString())
-        router.push(`${pathname}?${params.toString()}`, { scroll: false })
-        onSelect?.(id)
-    }
+    const scrollAreaRef = useCallback((node: HTMLDivElement | null) => {
+        if (!node) return
+        const viewport = node.querySelector(
+            "[data-radix-scroll-area-viewport]",
+        ) as HTMLElement | null
+        if (!viewport) return
+        viewportRef.current = viewport
+        const onScroll = () => setScrollTop(viewport.scrollTop)
+        viewport.addEventListener("scroll", onScroll, { passive: true })
+        return () => viewport.removeEventListener("scroll", onScroll)
+    }, [])
 
     const agentsList = allAgents || []
     const totalHeight = agentsList.length * ITEM_HEIGHT
 
-    // Virtualization logic
-    const startIndex = Math.max(0, Math.floor(scrollTop / ITEM_HEIGHT) - 3)
+    const startIndex = Math.max(
+        0,
+        Math.floor(scrollTop / ITEM_HEIGHT) - OVERSCAN,
+    )
     const endIndex = Math.min(
         agentsList.length,
-        Math.floor((scrollTop + 800) / ITEM_HEIGHT) + 3,
+        Math.ceil((scrollTop + VISIBLE_HEIGHT) / ITEM_HEIGHT) + OVERSCAN,
     )
 
     const visibleAgents = agentsList.slice(startIndex, endIndex)
@@ -47,22 +67,14 @@ export const AgentsLeftSide = ({ onSelect }: AgentsLeftSideProps) => {
     return (
         <aside className="w-full md:w-[280px] md:shrink-0 sticky top-24 z-20">
             <h5 className="text-[14px] font-bold text-zinc-900 uppercase tracking-tight mb-4 px-1">
-                Agentlar
+                <ClientTranslate translationKey="agents" />
             </h5>
 
-            {/* Desktop View: Virtualized Vertical Scroll */}
-            <div className="hidden md:block overflow-hidden">
-                <ScrollArea
-                    className="h-[700px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-                    onScrollCapture={(e) => {
-                        const target = e.currentTarget.querySelector(
-                            "[data-radix-scroll-area-viewport]",
-                        )
-                        if (target) {
-                            setScrollTop((target as HTMLElement).scrollTop)
-                        }
-                    }}
-                >
+            <div
+                ref={scrollAreaRef}
+                className="hidden md:block overflow-hidden"
+            >
+                <ScrollArea className="h-[700px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                     {isLoading ?
                         <div className="space-y-3">
                             {Array.from({ length: 8 }).map((_, i) => (
@@ -87,7 +99,7 @@ export const AgentsLeftSide = ({ onSelect }: AgentsLeftSideProps) => {
                                     width: "100%",
                                     transform: `translateY(${startIndex * ITEM_HEIGHT}px)`,
                                 }}
-                                className="flex flex-col gap-2.5"
+                                className="flex flex-col gap-[10px]"
                             >
                                 {visibleAgents.map((agent) => (
                                     <AgentCard

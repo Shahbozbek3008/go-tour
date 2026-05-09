@@ -7,55 +7,65 @@ import Index from "./_components"
 
 export default async function TourDetail({ params }: PropsWithLocaleSlug) {
     const { slug } = await params
+    const slugId = slug.split("-").pop()
     setLocale(params)
 
     return (
-        <PrefetchProvider endpoint={API.TOUR.TOUR_SLUG.replace("{slug}", slug)}>
+        <PrefetchProvider
+            endpoint={API.TOUR.TOUR_SLUG.replace("{slug}", slugId!)}
+        >
             <PrefetchProvider
-                endpoint={API.TOUR.TOUR_SLUG_FILES.replace("{slug}", slug)}
+                endpoint={API.TOUR.TOUR_SLUG_FILES.replace("{slug}", slugId!)}
             >
                 <PrefetchProvider
-                    endpoint={API.TOUR.REVIEWS.replace("{slug}", slug)}
+                    endpoint={API.TOUR.REVIEWS.replace("{slug}", slugId!)}
                 >
                     <PrefetchProvider
                         endpoint={API.TOUR.ACCOMMODATION.replace(
                             "{slug}",
-                            slug,
+                            slugId!,
                         )}
                     >
                         <PrefetchProvider
                             endpoint={API.TOUR.GOOD_TO_KNOW.replace(
                                 "{slug}",
-                                slug,
+                                slugId!,
                             )}
                         >
                             <PrefetchProvider
                                 endpoint={API.TOUR.INCLUDED.replace(
                                     "{slug}",
-                                    slug,
+                                    slugId!,
                                 )}
                             >
                                 <PrefetchProvider
                                     endpoint={API.TOUR.PROGRAM.replace(
                                         "{slug}",
-                                        slug,
+                                        slugId!,
                                     )}
                                 >
                                     <PrefetchProvider
                                         endpoint={API.TOUR.TOUR_SESSIONS.replace(
                                             "{slug}",
-                                            slug,
+                                            slugId!,
                                         )}
                                     >
                                         <PrefetchProvider
                                             endpoint={API.TOUR.INSTALLMENT_SESSION.replace(
                                                 "{slug}",
-                                                slug,
+                                                slugId!,
                                             )}
                                         >
-                                            <SlugProvider slug={slug}>
-                                                <Index />
-                                            </SlugProvider>
+                                            <PrefetchProvider
+                                                endpoint={API.TOUR.SIMILAR.replace(
+                                                    "{slug}",
+                                                    slugId!,
+                                                )}
+                                            >
+                                                <SlugProvider slug={slugId!}>
+                                                    <Index />
+                                                </SlugProvider>
+                                            </PrefetchProvider>
                                         </PrefetchProvider>
                                     </PrefetchProvider>
                                 </PrefetchProvider>

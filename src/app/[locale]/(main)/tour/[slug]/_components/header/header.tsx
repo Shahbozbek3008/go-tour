@@ -8,6 +8,7 @@ import { MODAL_KEYS } from "@/lib/constants/modal-keys"
 import { cn } from "@/lib/utils/shadcn"
 import { useQueryClient } from "@tanstack/react-query"
 import { Heart, MessageCircle, Share2 } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { toast } from "sonner"
 import { useTourDetailQuery } from "../../_hooks"
 
@@ -16,12 +17,13 @@ interface TourHeaderProps {
 }
 
 export function TourHeader({ title }: TourHeaderProps) {
+    const t = useTranslations()
+    const queryClient = useQueryClient()
     const { detail } = useTourDetailQuery()
     const { isAuthenticated } = useProfileQuery()
     const { openModal } = useModal(MODAL_KEYS.SIGN_IN_MODAL)
     const { post, isPending, remove } = useRequest()
     const { invalidateByExactMatch } = useRevalidate()
-    const queryClient = useQueryClient()
 
     const handleFavorite = (e: React.MouseEvent) => {
         e.stopPropagation()
@@ -77,9 +79,9 @@ export function TourHeader({ title }: TourHeaderProps) {
                 })
 
                 if (detail?.isFavorite) {
-                    toast.success("Tour removed from favorites")
+                    toast.success(t("removeFavouritesTour"))
                 } else {
-                    toast.success("Tour added to favorites")
+                    toast.success(t("addFavouritesTour"))
                 }
 
                 invalidateByExactMatch([
@@ -98,6 +100,32 @@ export function TourHeader({ title }: TourHeaderProps) {
             post(url, {}, options)
         }
     }
+    const handleShare = async () => {
+        const shareData = {
+            title: title,
+            text: title,
+            url: window.location.href,
+        }
+
+        if (navigator.share) {
+            try {
+                await navigator.share(shareData)
+            } catch (err) {
+                if ((err as Error).name !== "AbortError") {
+                    console.error("Error sharing:", err)
+                }
+            }
+        } else {
+            try {
+                await navigator.clipboard.writeText(window.location.href)
+                toast.success(t("linkCopied"))
+            } catch (err) {
+                console.error("Error copying to clipboard:", err)
+                toast.error(t("failedToCopy"))
+            }
+        }
+    }
+
     return (
         <div className="flex items-start justify-between gap-4 mb-4">
             <h1 className="text-xl sm:text-2xl font-bold text-gray-900 leading-tight flex-1">
@@ -108,7 +136,12 @@ export function TourHeader({ title }: TourHeaderProps) {
                 <Button size="icon" variant="outline" aria-label="Comments">
                     <MessageCircle className="h-5 w-5" />
                 </Button>
-                <Button size="icon" variant="outline" aria-label="Share">
+                <Button
+                    size="icon"
+                    variant="outline"
+                    aria-label="Share"
+                    onClick={handleShare}
+                >
                     <Share2 className="h-5 w-5" />
                 </Button>
                 <Button

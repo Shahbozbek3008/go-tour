@@ -2,6 +2,7 @@
 
 import { IconCheck } from "@/assets/icons/check"
 import { Button } from "@/components/ui/button"
+import ClientTranslate from "@/components/common/translation/client-translate"
 import { useLanguage } from "@/hooks/use-language"
 import { cn } from "@/lib/utils/shadcn"
 import { AnimatePresence, motion } from "framer-motion"
@@ -28,7 +29,7 @@ export const InclusionList = ({ items }: InclusionListProps) => {
     return (
         <div className="flex flex-col gap-4">
             <p className="text-sm font-semibold text-foreground">
-                {isRussian ? "Включено" : "Kiritilgan"}
+                <ClientTranslate translationKey="included" />
             </p>
             <div className="flex flex-col gap-4">
                 <ul className="flex flex-col gap-4">
@@ -71,13 +72,7 @@ export const InclusionList = ({ items }: InclusionListProps) => {
                         onClick={toggleAll}
                         className="w-fit text-[13px] p-0!"
                     >
-                        {showAll ?
-                            isRussian ?
-                                "Скрыть"
-                            :   "Kamroq ko'rish"
-                        : isRussian ?
-                            "Показать все"
-                        :   "Barchasini ko'rish"}
+                        <ClientTranslate translationKey={showAll ? "showLess" : "showAll"} />
                         <ChevronDown
                             className={cn(
                                 "size-4 transition-transform duration-200",

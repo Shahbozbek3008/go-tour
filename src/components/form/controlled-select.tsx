@@ -91,7 +91,15 @@ export default function SelectControl<T extends FieldValues>({
                     :   "border",
                 )}
             >
-                <SelectValue placeholder={placeholder} />
+                <SelectValue
+                    placeholder={
+                        placeholder ?
+                            <ClientTranslate
+                                translationKey={placeholder as TranslationKey}
+                            />
+                        :   undefined
+                    }
+                />
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
@@ -124,12 +132,15 @@ export default function SelectControl<T extends FieldValues>({
                 <FormItem className={cn(className, "relative")}>
                     {label && (
                         <FormLabel className={labelClass}>
-                            {label}{" "}
+                            <ClientTranslate
+                                translationKey={label as TranslationKey}
+                            />{" "}
                             {required && (
                                 <span className={cn("text-red")}>*</span>
                             )}
                         </FormLabel>
                     )}
+
                     <FormControl>
                         {hasGradientBorder ?
                             <div className="border-gradient rounded-md">

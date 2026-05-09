@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import fetchInstance from "@/lib/api/fetch-instance"
 import { safeParseBody, throwError } from "@/lib/api/utils"
-import { getDeviceInfo } from "@/lib/firebase/get-device-info"
 import { onError } from "@/lib/utils/on-error"
 import { QueryClient, useMutation } from "@tanstack/react-query"
 import { CustomUseMutationOptions, MutateOpts } from "./types"
@@ -36,13 +35,7 @@ export const useRequest = <P = any, D = any>({
                 config: requestConfig,
             }) => {
                 const mergedConfig = { ...config, ...requestConfig }
-                const updatedPayload =
-                    device ?
-                        {
-                            ...(payload as object),
-                            device: await getDeviceInfo(),
-                        }
-                    :   payload
+                const updatedPayload = payload
 
                 let response: Response
                 const finalUrl = url

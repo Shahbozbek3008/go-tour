@@ -2,12 +2,16 @@
 
 import ClientTranslate from "@/components/common/translation/client-translate"
 import { Button } from "@/components/ui/button"
+import { useRevalidate } from "@/hooks/react-query/use-revalidate"
 import { useProfileQuery } from "@/hooks/react-query/use-profile-query"
 import { useModal } from "@/hooks/use-modal"
 import { Link } from "@/i18n/navigation"
+import { ClientTokenService } from "@/lib/cookies/client-token-service"
 import { NAV_LIST } from "@/lib/constants"
 import { MODAL_KEYS } from "@/lib/constants/modal-keys"
+import { getHref } from "@/lib/utils/get-href"
 import { cn } from "@/lib/utils/shadcn"
+import { LogOut } from "lucide-react"
 
 // getHref() already returns a resolved string like "/uz/catalog"
 // Strip the locale segment to compare: "/uz/catalog" => "/catalog"
@@ -83,6 +87,15 @@ export function MobileMenu({ open, pathname, onClose }: MobileMenuProps) {
     const normalizedPathname = stripLocale(pathname)
     const { openModal } = useModal(MODAL_KEYS.SIGN_IN_MODAL)
     const { isAuthenticated } = useProfileQuery()
+    const { queryClient } = useRevalidate()
+
+    const handleLogout = () => {
+        ClientTokenService.removeAccessToken()
+        ClientTokenService.removeRefreshToken()
+        queryClient.clear()
+        onClose()
+        window.location.href = getHref({ pathname: "/[locale]" })
+    }
 
     return (
         <>
@@ -167,8 +180,19 @@ export function MobileMenu({ open, pathname, onClose }: MobileMenuProps) {
                     </ul>
                 </div>
 
-                {!isAuthenticated && (
-                    <div className="p-6 border-t border-gray-100 bg-white">
+                <div className="p-6 border-t border-gray-100 bg-white space-y-3">
+                    {isAuthenticated && (
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={handleLogout}
+                            className="flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-[15px] font-semibold border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+                        >
+                            <ClientTranslate translationKey="logout" />
+                            <LogOut className="w-4 h-4" />
+                        </Button>
+                    )}
+                    {!isAuthenticated && (
                         <Button
                             type="button"
                             onClick={() => {
@@ -179,8 +203,8 @@ export function MobileMenu({ open, pathname, onClose }: MobileMenuProps) {
                         >
                             <ClientTranslate translationKey="signIn" />
                         </Button>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
         </>
     )

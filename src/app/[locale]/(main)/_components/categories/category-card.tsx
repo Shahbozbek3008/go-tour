@@ -1,5 +1,6 @@
 "use client"
 
+import { useLanguage } from "@/hooks/use-language"
 import { useRouter } from "@/i18n/navigation"
 import { getHref } from "@/lib/utils/get-href"
 import { cn } from "@/lib/utils/shadcn"
@@ -27,6 +28,7 @@ type Props = {
 export const CategoryCard = memo(
     ({ category, gridClass, className = "" }: Props) => {
         const router = useRouter()
+        const { isRussian } = useLanguage()
 
         return (
             <motion.div
@@ -58,8 +60,8 @@ export const CategoryCard = memo(
                     transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
                 >
                     <Image
-                        src={category.image}
-                        alt={category.label}
+                        src={category?.image}
+                        alt={category?.label}
                         fill
                         unoptimized
                         className="object-cover"
@@ -74,7 +76,7 @@ export const CategoryCard = memo(
                         whileHover={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.2 }}
                     >
-                        {category.label}
+                        {isRussian ? category?.nameRu : category?.nameUz}
                     </motion.span>
                 </div>
             </motion.div>

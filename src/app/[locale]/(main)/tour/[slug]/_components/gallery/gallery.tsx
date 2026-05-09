@@ -1,5 +1,6 @@
 "use client"
 
+import ClientTranslate from "@/components/common/translation/client-translate"
 import MediaViewerModal from "@/components/common/media-viewer-modal"
 import { useMediaViewerModal } from "@/components/common/media-viewer-modal/use-media-viewer-modal"
 import { Button } from "@/components/ui/button"
@@ -128,7 +129,7 @@ export function TourGallery({ images }: TourGalleryProps) {
                                     {index === 3 && (
                                         <button className="absolute bottom-4 right-4 inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900/80 backdrop-blur-md text-white text-sm font-semibold rounded-xl hover:bg-gray-900 transition-colors shadow-lg">
                                             <Images className="h-4 w-4" />
-                                            Все фото
+                                            <ClientTranslate translationKey="showAllPhotos" />
                                         </button>
                                     )}
                                 </div>
@@ -171,7 +172,7 @@ export function TourGallery({ images }: TourGalleryProps) {
                     className="cursor-pointer absolute bottom-4 right-4 lg:hidden inline-flex items-center gap-2 px-4 py-2 bg-black/60 backdrop-blur-md text-white border border-white/10 text-[13px] font-semibold rounded-[12px] hover:bg-black/70 transition-colors shadow-[0_4px_12px_rgba(0,0,0,0.15)] pointer-events-auto active:scale-95 z-10"
                 >
                     <Images className="h-[14px] w-[14px]" />
-                    Все фото
+                    <ClientTranslate translationKey="showAllPhotos" />
                 </button>
             </div>
 

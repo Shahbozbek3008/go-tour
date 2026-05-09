@@ -52,4 +52,5 @@ export interface TourDetailResponse {
     discountAmount: number | null
     sessions: unknown[]
     avgRating: number
+    enableChat?: boolean
 }

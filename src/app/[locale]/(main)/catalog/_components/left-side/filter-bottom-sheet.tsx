@@ -16,14 +16,18 @@ import { RadioGroup } from "@/components/ui/radio-group"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { cn } from "@/lib/utils/shadcn"
+import { useCurrency } from "@/app/_providers/currency-provider"
+import { formatNumber } from "@/lib/utils/format-number"
+import { getCurrencySign } from "@/lib/utils/money"
 import { Info, Minus, Plus, X } from "lucide-react"
 import { useState } from "react"
+import ClientTranslate from "@/components/common/translation/client-translate"
+import { useTranslations } from "next-intl"
 import {
     CATEGORIES,
     DURATIONS,
+    getPriceLimit,
     LANGUAGES,
-    PRICE_MAX,
-    PRICE_MIN,
     RATINGS,
 } from "../../_constants"
 import { useFilter } from "../../_hooks"
@@ -43,6 +47,7 @@ export const FilterBottomSheet = ({
     open,
     onOpenChange,
 }: FilterBottomSheetProps) => {
+    const t = useTranslations()
     const {
         filters,
         minInput,
@@ -57,6 +62,10 @@ export const FilterBottomSheet = ({
         activeFiltersCount,
         toggleLanguage,
     } = useFilter()
+    const { currency } = useCurrency()
+    const { min: PRICE_MIN, max: PRICE_MAX, step: PRICE_STEP } = getPriceLimit(currency)
+    const currencySign = getCurrencySign(currency)
+    const sign = currencySign.symbol || currencySign.iso
 
     const [showAllCategories, setShowAllCategories] = useState(false)
     const [showAllLanguages, setShowAllLanguages] = useState(false)
@@ -79,11 +88,20 @@ export const FilterBottomSheet = ({
 
     return (
         <Drawer open={open} onOpenChange={onOpenChange}>
-            <DrawerContent className="h-[100vh] flex flex-col rounded-none">
+            <DrawerContent
+                className={cn(
+                    "flex h-[100dvh] max-h-[100dvh] flex-col rounded-none border-0",
+                    "[&[data-vaul-drawer-direction=bottom]]:inset-0",
+                    "[&[data-vaul-drawer-direction=bottom]]:mt-0",
+                    "[&[data-vaul-drawer-direction=bottom]]:max-h-[100dvh]",
+                    "[&[data-vaul-drawer-direction=bottom]]:rounded-none",
+                    "[&[data-vaul-drawer-direction=bottom]]:border-0",
+                )}
+            >
                 <DrawerHeader className="sticky top-0 bg-white flex items-center justify-between z-10 pt-4 pb-3 border-b border-zinc-100 shrink-0">
                     <div className="flex items-center w-full justify-between gap-2">
                         <DrawerTitle className="flex items-center gap-2 text-[15px] font-bold text-zinc-900 tracking-tight">
-                            Filterlar
+                            <ClientTranslate translationKey="catalogFilterTitle" />
                             {activeFiltersCount > 0 && (
                                 <Badge className="flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-blue-600 text-white text-[11px] font-bold">
                                     {activeFiltersCount}
@@ -93,7 +111,7 @@ export const FilterBottomSheet = ({
                         <DrawerClose asChild>
                             <button
                                 className="flex items-center justify-center w-8 h-8 rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-500 hover:text-zinc-700 transition-colors duration-150 focus-visible:outline-none"
-                                aria-label="Yopish"
+                                aria-label={t("catalogFilterClose")}
                             >
                                 <X className="w-4 h-4" />
                             </button>
@@ -106,7 +124,7 @@ export const FilterBottomSheet = ({
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-1.5 cursor-pointer select-none">
                                 <span className="text-[14px] text-zinc-900 font-medium">
-                                    Faqat skidkali turlar
+                                    <ClientTranslate translationKey="catalogFilterDiscountOnly" />
                                 </span>
                                 <Info
                                     strokeWidth={1.5}
@@ -128,7 +146,7 @@ export const FilterBottomSheet = ({
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-1.5 cursor-pointer select-none">
                                 <span className="text-[14px] text-zinc-900 font-medium">
-                                    Ishonchli turlar
+                                    <ClientTranslate translationKey="catalogFilterTrustedOnly" />
                                 </span>
                                 <Info
                                     strokeWidth={1.5}
@@ -149,7 +167,7 @@ export const FilterBottomSheet = ({
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-1.5 cursor-pointer select-none">
                                 <span className="text-[14px] text-zinc-900 font-medium">
-                                    Faqat otzivli turlar
+                                    <ClientTranslate translationKey="catalogFilterReviewsOnly" />
                                 </span>
                                 <Info
                                     strokeWidth={1.5}
@@ -169,7 +187,7 @@ export const FilterBottomSheet = ({
                         </div>
                     </div>
 
-                    <FilterSection title="Kategoriya">
+                    <FilterSection title={t("catalogFilterCategory")}>
                         <RadioGroup
                             value={filters.category}
                             onValueChange={(val) =>
@@ -190,7 +208,9 @@ export const FilterBottomSheet = ({
                                         key={id}
                                         id={`bs-cat-${id}`}
                                         value={id}
-                                        label={label}
+                                        label={
+                                            <ClientTranslate translationKey={label} />
+                                        }
                                         isActive={filters.category === id}
                                     />
                                 ))}
@@ -203,26 +223,35 @@ export const FilterBottomSheet = ({
                                 className="cursor-pointer mt-2 w-full rounded-lg bg-zinc-100 py-2 text-[13px] font-medium text-zinc-600 transition-colors duration-150 focus-visible:outline-none"
                             >
                                 {showAllCategories ?
-                                    "Kamroq ko'rsatish"
-                                :   `Barcha turlar (${hiddenCount})`}
+                                    t("catalogFilterShowLess")
+                                :   t("catalogFilterAllTours", { count: hiddenCount })}
                             </button>
                         )}
                     </FilterSection>
 
-                    <FilterSection title="Narx">
+                    <FilterSection title={t("catalogFilterPrice")}>
                         <div className="space-y-3 pt-1">
                             <Slider
                                 min={PRICE_MIN}
                                 max={PRICE_MAX}
-                                step={100}
+                                step={PRICE_STEP}
                                 value={filters.priceRange}
                                 onValueChange={handlePriceSlider}
                                 className="w-full"
                             />
                             <div className="flex items-center justify-between text-[11px] text-zinc-400 select-none">
-                                <span>$0</span>
-                                <span>$5,000</span>
-                                <span>$10,000</span>
+                                <span>
+                                    {sign}
+                                    {formatNumber(PRICE_MIN, { isShowZero: true })}
+                                </span>
+                                <span>
+                                    {sign}
+                                    {formatNumber(PRICE_MAX / 2)}
+                                </span>
+                                <span>
+                                    {sign}
+                                    {formatNumber(PRICE_MAX)}
+                                </span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <div className="relative flex-1">
@@ -258,7 +287,7 @@ export const FilterBottomSheet = ({
                         </div>
                     </FilterSection>
 
-                    <FilterSection title="Davomiylik" defaultOpen={false}>
+                    <FilterSection title={t("catalogFilterDuration")} defaultOpen={false}>
                         <RadioGroup
                             value={filters.duration}
                             onValueChange={(val) =>
@@ -271,14 +300,16 @@ export const FilterBottomSheet = ({
                                     key={value}
                                     id={`bs-dur-${value}`}
                                     value={value}
-                                    label={label}
+                                    label={
+                                        <ClientTranslate translationKey={label} />
+                                    }
                                     isActive={filters.duration === value}
                                 />
                             ))}
                         </RadioGroup>
                     </FilterSection>
 
-                    <FilterSection title="Reyting">
+                    <FilterSection title={t("catalogFilterRating")}>
                         <RadioGroup
                             value={filters.rate}
                             onValueChange={(val) =>
@@ -294,7 +325,19 @@ export const FilterBottomSheet = ({
                                     isActive={filters.rate === value}
                                     label={
                                         <span className="flex items-center gap-2">
-                                            <span>{label}</span>
+                                            <span>
+                                                {value === "all" ?
+                                                    <ClientTranslate
+                                                        translationKey={label}
+                                                    />
+                                                :   <ClientTranslate
+                                                        translationKey="rat_stars"
+                                                        values={{
+                                                            stars: label,
+                                                        }}
+                                                    />
+                                                }
+                                            </span>
                                             {stars > 0 && (
                                                 <StarDisplay filled={stars} />
                                             )}
@@ -305,13 +348,13 @@ export const FilterBottomSheet = ({
                         </RadioGroup>
                     </FilterSection>
 
-                    <FilterSection title="Mashhur shaharlar">
+                    <FilterSection title={t("catalogFilterPopularCities")}>
                         <p className="text-[12px] text-zinc-400 py-1">
-                            Tez kunda…
+                            <ClientTranslate translationKey="catalogFilterComingSoon" />
                         </p>
                     </FilterSection>
 
-                    <FilterSection title="Til bo'yicha">
+                    <FilterSection title={t("catalogFilterByLanguage")}>
                         <div className="flex flex-wrap gap-2 pt-0.5 transition-all duration-300 ease-in-out">
                             {visibleLanguages.map((lang) => {
                                 const active = filters.languages.includes(
@@ -335,7 +378,7 @@ export const FilterBottomSheet = ({
                                                 htmlFor={`bs-lang-${lang.id}`}
                                                 className="cursor-pointer text-zinc-500"
                                             >
-                                                {lang.label}
+                                                <ClientTranslate translationKey={lang.label} />
                                             </FieldLabel>
                                         </Field>
                                     </FieldGroup>
@@ -349,20 +392,20 @@ export const FilterBottomSheet = ({
                                     className="cursor-pointer mt-2 w-full rounded-lg bg-zinc-100 py-2 text-[13px] font-medium text-zinc-600 transition-colors duration-150 focus-visible:outline-none"
                                 >
                                     {showAllLanguages ?
-                                        "Kamroq ko'rsatish"
-                                    :   `Barcha tillar (${hiddenLanguageCount})`
+                                        t("catalogFilterShowLess")
+                                    :   t("catalogFilterAllLanguages", { count: hiddenLanguageCount })
                                     }
                                 </button>
                             )}
                         </div>
                     </FilterSection>
 
-                    <FilterSection title="Qo'shimcha">
+                    <FilterSection title={t("catalogFilterAdditional")}>
                         <div className="flex flex-col gap-4 pt-1">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-1.5 cursor-pointer select-none">
                                     <span className="text-[14px] text-zinc-900 font-medium">
-                                        Viza talab qilinmaydi
+                                        <ClientTranslate translationKey="catalogFilterNoVisa" />
                                     </span>
                                     <Info
                                         strokeWidth={1.5}
@@ -383,12 +426,12 @@ export const FilterBottomSheet = ({
 
                             <div className="space-y-2">
                                 <span className="text-[13px] font-medium text-zinc-600 block">
-                                    Bolalar chegirmasi
+                                    <ClientTranslate translationKey="catalogFilterChildDiscount" />
                                 </span>
                                 <div className="flex items-center justify-between p-3.5 border border-zinc-200 rounded-xl bg-zinc-50/50">
                                     <div className="flex flex-col">
                                         <span className="text-[11px] text-zinc-400 font-medium leading-none mb-1">
-                                            Foizda (%)
+                                            <ClientTranslate translationKey="catalogFilterPeopleCount" />
                                         </span>
                                         <span className="text-[17px] font-bold text-zinc-900 tabular-nums">
                                             {filters.childDiscount ?? 0}
@@ -437,11 +480,11 @@ export const FilterBottomSheet = ({
                         disabled={!hasActiveFilters}
                         className="flex-1 rounded-xl h-11 border-zinc-200 text-zinc-600"
                     >
-                        Tozalash
+                        <ClientTranslate translationKey="catalogFilterClear" />
                     </Button>
                     <DrawerClose asChild>
                         <Button className="flex-1 rounded-xl h-11">
-                            Natijalarni ko'rish
+                            <ClientTranslate translationKey="catalogFilterShowResults" />
                         </Button>
                     </DrawerClose>
                 </div>

@@ -126,7 +126,7 @@ function DestinationsSection({
 
                 {!isLoading && visibleDestinations.length === 0 && (
                     <p className="text-center text-slate-400 py-16">
-                        Manzillar topilmadi
+                        <ClientTranslate translationKey="noDestinationsFound" />
                     </p>
                 )}
 

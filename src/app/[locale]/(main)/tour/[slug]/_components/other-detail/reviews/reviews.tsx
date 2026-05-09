@@ -1,3 +1,4 @@
+import ClientTranslate from "@/components/common/translation/client-translate"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { useModal } from "@/hooks/use-modal"
@@ -31,7 +32,7 @@ export const Reviews = ({
                     className="text-sm font-semibold bg-[#f0f2f5] hover:bg-[#e4e6e9] text-black"
                     onClick={openModal}
                 >
-                    All reviews ({totalCount})
+                    <ClientTranslate translationKey="allReviews" /> ({totalCount})
                 </Button>
             </div>
             {isOpen && (

@@ -1,3 +1,4 @@
+import ClientTranslate from "@/components/common/translation/client-translate"
 import { Separator } from "@/components/ui/separator"
 import { BadgeCheck, CreditCard, ShieldCheck } from "lucide-react"
 import { Fragment } from "react"
@@ -5,18 +6,18 @@ import { Fragment } from "react"
 const BADGES = [
     {
         icon: BadgeCheck,
-        title: "Lowest Price Guarantee",
-        description: "Not more expensive than on other platforms",
+        title: "lowestPriceGuarantee",
+        description: "lowestPriceDescription",
     },
     {
         icon: CreditCard,
-        title: "Any Card Accepted",
-        description: "We accept local and international cards",
+        title: "anyCardAccepted",
+        description: "anyCardDescription",
     },
     {
         icon: ShieldCheck,
-        title: "Verified Travel Experts",
-        description: "All organizers pass a thorough screening",
+        title: "verifiedTravelExperts",
+        description: "verifiedTravelDescription",
     },
 ]
 
@@ -29,16 +30,19 @@ export function TrustBadges() {
                         <Icon className="size-5 text-primary mt-0.5 shrink-0" />
                         <div>
                             <p className="text-sm font-semibold text-foreground">
-                                {title}
+                                <ClientTranslate translationKey={title} />
                             </p>
                             <p className="text-xs text-muted-foreground mt-0.5">
-                                {description}
+                                <ClientTranslate translationKey={description} />
                             </p>
                         </div>
                     </div>
                     {index !== BADGES.length - 1 && (
                         <>
-                            <Separator orientation="horizontal" className="my-4 sm:hidden" />
+                            <Separator
+                                orientation="horizontal"
+                                className="my-4 sm:hidden"
+                            />
                             <div className="hidden sm:block w-[1px] bg-border/80 mx-2 lg:mx-4 self-stretch" />
                         </>
                     )}

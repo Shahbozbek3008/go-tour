@@ -34,4 +34,6 @@ export interface Tour {
     maxPrice: number
     discountAmount: number
     installment: Installment
+    slugUz: string
+    slugRu: string
 }

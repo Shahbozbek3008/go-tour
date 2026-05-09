@@ -2,6 +2,8 @@ export type ApiCategory = {
     category: string
     order: number
     imageUrl: string
+    nameUz: string
+    nameRu: string
 }
 
 export type NormalizedCategory = {
@@ -9,4 +11,6 @@ export type NormalizedCategory = {
     label: string
     image: string
     featured?: boolean
+    nameUz: string
+    nameRu: string
 }

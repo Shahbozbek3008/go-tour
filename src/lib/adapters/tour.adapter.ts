@@ -64,10 +64,13 @@ const resolveAuthor = (agent: Tour["agent"]): string => {
 }
 
 const resolveBadge = (tour: Tour): string => {
-    if (tour.hasDiscount) return "Chegirma"
-    if (tour.popular) return "Bestseller"
-    if (tour.visaRequired === false) return "Vizasiz"
-    return tour.categories[0] ?? "Tur"
+    if (tour.hasDiscount) return "badge_discount"
+    if (tour.popular) return "badge_bestseller"
+    if (tour.visaRequired === false) return "badge_visaFree"
+    if (tour.categories && tour.categories.length > 0) {
+        return `cat_${tour.categories[0]}`
+    }
+    return "badge_tour"
 }
 
 const resolveCategory = (tour: Tour): string => {
@@ -101,6 +104,8 @@ export const adaptTour = (tour: Tour) => ({
     category: resolveCategory(tour),
     isFavorite: tour?.isFavorite,
     installment: tour?.installment,
+    slugUz: tour?.slugUz,
+    slugRu: tour?.slugRu,
 })
 
 export const adaptTours = (tours: Tour[]) => tours.map(adaptTour)

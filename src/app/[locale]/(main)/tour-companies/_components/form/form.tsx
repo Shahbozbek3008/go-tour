@@ -2,58 +2,61 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ArrowRight, CheckCircle2, Mail, MapPin, Phone } from "lucide-react"
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import { useTranslations } from "next-intl"
 
 import ControlledInput from "@/components/form/controlled-input"
 import ControlledTextarea from "@/components/form/controlled-textarea"
 import PhoneField from "@/components/form/phone-field"
 import { Form } from "@/components/ui/form"
 import { cn } from "@/lib/utils/shadcn"
-
-const schema = z.object({
-    name: z.string().min(2, "Ism kamida 2 ta belgi bo'lishi kerak"),
-    phone: z.string().min(7, "Telefon raqami noto'g'ri"),
-    website: z
-        .string()
-        .optional()
-        .refine(
-            (val) =>
-                !val ||
-                val === "" ||
-                val.startsWith("http://") ||
-                val.startsWith("https://"),
-            { message: "URL https:// bilan boshlanishi kerak" },
-        ),
-    message: z.string().min(10, "Xabar kamida 10 ta belgi bo'lishi kerak"),
-})
-
-type FormValues = z.infer<typeof schema>
-
-const contactDetails = [
-    {
-        icon: Mail,
-        label: "Email",
-        value: "Gotour@gmail.com",
-        href: "mailto:Gotour@gmail.com",
-    },
-    {
-        icon: MapPin,
-        label: "Manzil",
-        value: "4074 Ebert Summit Suite 375 Lake Leonardchester",
-        href: "#",
-    },
-    {
-        icon: Phone,
-        label: "Telefon",
-        value: "+44 123 654 7890",
-        href: "tel:+441236547890",
-    },
-]
+import ClientTranslate from "@/components/common/translation/client-translate"
 
 export const TourCompaniesForm = () => {
+    const t = useTranslations()
     const [submitted, setSubmitted] = useState(false)
+
+    const schema = useMemo(() => z.object({
+        name: z.string().min(2, t("tourCompanies_error_name")),
+        phone: z.string().min(7, t("tourCompanies_error_phone")),
+        website: z
+            .string()
+            .optional()
+            .refine(
+                (val) =>
+                    !val ||
+                    val === "" ||
+                    val.startsWith("http://") ||
+                    val.startsWith("https://"),
+                { message: t("tourCompanies_error_website") },
+            ),
+        message: z.string().min(10, t("tourCompanies_error_message")),
+    }), [t])
+
+    type FormValues = z.infer<typeof schema>
+
+    const contactDetails = [
+        {
+            icon: Mail,
+            label: "tourCompanies_email",
+            value: "Gotour@gmail.com",
+            href: "mailto:Gotour@gmail.com",
+        },
+        {
+            icon: MapPin,
+            label: "tourCompanies_address",
+            value: "4074 Ebert Summit Suite 375 Lake Leonardchester",
+            href: "#",
+        },
+        {
+            icon: Phone,
+            label: "tourCompanies_phone",
+            value: "+44 123 654 7890",
+            href: "tel:+441236547890",
+        },
+    ]
 
     const methods = useForm<FormValues>({
         resolver: zodResolver(schema),
@@ -83,17 +86,13 @@ export const TourCompaniesForm = () => {
                     <div className="space-y-10">
                         <div className="space-y-4">
                             <p className="text-xs font-semibold tracking-[0.2em] uppercase text-primary">
-                                Aloqa
+                                <ClientTranslate translationKey="tourCompanies_contact" />
                             </p>
                             <h2 className="text-4xl md:text-5xl font-bold text-zinc-900 leading-[1.1]">
-                                Biz bilan
-                                <span className="text-primary ml-2">
-                                    bog'laning
-                                </span>
+                                <ClientTranslate translationKey="tourCompanies_contactWithUs" />
                             </h2>
                             <p className="text-zinc-500 text-[15px] leading-relaxed max-w-sm">
-                                Ma'lumotlarni qayta ishlab, loyiha haqida siz
-                                bilan muhokama qilamiz.
+                                <ClientTranslate translationKey="tourCompanies_description" />
                             </p>
                         </div>
 
@@ -113,7 +112,7 @@ export const TourCompaniesForm = () => {
                                         </div>
                                         <div className="pt-0.5">
                                             <p className="text-xs text-zinc-400 font-medium mb-0.5">
-                                                {label}
+                                                <ClientTranslate translationKey={label} />
                                             </p>
                                             <p className="text-sm text-zinc-700 font-medium leading-snug">
                                                 {value}
@@ -138,11 +137,10 @@ export const TourCompaniesForm = () => {
                                     </div>
                                     <div className="space-y-2">
                                         <h3 className="text-xl font-semibold text-zinc-900">
-                                            Yuborildi!
+                                            <ClientTranslate translationKey="tourCompanies_success_title" />
                                         </h3>
                                         <p className="text-sm text-zinc-500">
-                                            Xabaringiz qabul qilindi. Tez orada
-                                            siz bilan bog'lanamiz.
+                                            <ClientTranslate translationKey="tourCompanies_success_description" />
                                         </p>
                                     </div>
                                     <button
@@ -152,7 +150,7 @@ export const TourCompaniesForm = () => {
                                         }}
                                         className="mt-2 text-sm text-blue-600 hover:text-blue-700 font-medium underline underline-offset-4"
                                     >
-                                        Yana yuborish
+                                        <ClientTranslate translationKey="tourCompanies_sendAgain" />
                                     </button>
                                 </div>
                             :   <Form {...methods}>
@@ -163,7 +161,7 @@ export const TourCompaniesForm = () => {
                                         <ControlledInput
                                             methods={methods}
                                             name="name"
-                                            label="Ism"
+                                            label="tourCompanies_label_name"
                                             showError
                                         />
 
@@ -176,7 +174,7 @@ export const TourCompaniesForm = () => {
                                         <ControlledInput
                                             methods={methods}
                                             name="website"
-                                            label="Veb-sayt"
+                                            label="tourCompanies_label_website"
                                             optional
                                             showError
                                         />
@@ -184,7 +182,7 @@ export const TourCompaniesForm = () => {
                                         <ControlledTextarea
                                             methods={methods}
                                             name="message"
-                                            label="Xabar"
+                                            label="tourCompanies_label_message"
                                             showError
                                             textareaProps={{
                                                 className:
@@ -226,10 +224,10 @@ export const TourCompaniesForm = () => {
                                                                 d="M4 12a8 8 0 018-8v8H4z"
                                                             />
                                                         </svg>
-                                                        Yuborilmoqda...
+                                                        <ClientTranslate translationKey="tourCompanies_button_sending" />
                                                     </>
                                                 :   <>
-                                                        Yuborish
+                                                        <ClientTranslate translationKey="tourCompanies_button_send" />
                                                         <ArrowRight
                                                             className="w-4 h-4"
                                                             strokeWidth={2.5}

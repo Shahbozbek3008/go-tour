@@ -28,6 +28,8 @@ export const normalizeCategory = (item: ApiCategory): NormalizedCategory => {
         label: CATEGORY_LABEL_MAP[item.category] ?? item.category,
         image: item.imageUrl,
         featured: id === CATEGORY_FEATURED_ID,
+        nameUz: item?.nameUz,
+        nameRu: item?.nameRu,
     }
 }
 

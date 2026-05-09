@@ -6,6 +6,8 @@ interface Category {
     category: string
     imageUrl: string
     order: number
+    nameUz: string
+    nameRu: string
 }
 
 export const useAllCategoriesQuery = (args?: UseGetArgs<Category[]>) => {

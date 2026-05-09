@@ -29,11 +29,7 @@ export const ComponentIndex = () => {
                 {allBookings.length === 0 ?
                     <EmptyOrders />
                 :   <div
-                        className="grid gap-5"
-                        style={{
-                            gridTemplateColumns:
-                                "repeat(auto-fill, minmax(280px, 1fr))",
-                        }}
+                        className="grid gap-5 grid-cols-1 md:[grid-template-columns:repeat(auto-fill,minmax(280px,1fr))]"
                     >
                         {MOCK_TOURS.map((tour) => (
                             <ProductCard

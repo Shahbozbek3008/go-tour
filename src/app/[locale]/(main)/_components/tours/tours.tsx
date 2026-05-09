@@ -2,7 +2,6 @@
 
 import { ProductCard } from "@/components/card"
 import ClientTranslate from "@/components/common/translation/client-translate"
-import { Button } from "@/components/ui/button"
 import { useTourSearch } from "@/hooks/react-query/use-tour-search-query"
 import { useRouter } from "@/i18n/navigation"
 import { adaptTours } from "@/lib/adapters/tour.adapter"
@@ -10,7 +9,7 @@ import { getHref } from "@/lib/utils/get-href"
 import { keepPreviousData } from "@tanstack/react-query"
 import useEmblaCarousel from "embla-carousel-react"
 import { AnimatePresence, motion } from "framer-motion"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react"
 import { useCallback, useMemo, useState } from "react"
 import {
     useTourDiscountsQuery,
@@ -24,12 +23,12 @@ type Tab = {
 }
 
 const TABS: Tab[] = [
-    { id: "all", label: "Barchasi" },
-    { id: "bestseller", label: "Eng ko'p sotiladigan" },
-    { id: "discount", label: "Chegirmali turlar" },
-    { id: "best", label: "Eng yaxshi turlar" },
-    { id: "new", label: "Yangi turlar" },
-    { id: "special", label: "Maxsus takliflar" },
+    { id: "all", label: "all2" },
+    { id: "bestseller", label: "bestseller" },
+    { id: "discount", label: "discount" },
+    { id: "best", label: "best" },
+    { id: "new", label: "newTours" },
+    { id: "special", label: "specialOffers" },
 ]
 
 export const TourSection = () => {
@@ -48,8 +47,8 @@ export const TourSection = () => {
                 : undefined,
         },
         options: {
-            placeholderData: keepPreviousData
-        }
+            placeholderData: keepPreviousData,
+        },
     })
     const { topSellingTours } = useTourTopSellingQuery({
         options: {
@@ -91,7 +90,7 @@ export const TourSection = () => {
                         transition={{ duration: 0.5 }}
                         className="text-3xl md:text-[40px] font-bold text-center text-slate-900 mb-8 tracking-tight"
                     >
-                        Toping mukammal sarguzashtni
+                        <ClientTranslate translationKey="findThePerfectAdventure" />
                     </motion.h2>
 
                     <div className="flex items-center justify-start md:justify-center gap-1 p-1.5 bg-slate-200/50 rounded-full overflow-x-auto whitespace-nowrap w-full md:w-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
@@ -105,7 +104,7 @@ export const TourSection = () => {
                                     :   "text-slate-500 hover:text-slate-800 hover:bg-slate-200/50"
                                 }`}
                             >
-                                {tab.label}
+                                <ClientTranslate translationKey={tab?.label} /> 
                             </button>
                         ))}
                     </div>
@@ -146,9 +145,7 @@ export const TourSection = () => {
                             />
                         </button>
                     </div>
-
-                    <Button
-                        variant="ghost"
+                    <button
                         onClick={() =>
                             router.push(
                                 getHref({
@@ -156,11 +153,14 @@ export const TourSection = () => {
                                 }),
                             )
                         }
-                        className="px-6 py-2.5 rounded-full font-semibold hover:bg-transparent hover:text-black active:scale-95 flex items-center gap-2"
+                        className="flex items-center cursor-pointer gap-1.5 text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors duration-200 group"
                     >
-                        <ClientTranslate translationKey="allView" />
-                        <ChevronRight size={16} />
-                    </Button>
+                        <ClientTranslate translationKey="exploreAll" />
+                        <ArrowRight
+                            size={15}
+                            className="transition-transform duration-200 group-hover:translate-x-0.5"
+                        />
+                    </button>
                 </div>
             </div>
         </section>

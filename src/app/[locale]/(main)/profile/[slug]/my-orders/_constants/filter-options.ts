@@ -5,9 +5,9 @@ type FilterOption = {
 }
 
 export const FILTER_OPTIONS: FilterOption[] = [
-    { value: "all", label: "Barchasi" },
-    { value: "new", label: "Yangi" },
-    { value: "in_progress", label: "Jarayonda" },
-    { value: "success", label: "Muvaffaqiyat" },
-    { value: "cancelled", label: "Bekor qilingan" },
+    { value: "all", label: "all2" },
+    { value: "new", label: "new" },
+    { value: "in_progress", label: "inProgress" },
+    { value: "success", label: "success" },
+    { value: "cancelled", label: "cancelled" },
 ]

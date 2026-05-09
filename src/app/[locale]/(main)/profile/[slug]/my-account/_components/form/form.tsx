@@ -42,7 +42,7 @@ export function MyAccountForm() {
                                 <ControlledInput
                                     methods={methods}
                                     name="fullName"
-                                    placeholder="To'liq ismingiz"
+                                    placeholder="fullNamePlaceholder"
                                     className="h-10 text-sm rounded-lg"
                                 />
                             </FieldRow>
@@ -53,7 +53,7 @@ export function MyAccountForm() {
                                     name="email"
                                     type="email"
                                     optional
-                                    placeholder="Elektron pochta"
+                                    placeholder="emailPlaceholder"
                                     className="h-10 text-sm rounded-lg placeholder:text-sm"
                                 />
                             </FieldRow>
@@ -62,11 +62,13 @@ export function MyAccountForm() {
                                 <ControlledDatePicker
                                     methods={methods}
                                     name="birthDate"
-                                    placeholder="Tug'ilgan sana"
+                                    placeholder="birthDate"
                                     className="h-10 text-sm rounded-lg w-full"
                                     calendarProps={{
                                         fromYear: 1940,
                                         toYear: new Date().getFullYear(),
+                                        // @ts-ignore
+                                        locale: undefined,
                                     }}
                                 />
                             </FieldRow>
@@ -75,13 +77,14 @@ export function MyAccountForm() {
                                 <SelectControl
                                     control={methods.control}
                                     name="gender"
-                                    placeholder="Tanlash"
+                                    placeholder="selectPlaceholder"
                                     options={GENDER_OPTIONS}
                                     selectClass="h-10 text-sm rounded-lg w-full"
                                     notRequired
                                     withoutDescription
                                 />
                             </FieldRow>
+
 
                             <FieldRow label="phoneNumber">
                                 <PhoneField
@@ -112,12 +115,12 @@ export function MyAccountForm() {
                         </FieldRow>
                     </SectionCard>
 
-                    <div className="flex items-center justify-end gap-3 pt-2">
+                    <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2 sm:gap-3 pt-2">
                         <Button
                             size="lg"
                             type="button"
                             variant="outline"
-                            className="rounded-lg"
+                            className="rounded-lg w-full sm:w-auto"
                             onClick={() => methods.reset()}
                         >
                             <ClientTranslate translationKey="cancel" />
@@ -127,7 +130,7 @@ export function MyAccountForm() {
                             type="submit"
                             variant="default"
                             isLoading={isPending}
-                            className="rounded-lg"
+                            className="rounded-lg w-full sm:w-auto"
                         >
                             <ClientTranslate translationKey="save" />
                         </Button>

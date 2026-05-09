@@ -2,6 +2,7 @@
 
 import { IconClose } from "@/assets/icons/close"
 import { Button } from "@/components/ui/button"
+import ClientTranslate from "@/components/common/translation/client-translate"
 import { useLanguage } from "@/hooks/use-language"
 import { AnimatePresence, motion } from "framer-motion"
 import { ChevronDown } from "lucide-react"
@@ -26,7 +27,7 @@ export const ExclusionList = ({ items }: ExclusionListProps) => {
     return (
         <div className="flex flex-col gap-4 mt-4">
             <p className="text-sm font-semibold text-foreground">
-                {isRussian ? "Не включено" : "Kiritilmagan"}
+                <ClientTranslate translationKey="notIncluded" />
             </p>
             <div className="flex flex-col gap-4">
                 <ul className="flex flex-col gap-4">
@@ -69,13 +70,7 @@ export const ExclusionList = ({ items }: ExclusionListProps) => {
                         onClick={toggleAll}
                         className="w-fit text-[13px] p-0!"
                     >
-                        {showAll ?
-                            isRussian ?
-                                "Скрыть"
-                            :   "Kamroq ko'rish"
-                        : isRussian ?
-                            "Показать все"
-                        :   "Barchasini ko'rish"}
+                        <ClientTranslate translationKey={showAll ? "showLess" : "showAll"} />
                         <ChevronDown
                             className={`size-4 transition-transform duration-200 ${showAll ? "rotate-180" : ""}`}
                         />

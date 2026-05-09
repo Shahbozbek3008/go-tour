@@ -1,5 +1,6 @@
 "use client"
 
+import ClientTranslate from "@/components/common/translation/client-translate"
 import { cn } from "@/lib/utils/shadcn"
 import { ChevronDown } from "lucide-react"
 import { useLayoutEffect, useRef, useState } from "react"
@@ -47,7 +48,9 @@ export function ReadMore({ children, lines = 4, className }: ReadMoreProps) {
                     onClick={() => setIsExpanded((prev) => !prev)}
                     className="mt-2.5 flex items-center gap-1.5 text-[15px] font-medium text-[#ADC227] transition-colors"
                 >
-                    <span>{isExpanded ? "Hide" : "Read more"}</span>
+                    <span>
+                        <ClientTranslate translationKey={isExpanded ? "showLess" : "showMore"} />
+                    </span>
                     <ChevronDown
                         className={cn(
                             "h-4 w-4 transition-transform duration-300",

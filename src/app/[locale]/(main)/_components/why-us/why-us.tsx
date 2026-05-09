@@ -1,5 +1,6 @@
 "use client"
 
+import ClientTranslate from "@/components/common/translation/client-translate"
 import { BookOpen, ChevronDown, MapPin, Plane, Shield } from "lucide-react"
 import { useState } from "react"
 
@@ -17,50 +18,46 @@ interface FaqItemProps {
 const services: ServiceCardProps[] = [
     {
         icon: <MapPin className="w-7 h-7" />,
-        title: "Guided Tours",
-        description:
-            "Professional guides who know every corner of the destination, ensuring an enriching and safe travel experience.",
+        title: "whyUsGuidedTours",
+        description: "whyUsGuidedToursDesc",
     },
     {
         icon: <Plane className="w-7 h-7" />,
-        title: "Best Flights Options",
-        description:
-            "Access to hundreds of airlines worldwide with real-time pricing to get you the most competitive fares available.",
+        title: "whyUsBestFlights",
+        description: "whyUsBestFlightsDesc",
     },
     {
         icon: <BookOpen className="w-7 h-7" />,
-        title: "Religious Tours",
-        description:
-            "Thoughtfully curated spiritual journeys to sacred destinations, respecting traditions and cultural sensitivities.",
+        title: "whyUsReligiousTours",
+        description: "whyUsReligiousToursDesc",
     },
     {
         icon: <Shield className="w-7 h-7" />,
-        title: "Medical Insurance",
-        description:
-            "Comprehensive travel health coverage so you can explore the world with complete peace of mind.",
+        title: "whyUsMedicalInsurance",
+        description: "whyUsMedicalInsuranceDesc",
     },
 ]
 
 const faqs: FaqItemProps[] = [
     {
-        question: "Sayohatim davomida gid bo'ladimi?",
-        answer: "Ha, barcha guruh turlarimizda tajribali va sertifikatlangan gidlar mavjud. Ular sizga yo'l bo'yi yordam berib, eng muhim joylari haqida batafsil ma'lumot beradi.",
+        question: "whyUsFaq1Q",
+        answer: "whyUsFaq1A",
     },
     {
-        question: "Tur narxiga nima kiradi?",
-        answer: "Tur narxiga transport, mehmonxona, gid xizmati va ko'rsatilgan ekskursiyalar kiradi. Shaxsiy xarajatlar va maxsus ovqatlar alohida hisoblanadi.",
+        question: "whyUsFaq2Q",
+        answer: "whyUsFaq2A",
     },
     {
-        question: "Bronni qanday bekor qilish yoki o'zgartirish mumkin?",
-        answer: "Bronni sayohat sanasidan 14 kun oldin bepul bekor qilish yoki o'zgartirish mumkin. Undan keyingi o'zgarishlar uchun kichik to'lov olinishi mumkin.",
+        question: "whyUsFaq3Q",
+        answer: "whyUsFaq3A",
     },
     {
-        question: "Sayohat sug'urtasi kerakmi?",
-        answer: "Sayohat sug'urtasini olishni qattiq tavsiya qilamiz. Biz hamkor sug'urta kompaniyalari orqali qulay va keng qamrovli sug'urta paketlarini taklif etamiz.",
+        question: "whyUsFaq4Q",
+        answer: "whyUsFaq4A",
     },
     {
-        question: "Sayohat uchun qanday hujjatlar kerak?",
-        answer: "Asosiy hujjatlar: pasport (kamida 6 oy amal qilish muddati bilan), viza (talab qilinsa), va tibbiy sug'urta polisi. To'liq ro'yxat sayohat yo'nalishiga qarab farq qilishi mumkin.",
+        question: "whyUsFaq5Q",
+        answer: "whyUsFaq5A",
     },
 ]
 
@@ -71,10 +68,10 @@ function ServiceCard({ icon, title, description }: ServiceCardProps) {
                 {icon}
             </div>
             <h3 className="text-[15px] font-semibold text-slate-800 mb-2">
-                {title}
+                <ClientTranslate translationKey={title} />
             </h3>
             <p className="text-[13px] leading-relaxed text-slate-500">
-                {description}
+                <ClientTranslate translationKey={description} />
             </p>
         </div>
     )
@@ -90,7 +87,7 @@ function FaqItem({ question, answer }: FaqItemProps) {
                 className="w-full flex items-center justify-between gap-4 py-4 text-left group"
             >
                 <span className="text-[14px] sm:text-[15px] font-medium text-slate-700 group-hover:text-slate-900 transition-colors">
-                    {question}
+                    <ClientTranslate translationKey={question} />
                 </span>
                 <ChevronDown
                     className={`w-4 h-4 shrink-0 text-slate-400 transition-transform duration-300 ${
@@ -104,7 +101,7 @@ function FaqItem({ question, answer }: FaqItemProps) {
                 }`}
             >
                 <p className="text-[13px] sm:text-[14px] leading-relaxed text-slate-500">
-                    {answer}
+                    <ClientTranslate translationKey={answer} />
                 </p>
             </div>
         </div>
@@ -119,10 +116,10 @@ export const WhyUs = () => {
                 <div>
                     <div className="text-center mb-12">
                         <p className="text-[12px] uppercase tracking-widest font-semibold text-blue-600 mb-3">
-                            Afzalliklarimiz
+                            <ClientTranslate translationKey="whyUsAdvantages" />
                         </p>
                         <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
-                            Nima uchun biz?
+                            <ClientTranslate translationKey="whyUsTitle" />
                         </h2>
                     </div>
 
@@ -139,10 +136,10 @@ export const WhyUs = () => {
                     <div className="space-y-8">
                         <div className="p-6 rounded-2xl bg-white border border-slate-100 shadow-sm">
                             <p className="text-[13px] text-slate-500 mb-1">
-                                Savollaringiz qoldimi?
+                                <ClientTranslate translationKey="whyUsQuestionsRemaining" />
                             </p>
                             <p className="text-[15px] font-semibold text-slate-800 mb-4">
-                                Yordam berishga tayyormiz!
+                                <ClientTranslate translationKey="whyUsReadyToHelp" />
                             </p>
                             <a
                                 href="tel:+998891234567"
@@ -154,20 +151,34 @@ export const WhyUs = () => {
 
                         <div className="space-y-1">
                             <p className="text-[11px] uppercase tracking-widest text-slate-400 font-medium mb-3 px-1">
-                                Foydali bo'limlar
+                                <ClientTranslate translationKey="whyUsUsefulSections" />
                             </p>
                             {[
-                                "Bron jarayoni",
-                                "To'lov va qaytishlar",
-                                "Sayohat talablari",
-                                "Sayohat tajribasi",
+                                {
+                                    key: "whyUsBookingProcess",
+                                    label: "Bron jarayoni",
+                                },
+                                {
+                                    key: "whyUsPaymentRefunds",
+                                    label: "To'lov va qaytishlar",
+                                },
+                                {
+                                    key: "whyUsTravelRequirements",
+                                    label: "Sayohat talablari",
+                                },
+                                {
+                                    key: "whyUsTravelExperience",
+                                    label: "Sayohat tajribasi",
+                                },
                             ].map((item) => (
                                 <a
-                                    key={item}
+                                    key={item.key}
                                     href="#"
                                     className="flex items-center justify-between px-4 py-3 rounded-xl text-[14px] font-medium text-slate-600 hover:bg-white hover:text-slate-900 hover:shadow-sm transition-all duration-200"
                                 >
-                                    {item}
+                                    <ClientTranslate
+                                        translationKey={item.key}
+                                    />
                                     <span className="text-slate-300">→</span>
                                 </a>
                             ))}
@@ -177,7 +188,7 @@ export const WhyUs = () => {
                     {/* FAQ */}
                     <div>
                         <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-snug mb-6">
-                            Sayohatdan oldin bilish kerak bo'lgan hamma narsa
+                            <ClientTranslate translationKey="whyUsFaqTitle" />
                         </h3>
                         <div className="divide-y divide-slate-100 rounded-2xl bg-white border border-slate-100 px-5 sm:px-6 shadow-sm">
                             {faqs.map((faq) => (

@@ -10,8 +10,6 @@ import {
 } from "../constants"
 import { Destination, DestinationsResponse } from "./use-destinations-query"
 
-// ─── Helpers ────────────────────────────────────────────────────────────────
-
 function resolveImage(dest: Destination): string {
     if (dest.image) return dest.image
     const key = dest.country.toLowerCase()
@@ -42,7 +40,6 @@ export function useDestinations(data: DestinationsResponse) {
         }
 
         data.popular.forEach((d) => {
-            // Avoid duplicating the featured card if the API accidentally includes it
             if (d.id !== data.featured?.id) {
                 result.push(normalise(d, false))
             }

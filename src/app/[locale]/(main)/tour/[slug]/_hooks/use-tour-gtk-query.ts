@@ -8,6 +8,7 @@ export const useTourGoodToKnowQuery = (
     slugId?: string,
 ) => {
     const slug = useSlug(slugId)
+
     const res = useGet<GTKItem[]>(
         API.TOUR.GOOD_TO_KNOW.replace("{slug}", slug),
         args,

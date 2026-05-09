@@ -5,7 +5,7 @@ import { AgentsRightSide } from "./right-side"
 
 export const AgentsLayout = () => {
     return (
-        <div className="w-full bg-[#f5f9ff] overflow-x-hidden md:overflow-visible">
+        <div className="w-full overflow-x-hidden md:overflow-visible">
             <AgentsHeader />
             <div className="flex flex-col md:flex-row md:items-start md:gap-8 pt-10 lg:pt-16 home-container">
                 <AgentsLeftSide />

@@ -2,8 +2,6 @@ import { useGet, UseGetArgs } from "@/hooks/react-query/use-get"
 import { API } from "@/lib/constants/api-endpoints"
 import { getArray } from "@/lib/utils/get-array"
 
-// ─── Domain Types ────────────────────────────────────────────────────────────
-
 export type Destination = {
     id: number
     name: string
@@ -15,8 +13,6 @@ export type Destination = {
     region?: string
     featured?: boolean
 }
-
-// Shape returned by the hook
 export type DestinationsResponse = {
     featured: Destination | null
     popular: Destination[]

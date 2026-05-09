@@ -4,24 +4,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useModal } from "@/hooks/use-modal"
 import { MODAL_KEYS } from "@/lib/constants/modal-keys"
-import { useState } from "react"
+import { useState, useMemo } from "react"
+import { useTranslations } from "next-intl"
 
 interface Step {
     text: string
     highlight?: { match: string; replace: string }
 }
-
-const STEPS: Step[] = [
-    {
-        text: "Botimizga start xabarni yuboring",
-        highlight: { match: "start xabarni", replace: "/start" },
-    },
-    {
-        text: "Bot sizga maxfiy kod yuborishini kuting. 15 daqiqa ichida kod kelmasa, birinchi qadamni takrorlang;",
-    },
-    { text: "Qabul qilgan kodingizni quyidagi maydonga kiriting;" },
-    { text: "Hisoblarning bog'lanishi tasdiqlanishini kuting." },
-]
 
 function StepText({ step }: { step: Step }) {
     if (!step.highlight) {
@@ -42,8 +31,21 @@ function StepText({ step }: { step: Step }) {
 }
 
 export const TelegramConnect = () => {
+    const t = useTranslations()
     const [code, setCode] = useState("")
     const { closeModal } = useModal(MODAL_KEYS.TELEGRAM_CONNECT)
+
+    const steps: Step[] = useMemo(() => [
+        {
+            text: t("telegram_step1"),
+            highlight: { match: "start", replace: "/start" },
+        },
+        {
+            text: t("telegram_step2"),
+        },
+        { text: t("telegram_step3") },
+        { text: t("telegram_step4") },
+    ], [t])
 
     return (
         <Modal
@@ -63,10 +65,10 @@ export const TelegramConnect = () => {
                     </div>
                     <div className="text-center">
                         <h2 className="text-sm sm:text-base font-semibold text-slate-900 leading-snug">
-                            Qulay bildirishnoma usulini tanlang!
+                            <ClientTranslate translationKey="telegram_connect_title" />
                         </h2>
                         <p className="text-xs text-slate-400 mt-0.5">
-                            Telegram orqali hisobingizni bog'lang
+                            <ClientTranslate translationKey="telegram_connect_desc" />
                         </p>
                     </div>
                 </div>
@@ -75,10 +77,10 @@ export const TelegramConnect = () => {
 
                 <div className="px-5 sm:px-6 py-4 sm:py-5 space-y-3">
                     <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
-                        Ko'rsatma
+                        <ClientTranslate translationKey="instruction" />
                     </p>
                     <ol className="space-y-2.5">
-                        {STEPS.map((step, i) => (
+                        {steps.map((step, i) => (
                             <li key={i} className="flex items-start gap-2.5">
                                 <span className="shrink-0 w-6 h-6 sm:w-6 sm:h-6 rounded-full bg-slate-100 text-slate-400 text-[9px] sm:text-[10px] flex items-center justify-center mt-0.5">
                                     {i + 1}
@@ -95,7 +97,7 @@ export const TelegramConnect = () => {
 
                 <div className="px-5 sm:px-6 py-4 sm:py-5 space-y-2.5">
                     <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
-                        Kodni kiriting
+                        <ClientTranslate translationKey="enterCode" />
                     </p>
                     <Input
                         value={code}
@@ -116,5 +118,6 @@ export const TelegramConnect = () => {
                 </div>
             </div>
         </Modal>
+
     )
 }

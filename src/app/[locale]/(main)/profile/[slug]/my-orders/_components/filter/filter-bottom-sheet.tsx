@@ -1,5 +1,6 @@
 "use client"
 
+import ClientTranslate from "@/components/common/translation/client-translate"
 import { RadioItem } from "@/components/radio-item"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -11,6 +12,7 @@ import {
     DrawerTitle,
 } from "@/components/ui/drawer"
 import { RadioGroup } from "@/components/ui/radio-group"
+import { useTranslations } from "next-intl"
 import { FILTER_OPTIONS } from "../../_constants"
 import { useFilter } from "../../_hooks"
 
@@ -30,6 +32,7 @@ export const FilterBottomSheet = ({
         hasActiveFilters,
         activeFiltersCount,
     } = useFilter()
+    const t = useTranslations()
 
     return (
         <Drawer open={open} onOpenChange={onOpenChange}>
@@ -37,7 +40,7 @@ export const FilterBottomSheet = ({
                 <DrawerHeader className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-zinc-100 shrink-0">
                     <div className="flex items-center gap-2">
                         <DrawerTitle className="text-[15px] font-bold text-zinc-900 tracking-tight">
-                            Filterlar
+                            <ClientTranslate translationKey="catalogFilterTitle" />
                         </DrawerTitle>
                         {activeFiltersCount > 0 && (
                             <Badge className="flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-blue-600 text-white text-[10px] font-bold">
@@ -60,7 +63,7 @@ export const FilterBottomSheet = ({
                                 key={option.value}
                                 id={`bs-cat-${option.value}`}
                                 value={option.value}
-                                label={option.label}
+                                label={t(option.label)}
                                 isActive={filters.category === option.value}
                             />
                         ))}
@@ -74,11 +77,11 @@ export const FilterBottomSheet = ({
                         disabled={!hasActiveFilters}
                         className="flex-1 rounded-xl h-11 border-zinc-200 text-zinc-600"
                     >
-                        Tozalash
+                        <ClientTranslate translationKey="catalogFilterClear" />
                     </Button>
                     <DrawerClose asChild>
                         <Button className="flex-1 rounded-xl h-11">
-                            Natijalarni ko'rish
+                            <ClientTranslate translationKey="catalogFilterShowResults" />
                         </Button>
                     </DrawerClose>
                 </div>

@@ -1,24 +1,30 @@
 "use client"
 
+import ClientTranslate from "@/components/common/translation/client-translate"
 import { SearchBar } from "@/components/searchbar"
 import {
     Destination,
     useTourShortListQuery,
 } from "@/components/searchbar/_hooks"
-import { useParams, useSearchParams } from "next/navigation"
+import { useLanguage } from "@/hooks/use-language"
+import { useTranslations } from "next-intl"
+import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
 const HERO_IMAGE =
-    "https://uzbekistan.travel/storage/app/media/uploaded-files/samarkand-uzbekistan-kupol-mechet-ploshchad.png"
+    "https://images.unsplash.com/photo-1605382628707-0aa0593fba19?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 
 export const Header = () => {
-    const { locale } = useParams() as { locale: string }
+    const { isRussian } = useLanguage()
+    const t = useTranslations()
     const { tourShortList } = useTourShortListQuery()
     const searchParams = useSearchParams()
 
     const [selectedDest, setSelectedDest] = useState<Destination | null>(null)
+    const [customName, setCustomName] = useState<string | null>(null)
 
     const urlDestinationId = searchParams.get("destinations")
+    const urlName = searchParams.get("name")
 
     // Sync state with URL query parameter
     useEffect(() => {
@@ -28,14 +34,25 @@ export const Header = () => {
             )
             if (found) {
                 setSelectedDest(found.destination)
+                setCustomName(null)
             }
-        } else if (!urlDestinationId) {
+        } else if (urlName) {
+            setCustomName(urlName)
             setSelectedDest(null)
+        } else {
+            setSelectedDest(null)
+            setCustomName(null)
         }
-    }, [urlDestinationId, tourShortList])
+    }, [urlDestinationId, urlName, tourShortList])
 
     const handleSelect = (dest: Destination | null) => {
         setSelectedDest(dest)
+        setCustomName(null)
+    }
+
+    const handleQueryChange = (q: string) => {
+        setCustomName(q)
+        if (q) setSelectedDest(null)
     }
 
     const backgroundImage =
@@ -43,23 +60,15 @@ export const Header = () => {
 
     const title =
         selectedDest ?
-            locale === "ru" ?
-                `Туры по ${selectedDest.nameRu}`
-            :   `${selectedDest.nameUz} bo'ylab turlar`
-        : locale === "ru" ? "Найти путешествие своей мечты"
-        : "Orzuingizdagi sayohatni toping"
-
-    const description =
-        locale === "ru" ?
-            "Многодневные, однодневные и необычные приключения"
-        :   "Ko'p kunlik, bir kunlik va noyob sarguzashtlar"
+            isRussian ? `${t("toursIn")} ${selectedDest.nameRu}`
+            :   `${selectedDest.nameUz} ${t("toursIn")}`
+        :   t("findYourDreamTrip")
 
     const selectedName =
         selectedDest ?
-            locale === "ru" ?
-                selectedDest.nameRu
+            isRussian ? selectedDest.nameRu
             :   selectedDest.nameUz
-        :   null
+        :   customName
 
     return (
         <section className="relative w-full h-[360px] md:h-[420px] rounded-2xl">
@@ -72,18 +81,20 @@ export const Header = () => {
             <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70 rounded-2xl" />
 
             <div className="relative z-10 flex flex-col items-center justify-center h-full px-4 gap-4">
-                <h1 className="text-white text-3xl md:text-4xl lg:text-5xl font-bold text-center leading-tight tracking-tight drop-shadow-md">
+                <h1 className="text-white text-2xl md:text-4xl lg:text-5xl font-bold text-center leading-tight tracking-tight drop-shadow-md">
                     {title}
                 </h1>
                 <p className="text-white/60 text-sm md:text-base text-center max-w-md">
-                    {description}
+                    <ClientTranslate translationKey="multiDaySingleDay" />
                 </p>
 
                 <div className="w-full max-w-2xl mt-2">
                     <SearchBar
                         locationValue={selectedName}
                         onLocationSelect={handleSelect}
+                        onQueryChange={handleQueryChange}
                         selectedDestination={selectedDest}
+                        autoOpen={true}
                     />
                 </div>
             </div>

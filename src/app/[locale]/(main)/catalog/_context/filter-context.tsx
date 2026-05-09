@@ -10,7 +10,8 @@ import React, {
     useRef,
     useState,
 } from "react"
-import { DEFAULT_FILTERS, FilterState } from "../_constants/filter"
+import { useCurrency } from "@/app/_providers/currency-provider"
+import { DEFAULT_FILTERS, FilterState, getPriceLimit } from "../_constants/filter"
 
 interface FilterContextType {
     filters: FilterState
@@ -26,12 +27,15 @@ const FilterContext = createContext<FilterContextType | undefined>(undefined)
 export const FilterProvider = ({ children }: { children: React.ReactNode }) => {
     const searchParams = useSearchParams()
     const router = useRouter()
+    const { currency } = useCurrency()
+    const { min: PRICE_MIN, max: PRICE_MAX } = getPriceLimit(currency)
 
     // URL'dan initial state olish
     const getInitialFilters = (): FilterState => {
         const destinationsStr = searchParams.get("destinations")
         return {
             ...DEFAULT_FILTERS,
+            priceRange: [PRICE_MIN, PRICE_MAX],
             category: searchParams.get("category") ?? DEFAULT_FILTERS.category,
             promotional: searchParams.get("promotional") === "true",
             guaranteed: searchParams.get("guaranteed") === "true",
@@ -192,6 +196,16 @@ export const FilterProvider = ({ children }: { children: React.ReactNode }) => {
             }))
         }
     }, [searchParams])
+
+    // Valyuta o'zgarganda priceRange'ni yangilash
+    useEffect(() => {
+        setFilters((prev) => ({
+            ...prev,
+            priceRange: [PRICE_MIN, PRICE_MAX],
+        }))
+        setMinInput(String(PRICE_MIN))
+        setMaxInput(String(PRICE_MAX))
+    }, [currency, PRICE_MIN, PRICE_MAX])
 
     const value = useMemo(
         () => ({

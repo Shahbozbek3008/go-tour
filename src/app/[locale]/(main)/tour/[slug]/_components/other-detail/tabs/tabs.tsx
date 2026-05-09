@@ -1,5 +1,6 @@
 "use client"
 
+import ClientTranslate from "@/components/common/translation/client-translate"
 import { cn } from "@/lib/utils/shadcn"
 import { useEffect, useRef, useState } from "react"
 
@@ -15,12 +16,12 @@ export const SECTION_IDS = {
 type SectionKey = keyof typeof SECTION_IDS
 
 const NAV_TABS: { value: SectionKey; label: string }[] = [
-    { value: "overview", label: "Overview" },
-    { value: "itinerary", label: "Itinerary" },
-    { value: "includes", label: "Includes" },
-    { value: "accommodation", label: "Accommodation" },
-    { value: "important", label: "Important" },
-    { value: "reviews", label: "Reviews" },
+    { value: "overview", label: "overview" },
+    { value: "itinerary", label: "itinerary" },
+    { value: "includes", label: "includes" },
+    { value: "accommodation", label: "accommodation" },
+    { value: "important", label: "important" },
+    { value: "reviews", label: "reviews" },
 ]
 
 export function TourNavTabs() {
@@ -77,7 +78,7 @@ export function TourNavTabs() {
     }
 
     return (
-        <div className="w-full border-b border-border/60 overflow-x-auto">
+        <div className="no-scrollbar w-full border-b border-border/60 overflow-x-auto">
             <div className="flex gap-0 flex-nowrap">
                 {NAV_TABS.map((tab) => (
                     <button
@@ -91,7 +92,7 @@ export function TourNavTabs() {
                             :   "text-muted-foreground after:scale-x-0 hover:text-foreground",
                         )}
                     >
-                        {tab.label}
+                        <ClientTranslate translationKey={tab.label} />
                     </button>
                 ))}
             </div>

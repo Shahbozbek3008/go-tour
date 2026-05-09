@@ -13,6 +13,7 @@ import {
 import ErrorMessage from "../ui/error-message"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
+import ClientTranslate from "../common/translation/client-translate"
 
 interface IProps<IForm extends FieldValues> {
     methods: UseFormReturn<IForm>
@@ -23,6 +24,7 @@ interface IProps<IForm extends FieldValues> {
     showError?: boolean
     labelClassName?: string
     onValueChange?: (e: ChangeEvent<HTMLInputElement>) => void
+    placeholder?: string
 }
 
 export default function ControlledInput<IForm extends FieldValues>({
@@ -35,6 +37,7 @@ export default function ControlledInput<IForm extends FieldValues>({
     showError = false,
     onValueChange,
     labelClassName,
+    placeholder,
     ...props
 }: IProps<IForm> & React.InputHTMLAttributes<HTMLInputElement>) {
     const t = useTranslations()
@@ -63,12 +66,17 @@ export default function ControlledInput<IForm extends FieldValues>({
                     )}
                     required={!optional}
                 >
-                    {label}
+                    <ClientTranslate translationKey={label} />
                 </Label>
             )}
             <Input
                 className={cn("", className)}
                 autoComplete="off"
+                placeholder={
+                    placeholder ?
+                        t(placeholder)
+                    :   undefined
+                }
                 onChange={(e) => {
                     onChange(e)
                     onValueChange?.(e)
@@ -76,6 +84,7 @@ export default function ControlledInput<IForm extends FieldValues>({
                 {...field}
                 {...props}
             />
+
             {!!error && showError && (
                 <ErrorMessage>
                     {error.message || error.root?.message}

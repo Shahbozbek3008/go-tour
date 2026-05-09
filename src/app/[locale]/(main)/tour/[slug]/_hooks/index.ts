@@ -1,6 +1,7 @@
 export * from "./use-calendar"
 export * from "./use-city-autocomplete"
 export * from "./use-flight-search"
+export * from "./use-similar-tours-query"
 export * from "./use-tour-accomodation-query"
 export * from "./use-tour-detail-query"
 export * from "./use-tour-files-query"

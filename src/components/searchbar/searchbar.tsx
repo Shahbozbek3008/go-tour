@@ -15,13 +15,17 @@ import { LocationSearch } from "./location-search"
 interface SearchBarProps {
     locationValue?: string | null
     onLocationSelect?: (dest: Destination | null) => void
+    onQueryChange?: (query: string) => void
     selectedDestination?: Destination | null
+    autoOpen?: boolean
 }
 
 export function SearchBar({
     locationValue,
     onLocationSelect,
+    onQueryChange,
     selectedDestination,
+    autoOpen,
 }: SearchBarProps) {
     const router = useRouter()
     const { locale } = useParams() as { locale: string }
@@ -111,15 +115,24 @@ export function SearchBar({
         } else {
             setInternalDest(dest)
             if (dest) {
-                setInternalLocValue(locale === "ru" ? dest.nameRu : dest.nameUz)
+                const name = locale === "ru" ? dest.nameRu : dest.nameUz
+                setInternalLocValue(name)
+                setManualQuery(name)
             } else {
                 setInternalLocValue(null)
+                setManualQuery("")
             }
         }
     }
 
     const handleQueryChange = (q: string) => {
         setManualQuery(q)
+        if (!isControlled) {
+            setInternalLocValue(q)
+            setInternalDest(null)
+        } else {
+            onQueryChange?.(q)
+        }
     }
 
     const handleDateChange = (
@@ -166,14 +179,16 @@ export function SearchBar({
 
     return (
         <div className="w-full">
-            <div className="flex flex-col lg:min-w-full lg:w-[700px] md:flex-row md:items-stretch gap-3 md:gap-0 bg-white rounded-3xl md:rounded-2xl shadow-xl md:shadow-2xl p-4 md:p-2">
+            {/* Desktop/Tablet */}
+            <div className="hidden md:flex lg:min-w-full lg:w-[750px] flex-row items-stretch gap-0 bg-white rounded-2xl shadow-2xl p-2">
                 <LocationSearch
                     value={effectiveLocValue ?? null}
                     onSelect={handleLocationSelect}
                     onQueryChange={handleQueryChange}
+                    autoOpen={autoOpen}
                 />
 
-                <div className="hidden md:block w-px bg-gray-100 my-2 mx-1" />
+                <div className="w-px bg-gray-100 my-2 mx-1" />
 
                 <div className="flex-1 min-w-0">
                     <DatePicker
@@ -182,14 +197,38 @@ export function SearchBar({
                     />
                 </div>
 
-                <div className="hidden md:block w-px bg-gray-100 my-2 mx-1" />
+                <div className="w-px bg-gray-100 my-2 mx-1" />
 
                 <Button
                     onClick={handleSearch}
                     isLoading={isPending}
-                    className="shrink-0 w-full md:w-auto mt-1 md:mt-0 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-semibold py-6 md:py-auto px-6 rounded-2xl md:rounded-xl flex items-center justify-center gap-2 text-base md:text-sm transition-all duration-200 shadow-lg shadow-blue-200"
+                    className="shrink-0 w-auto mt-0 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-semibold py-auto px-6 rounded-xl flex items-center justify-center gap-2 text-sm transition-all duration-200 shadow-lg shadow-blue-200"
                 >
-                    <Search className="w-5 h-5 md:w-4 md:h-4" />
+                    <Search className="w-4 h-4" />
+                    <ClientTranslate translationKey="findTours" />
+                </Button>
+            </div>
+
+            {/* Mobile */}
+            <div className="flex md:hidden flex-col gap-3">
+                <LocationSearch
+                    value={effectiveLocValue ?? null}
+                    onSelect={handleLocationSelect}
+                    onQueryChange={handleQueryChange}
+                    autoOpen={autoOpen}
+                />
+
+                <DatePicker
+                    defaultRange={dateRange}
+                    onChange={handleDateChange}
+                />
+
+                <Button
+                    onClick={handleSearch}
+                    isLoading={isPending}
+                    className="shrink-0 w-full bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-semibold h-10 px-6 rounded-2xl flex items-center justify-center gap-2 text-xs transition-all duration-200"
+                >
+                    <Search className="w-4 h-4" />
                     <ClientTranslate translationKey="findTours" />
                 </Button>
             </div>

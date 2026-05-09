@@ -1,5 +1,8 @@
 "use client"
 
+import { useCurrency } from "@/app/_providers/currency-provider"
+import ClientTranslate from "@/components/common/translation/client-translate"
+import { useLanguage } from "@/hooks/use-language"
 import { useRouter } from "@/i18n/navigation"
 import { getHref } from "@/lib/utils/get-href"
 import { Tour } from "@/types/api/tour"
@@ -93,18 +96,20 @@ const TourCard = memo(function TourCard({
     onPrev,
 }: TourCardProps) {
     const router = useRouter()
+    const { isRussian } = useLanguage()
     const variant = getSlideVariant(offset)
     const isActive = variant === "active"
     const agentName = "GoTour"
     const agentLogo = FALLBACK_LOGO
     const image = tour.imageUrl ?? FALLBACK_IMAGE
-    const title = tour.nameUz
-    const price = `$${tour.minPrice.toLocaleString()}`
+    const title = isRussian ? tour?.nameRu : tour?.nameUz
+    const { currency } = useCurrency()
+    const price = `${tour.minPrice.toLocaleString()} ${currency === "USD" ? "$" : "UZS"}`
     const discount = tour.hasDiscount ? `-${tour.discountPercent}%` : null
 
     return (
         <motion.div
-            className="absolute w-[280px] md:w-[350px] lg:w-[420px] h-full rounded-[32px] overflow-hidden shadow-2xl cursor-grab active:cursor-grabbing"
+            className="absolute w-[280px] md:w-[350px] lg:w-[420px] h-full rounded-[32px] overflow-hidden shadow-2xl cursor-pointer active:cursor-pointer"
             variants={cardVariants}
             initial={false}
             animate={variant}
@@ -116,10 +121,18 @@ const TourCard = memo(function TourCard({
                 const { offset: off, velocity } = info
                 if (off.x < -40 || velocity.x < -500) onNext()
                 else if (off.x > 40 || velocity.x > 500) onPrev()
-                else if (!isActive) onActivate(tour.id)
+                else if (!isActive) onActivate(tour?.id)
             }}
             onClick={() => {
-                if (!isActive) onActivate(tour.id)
+                if (!isActive) onActivate(tour?.id)
+                router.push(
+                    getHref({
+                        pathname: "/[locale]/tour/[slug]",
+                        query: {
+                            slug: isRussian ? tour?.slugRu : tour?.slugUz,
+                        },
+                    }),
+                )
             }}
         >
             <div className="relative w-full h-full">
@@ -158,7 +171,7 @@ const TourCard = memo(function TourCard({
 
                     <div className="flex justify-between items-end gap-3 flex-wrap sm:flex-nowrap">
                         <div className="mb-1 w-full sm:w-auto flex-1">
-                            <h3 className="text-2xl md:text-[28px] font-bold text-white leading-tight mb-1.5 drop-shadow-md">
+                            <h3 className="text-2xl  font-bold text-white leading-tight mb-2 drop-shadow-md">
                                 {title}
                             </h3>
                             <p className="text-base md:text-lg font-semibold text-white drop-shadow-md">
@@ -171,14 +184,17 @@ const TourCard = memo(function TourCard({
                                     getHref({
                                         pathname: "/[locale]/tour/[slug]",
                                         query: {
-                                            slug: String(tour.id),
+                                            slug:
+                                                isRussian ?
+                                                    tour?.slugRu
+                                                :   tour?.slugUz,
                                         },
                                     }),
                                 )
                             }
                             className="cursor-pointer border-2 border-white text-white hover:bg-white hover:text-black transition-all duration-300 rounded-[100px] px-6 py-2.5 text-sm font-bold whitespace-nowrap mb-1"
                         >
-                            Batafsil
+                            <ClientTranslate translationKey="readMore" />
                         </button>
                     </div>
                 </div>
@@ -228,7 +244,7 @@ export const SpecialOffers = () => {
         <section className="w-full py-16 overflow-hidden select-none">
             <div className="w-full home-container">
                 <h2 className="text-3xl md:text-[40px] font-bold text-slate-900 tracking-tight text-center mb-12 md:mb-16">
-                    Maxsus takliflar
+                    <ClientTranslate translationKey="specialOffers" />
                 </h2>
             </div>
 

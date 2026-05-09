@@ -1,9 +1,11 @@
 "use client"
 
 import { useCurrency } from "@/app/_providers/currency-provider"
+import logo from "@/assets/images/logo.png"
 import { useProfileQuery } from "@/hooks/react-query/use-profile-query"
 import { useRequest } from "@/hooks/react-query/use-request"
 import { useRevalidate } from "@/hooks/react-query/use-revalidate"
+import { useLanguage } from "@/hooks/use-language"
 import { useModal } from "@/hooks/use-modal"
 import { useRouter } from "@/i18n/navigation"
 import { API } from "@/lib/constants/api-endpoints"
@@ -13,7 +15,9 @@ import { cn } from "@/lib/utils/shadcn"
 import { useQueryClient } from "@tanstack/react-query"
 import { motion } from "framer-motion"
 import { Heart, Star } from "lucide-react"
+import { useTranslations } from "next-intl"
 import Image from "next/image"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import ClientTranslate from "../common/translation/client-translate"
 import { Button } from "../ui/button"
@@ -40,6 +44,8 @@ interface Tour {
         hasInstallment: boolean
         installmentAmount: number
     }
+    slugUz?: string
+    slugRu?: string
 }
 
 interface CardProps {
@@ -54,12 +60,22 @@ export const ProductCard = ({
     hasLike = true,
 }: CardProps) => {
     const router = useRouter()
+    const t = useTranslations()
     const { currency } = useCurrency()
     const queryClient = useQueryClient()
+    const { isRussian } = useLanguage()
     const { isAuthenticated } = useProfileQuery()
     const { openModal } = useModal(MODAL_KEYS.SIGN_IN_MODAL)
     const { post, isPending, remove } = useRequest()
     const { invalidateByExactMatch } = useRevalidate()
+
+    const [imgError, setImgError] = useState(!tour?.image)
+    const [avatarError, setAvatarError] = useState(!tour?.authorAvatar)
+
+    useEffect(() => {
+        setImgError(!tour?.image)
+        setAvatarError(!tour?.authorAvatar)
+    }, [tour?.image, tour?.authorAvatar])
 
     const handleFavorite = (e: React.MouseEvent) => {
         e.stopPropagation()
@@ -111,9 +127,9 @@ export const ProductCard = ({
                     return oldData
                 })
                 if (tour?.isFavorite) {
-                    toast.success("Tour removed from favorites")
+                    toast.success(t("removeFavouritesTour"))
                 } else {
-                    toast.success("Tour added to favorites")
+                    toast.success(t("addFavouritesTour"))
                 }
                 invalidateByExactMatch([
                     API.TOUR.TOP_SELLING,
@@ -147,7 +163,9 @@ export const ProductCard = ({
                 router.push(
                     getHref({
                         pathname: "/[locale]/tour/[slug]",
-                        query: { slug: String(tour?.id) },
+                        query: {
+                            slug: isRussian ? tour?.slugRu! : tour?.slugUz!,
+                        },
                     }),
                 )
             }
@@ -155,7 +173,7 @@ export const ProductCard = ({
             <div className="relative overflow-hidden h-[200px] shrink-0 z-1">
                 <div className="absolute top-3 left-3 z-10 flex gap-2">
                     <span className="bg-blue-500 text-white text-[11px] font-semibold px-2.5 py-1 rounded-full">
-                        {tour.badge}
+                        {t(tour.badge)}
                     </span>
                 </div>
 
@@ -179,16 +197,26 @@ export const ProductCard = ({
                 )}
 
                 <div className="absolute bottom-3 left-3 z-20 flex items-center gap-2">
-                    <div className="relative w-7 h-7 rounded-full overflow-hidden border-2 border-white shadow-sm">
-                        <Image
-                            src={tour?.authorAvatar}
-                            alt={tour?.author}
-                            fill
-                            className="object-cover"
-                            sizes="28px"
-                        />
+                    <div className="relative w-7 h-7 rounded-full overflow-hidden border-2 border-white shadow-sm bg-slate-100">
+                        {avatarError ?
+                            <Image
+                                src={`https://ui-avatars.com/api/?name=${tour?.author || "A"}&background=random`}
+                                alt={tour?.author}
+                                fill
+                                className="object-cover"
+                                sizes="28px"
+                            />
+                        :   <Image
+                                src={tour?.authorAvatar}
+                                alt={tour?.author}
+                                fill
+                                className="object-cover"
+                                sizes="28px"
+                                onError={() => setAvatarError(true)}
+                            />
+                        }
                     </div>
-                    <span className="text-white text-[12px] font-medium drop-shadow-sm">
+                    <span className="text-white text-xs font-medium drop-shadow-sm">
                         {tour?.author}
                     </span>
                 </div>
@@ -201,14 +229,28 @@ export const ProductCard = ({
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-10" />
 
-                <div className="relative w-full h-full transition-transform duration-500 ease-out group-hover:scale-105">
-                    <Image
-                        src={tour?.image}
-                        alt={tour?.title}
-                        fill
-                        className="object-cover"
-                        sizes="320px"
-                    />
+                <div className="relative w-full h-full transition-transform duration-500 ease-out group-hover:scale-105 bg-slate-50">
+                    {imgError ?
+                        <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-slate-100">
+                            <Image
+                                src={logo}
+                                alt="Gotour"
+                                className="w-20 opacity-15 grayscale mb-2"
+                                priority
+                            />
+                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">
+                                <ClientTranslate translationKey="imageNotFound" />
+                            </span>
+                        </div>
+                    :   <Image
+                            src={tour?.image}
+                            alt={tour?.title}
+                            fill
+                            className="object-cover"
+                            sizes="320px"
+                            onError={() => setImgError(true)}
+                        />
+                    }
                 </div>
             </div>
             <div className="p-4 flex flex-col flex-1">
@@ -232,7 +274,8 @@ export const ProductCard = ({
                             </span>
                             <span className="text-[12px] text-slate-400">
                                 ({tour?.reviews === null ? "-" : tour?.reviews}{" "}
-                                ta sharh)
+                                <ClientTranslate translationKey="reviewCount" />
+                                )
                             </span>
                             <span className="text-slate-300 mx-1">·</span>
                         </>
@@ -251,27 +294,34 @@ export const ProductCard = ({
                     <div className="flex items-baseline gap-1.5 flex-wrap min-w-0">
                         <span className="text-[17px] font-bold text-slate-800 break-all min-w-0 leading-tight">
                             {tour?.price?.toLocaleString()}
-                            {currency === "USD" ? " $" : " so'm"}
+                            {currency === "USD" ?
+                                " $"
+                            :   <ClientTranslate translationKey="sum" />}
                         </span>
                         {tour?.originalPrice &&
                             tour?.originalPrice !== tour?.price && (
                                 <span className="text-[13px] text-slate-400 line-through shrink-0">
                                     {tour?.originalPrice?.toLocaleString()}
-                                    {currency === "USD" ? " $" : " so'm"}
+                                    {currency === "USD" ?
+                                        " $"
+                                    :   <ClientTranslate translationKey="sum" />
+                                    }
                                 </span>
                             )}
                     </div>
                     <div className="flex items-center justify-between gap-2 flex-wrap">
                         <div className="flex items-center gap-2 min-w-0 flex-1">
                             <span className="text-[11px] text-slate-400 shrink-0">
-                                {tour?.days} kun
+                                {tour?.days}{" "}
+                                <ClientTranslate translationKey="day" />
                             </span>
                             {tour?.installment?.hasInstallment && (
                                 <span className="text-[10px] font-semibold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-200 truncate max-w-[140px]">
                                     {tour?.installment?.installmentAmount?.toLocaleString()}
                                     {currency === "USD" ?
-                                        " $/month"
-                                    :   " so'm/oyiga"}
+                                        <ClientTranslate translationKey="monthInstallment" />
+                                    :   <ClientTranslate translationKey="sumMonth" />
+                                    }
                                 </span>
                             )}
                         </div>

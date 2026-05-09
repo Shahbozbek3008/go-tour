@@ -38,7 +38,6 @@ export function ProgramAccordion({
                     const id = day.id.toString()
                     const title = isRussian ? day.titleRu : day.titleUz
                     const description = isRussian ? day.descriptionRu : day.descriptionUz
-                    const dayLabel = isRussian ? `День ${day.dayNumber}` : `${day.dayNumber}-kun`
 
                     return (
                         <AccordionItem
@@ -48,7 +47,13 @@ export function ProgramAccordion({
                         >
                             <AccordionTrigger className="py-5 text-[15px] font-semibold text-foreground hover:no-underline [&>svg]:hidden">
                                 <span className="flex-1 text-left">
-                                    {title || `${dayLabel}`}
+                                    {title || (
+                                        <>
+                                            {isRussian ?
+                                                `День ${day.dayNumber}`
+                                            :   `${day.dayNumber}-kun`}
+                                        </>
+                                    )}
                                 </span>
                             </AccordionTrigger>
 

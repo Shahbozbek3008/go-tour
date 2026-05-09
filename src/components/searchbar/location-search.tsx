@@ -12,17 +12,19 @@ interface LocationSearchProps {
     value: string | null
     onSelect: (item: Destination | null) => void
     onQueryChange?: (query: string) => void
+    autoOpen?: boolean
 }
 
 export function LocationSearch({
     value,
     onSelect,
     onQueryChange,
+    autoOpen = false,
 }: LocationSearchProps) {
     const { locale } = useParams() as { locale: string }
     const { tourShortList, isLoading } = useTourShortListQuery()
-    const [open, setOpen] = useState(false)
-    const [query, setQuery] = useState("")
+    const [open, setOpen] = useState(autoOpen)
+    const [query, setQuery] = useState(autoOpen ? (value ?? "") : "")
 
     const wrapperRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLInputElement>(null)
@@ -40,6 +42,15 @@ export function LocationSearch({
         return () => document.removeEventListener("mousedown", handler)
     }, [])
 
+    useEffect(() => {
+        if (autoOpen && open && inputRef.current) {
+            const timer = setTimeout(() => {
+                inputRef.current?.focus()
+            }, 100)
+            return () => clearTimeout(timer)
+        }
+    }, [])
+
     const filtered = tourShortList.filter((item) => {
         const name =
             locale === "ru" ? item.destination.nameRu : item.destination.nameUz
@@ -48,13 +59,13 @@ export function LocationSearch({
 
     const handleOpen = () => {
         setOpen(true)
+        setQuery(value ?? "")
         setTimeout(() => inputRef.current?.focus(), 50)
     }
 
     const handleSelect = (item: Destination) => {
         onSelect(item)
         setQuery("")
-        onQueryChange?.("")
         setOpen(false)
     }
 
@@ -70,9 +81,9 @@ export function LocationSearch({
             <button
                 onClick={handleOpen}
                 className={cn(
-                    "group flex items-center gap-2.5 w-full px-4 py-3 rounded-xl text-sm transition-all duration-200 border",
+                    "group flex items-center gap-2.5 w-full px-4 h-10 md:h-auto md:py-3 rounded-2xl md:rounded-xl text-xs md:text-sm transition-all duration-200 border",
                     open ?
-                        "border-blue-400 shadow-sm bg-blue-50/30"
+                        "border-blue-400 bg-white shadow-sm"
                     :   "border-gray-100 hover:border-gray-200 bg-white",
                 )}
             >
@@ -91,7 +102,6 @@ export function LocationSearch({
                             setQuery(val)
                             onQueryChange?.(val)
                         }}
-                        placeholder="Qidirish"
                         className="flex-1 text-sm outline-none text-gray-800 placeholder-gray-400 bg-transparent"
                         onClick={(e) => e.stopPropagation()}
                     />
