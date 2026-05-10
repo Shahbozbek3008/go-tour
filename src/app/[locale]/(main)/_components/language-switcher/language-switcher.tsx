@@ -63,12 +63,9 @@ export const LanguageSwitcher = ({ isTransparent }: LanguageSwitcherProps) => {
                     "text-[13px] font-medium transition-colors duration-150",
                     "focus-visible:outline-none",
                     isTransparent ?
-                        "text-white/80 hover:bg-white/12 hover:text-white"
-                    :   "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-800",
-                    open &&
-                        (isTransparent ?
-                            "bg-white/12 text-white"
-                        :   "bg-zinc-100 text-zinc-800"),
+                        "text-white/80  hover:text-white"
+                    :   "text-slate-800",
+                    open && (isTransparent ? " text-white" : " text-slate-800"),
                 )}
             >
                 <ActiveFlag />
@@ -86,7 +83,7 @@ export const LanguageSwitcher = ({ isTransparent }: LanguageSwitcherProps) => {
                     role="listbox"
                     className={cn(
                         "absolute right-0 top-[calc(100%+6px)] z-50",
-                        "w-[108px] rounded-xl overflow-hidden",
+                        "rounded-xl overflow-hidden",
                         "bg-white border border-zinc-200/80",
                         "shadow-[0_8px_24px_rgba(0,0,0,0.08),0_2px_6px_rgba(0,0,0,0.04)]",
                     )}

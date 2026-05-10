@@ -1,0 +1,111 @@
+import { Tour } from "@/types/api/tour"
+
+const FALLBACK_AVATAR =
+    "https://ui-avatars.com/api/?name=GoTour&background=random&color=fff"
+const FALLBACK_IMAGE =
+    "https://api.file.gotour.uz/file-service/api/v1/images/get/default-tour.jpg"
+
+const CATEGORY_MAP: Record<string, string> = {
+    EDUCATIONAL: "best",
+    WEEKEND: "new",
+    ADVENTURE: "bestseller",
+    CULTURAL: "best",
+    BEACH: "bestseller",
+    BUSINESS: "special",
+}
+const UZ_MONTHS = [
+    "yan",
+    "fev",
+    "mar",
+    "apr",
+    "may",
+    "iyn",
+    "iyl",
+    "avg",
+    "sen",
+    "okt",
+    "noy",
+    "dek",
+]
+const RU_MONTHS = [
+    "янв",
+    "фев",
+    "мар",
+    "апр",
+    "май",
+    "июн",
+    "июл",
+    "авг",
+    "сен",
+    "окт",
+    "ноя",
+    "дек",
+]
+
+const formatDateRange = (
+    startMs: number,
+    endMs: number,
+    locale: string = "uz",
+): string => {
+    const months = locale === "ru" ? RU_MONTHS : UZ_MONTHS
+    const fmt = (ms: number) => {
+        const d = new Date(ms)
+        return `${d.getDate()} ${months[d.getMonth()]}`
+    }
+    return `${fmt(startMs)} – ${fmt(endMs)}`
+}
+
+const resolveAuthor = (agent: Tour["agent"]): string => {
+    if (!agent) return "GoTour"
+    if (typeof agent === "string") return agent
+    if (typeof agent === "object" && "name" in agent)
+        return (agent as { name: string }).name
+    return "GoTour"
+}
+
+const resolveBadge = (tour: Tour): string => {
+    if (tour.hasDiscount) return "badge_discount"
+    if (tour.popular) return "badge_bestseller"
+    if (tour.visaRequired === false) return "badge_visaFree"
+    if (tour.categories && tour.categories.length > 0) {
+        return `cat_${tour.categories[0]}`
+    }
+    return "badge_tour"
+}
+
+const resolveCategory = (tour: Tour): string => {
+    if (tour.hasDiscount) return "discount"
+    if (tour.popular) return "bestseller"
+    return CATEGORY_MAP[tour.categories[0]] ?? "best"
+}
+
+const resolveOriginalPrice = (tour: Tour): number | undefined => {
+    if (!tour.hasDiscount || tour.discountAmount <= 0) return undefined
+    return tour.minPrice + tour.discountAmount
+}
+
+export const adaptTour = (tour: Tour) => ({
+    id: tour.id,
+    title: tour.nameUz,
+    subtitle: tour.nameRu,
+    image: tour.imageUrl || FALLBACK_IMAGE,
+    author: resolveAuthor(tour.agent),
+    authorAvatar: FALLBACK_AVATAR,
+    rating: tour.avgRating,
+    reviews: 0,
+    location: tour.destination.nameUz,
+    price: tour.minPrice,
+    originalPrice: resolveOriginalPrice(tour),
+    days: tour.durationInDays,
+    dates: formatDateRange(tour.earliestStartDate, tour.latestEndDate),
+    badge: resolveBadge(tour),
+    isNew: !tour.popular && !tour.hasDiscount,
+    discount: tour.hasDiscount ? tour.discountPercent : undefined,
+    category: resolveCategory(tour),
+    isFavorite: tour?.isFavorite,
+    installment: tour?.installment,
+    slugUz: tour?.slugUz,
+    slugRu: tour?.slugRu,
+})
+
+export const adaptTours = (tours: Tour[]) => tours.map(adaptTour)

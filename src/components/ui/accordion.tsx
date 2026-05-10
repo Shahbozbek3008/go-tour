@@ -58,7 +58,7 @@ function AccordionContent({
             className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down overflow-hidden text-sm"
             {...props}
         >
-            <div className={cn("pt-5 pb-0", className)}>{children}</div>
+            <div className={cn("pb-0", className)}>{children}</div>
         </AccordionPrimitive.Content>
     )
 }

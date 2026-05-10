@@ -1,19 +1,21 @@
 import { Toaster } from "@/components/ui/sonner"
 import { routing } from "@/i18n/routing"
+import { setupServerFetchInterceptors } from "@/lib/api/setup-server-fetch-interceptors"
 import { PropsWithChildrenLocale } from "@/types/common"
 import { Metadata } from "next"
 import { hasLocale } from "next-intl"
 import { setRequestLocale } from "next-intl/server"
-import { Public_Sans } from "next/font/google"
+import { Inter } from "next/font/google"
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
 import Providers from "../_providers"
 import "../globals.css"
 import FallbackLoader from "./_components/fallback-loader"
 
-const publicSans = Public_Sans({
-    variable: "--font-public-sans",
-    subsets: ["latin"],
+const inter = Inter({
+    variable: "--font-inter",
+    subsets: ["latin", "cyrillic"],
+    weight: ["400", "500", "600", "700"],
 })
 
 export const metadata: Metadata = {
@@ -35,15 +37,15 @@ export default async function LocaleLayout({
     }
 
     setRequestLocale(locale)
-    // setupServerFetchInterceptors()
+    setupServerFetchInterceptors()
 
     return (
         <html lang={locale}>
             <body
                 suppressHydrationWarning
-                className={`${publicSans.variable} antialiased`}
+                className={`${inter.variable} antialiased`}
             >
-                <Suspense fallback={<FallbackLoader />}>
+                <Suspense fallback={<FallbackLoader locale={locale} />}>
                     <Providers>
                         {children}
                         <Toaster />

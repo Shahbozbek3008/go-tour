@@ -1,37 +1,39 @@
+import { Currency } from "@/types/common/extra"
+
 export const CATEGORIES = [
-    { id: "all", label: "Barcha kategoriyalar" },
-    { id: "beach", label: "Plyaj" },
-    { id: "city", label: "Shahar" },
-    { id: "nature", label: "Tabiat" },
-    { id: "adventure", label: "Sarguzasht" },
-    { id: "hiking", label: "Piyoda sayohat" },
-    { id: "ski", label: "Chang'i" },
-    { id: "safari", label: "Safari" },
-    { id: "cruise", label: "Kruiz" },
-    { id: "gastro", label: "Gastronomik" },
-    { id: "edu", label: "Ta'limiy" },
-    { id: "business", label: "Biznes" },
-    { id: "event", label: "Tadbir" },
-    { id: "honeymoon", label: "Asal oyi" },
-    { id: "family", label: "Oila" },
-    { id: "luxury", label: "Lyuks" },
-    { id: "relax", label: "Dam olish" },
+    { id: "all", label: "cat_all" },
+    { id: "BEACH", label: "cat_BEACH" },
+    { id: "CITY", label: "cat_CITY" },
+    { id: "NATURE", label: "cat_NATURE" },
+    { id: "ADVENTURE", label: "cat_ADVENTURE" },
+    { id: "HIKING", label: "cat_HIKING" },
+    { id: "SKI", label: "cat_SKI" },
+    { id: "SAFARI", label: "cat_SAFARI" },
+    { id: "CRUISE", label: "cat_CRUISE" },
+    { id: "GASTRONOMIC", label: "cat_GASTRONOMIC" },
+    { id: "EDUCATIONAL", label: "cat_EDUCATIONAL" },
+    { id: "BUSINESS", label: "cat_BUSINESS" },
+    { id: "EVENT", label: "cat_EVENT" },
+    { id: "HONEYMOON", label: "cat_HONEYMOON" },
+    { id: "FAMILY", label: "cat_FAMILY" },
+    { id: "LUXURY", label: "cat_LUXURY" },
+    { id: "WEEKEND", label: "cat_WEEKEND" },
 ] as const
 
-export const RATINGS = [
-    { value: "all", label: "Barcha reyting", stars: 0 },
-    { value: "4.5", label: "4.5 yulduz", stars: 5 },
-    { value: "4.0", label: "4.0 yulduz", stars: 4 },
-    { value: "3.5", label: "3.5 yulduz", stars: 3 },
-    { value: "3.0", label: "3.0 yulduz", stars: 3 },
+export const RATINGS: any = [
+    { value: "all", label: "rat_all" },
+    { value: "4.5", label: "4.5", stars: 5 },
+    { value: "4.0", label: "4.0", stars: 4 },
+    { value: "3.5", label: "3.5", stars: 3 },
+    { value: "3.0", label: "3.0", stars: 3 },
 ] as const
 
 export const DURATIONS = [
-    { value: "all", label: "Barchasi" },
-    { value: "1-3", label: "1–3 kun" },
-    { value: "4-7", label: "4–7 kun" },
-    { value: "8-14", label: "8–14 kun" },
-    { value: "15+", label: "15+ kun" },
+    { value: "all", label: "dur_all" },
+    { value: "1-3", label: "dur_1-3" },
+    { value: "4-7", label: "dur_4-7" },
+    { value: "8-14", label: "dur_8-14" },
+    { value: "15+", label: "dur_15+" },
 ] as const
 
 export const TAGS = [
@@ -44,10 +46,63 @@ export const TAGS = [
     "Lager",
     "Okean",
     "Madaniy tur",
-    "Oila safari",
-    "Ekoturizm",
     "Chegirmali tur",
+    "Ekoturizm",
+    "Oila safari",
+] as const
+
+export const LANGUAGES = [
+    { id: "RU", label: "lang_RU" },
+    { id: "EN", label: "lang_EN" },
+    { id: "ES", label: "lang_ES" },
+    { id: "FR", label: "lang_FR" },
+    { id: "DE", label: "lang_DE" },
+    { id: "IT", label: "lang_IT" },
+    { id: "TR", label: "lang_TR" },
+    { id: "UZ", label: "lang_UZ" },
 ] as const
 
 export const PRICE_MIN = 0
 export const PRICE_MAX = 10_000
+
+export const CURRENCY_PRICE_LIMITS: Record<
+    Currency,
+    { min: number; max: number; step: number }
+> = {
+    USD: { min: 0, max: 10_000, step: 100 },
+    UZS: { min: 0, max: 150_000_000, step: 1_000_000 },
+}
+
+export const getPriceLimit = (currency: Currency) => {
+    return CURRENCY_PRICE_LIMITS[currency] || CURRENCY_PRICE_LIMITS.USD
+}
+
+export type FilterState = {
+    category: string
+    priceRange: [number, number]
+    duration: string
+    rate: string
+    tags: string[]
+    promotional: boolean
+    guaranteed: boolean
+    hasReviews: boolean
+    languages: string[]
+    destinations: number[]
+    visaRequired: boolean
+    childDiscount: number | null
+}
+
+export const DEFAULT_FILTERS: FilterState = {
+    category: "all",
+    priceRange: [PRICE_MIN, PRICE_MAX],
+    duration: "all",
+    rate: "all",
+    tags: [],
+    promotional: false,
+    guaranteed: false,
+    hasReviews: false,
+    languages: [],
+    destinations: [],
+    visaRequired: false,
+    childDiscount: null,
+}

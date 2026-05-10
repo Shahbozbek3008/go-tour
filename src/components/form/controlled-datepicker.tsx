@@ -18,7 +18,9 @@ import {
 import { DATE } from "@/lib/constants/date"
 import { cn } from "@/lib/utils/shadcn"
 import { format } from "date-fns"
+import { ru, uz } from "date-fns/locale"
 import { CalendarIcon } from "lucide-react"
+import { useLocale } from "next-intl"
 import { useState } from "react"
 import {
     Control,
@@ -27,6 +29,7 @@ import {
     Path,
     UseFormReturn,
 } from "react-hook-form"
+import ClientTranslate from "../common/translation/client-translate"
 
 interface ControlledDatePickerProps<T extends FieldValues> {
     methods: UseFormReturn<T>
@@ -41,6 +44,7 @@ interface ControlledDatePickerProps<T extends FieldValues> {
     disabled?: boolean
     hasGradientBorder?: boolean
     calendarProps?: CalendarProps
+    formatStr?: string
 }
 
 export default function ControlledDatePicker<T extends FieldValues>({
@@ -56,8 +60,15 @@ export default function ControlledDatePicker<T extends FieldValues>({
     disabled,
     hasGradientBorder = false,
     calendarProps,
+    formatStr = "dd.MM.yyyy",
 }: ControlledDatePickerProps<T>) {
+    const locale = useLocale()
     const [open, setOpen] = useState(false)
+
+    const dateFnsLocale =
+        locale === "uz" ? uz
+        : locale === "ru" ? ru
+        : undefined
 
     const renderDatePicker = (field: ControllerRenderProps<T, Path<T>>) => {
         const selectedDate = field.value ? new Date(field.value) : undefined
@@ -78,12 +89,15 @@ export default function ControlledDatePicker<T extends FieldValues>({
                     >
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {selectedDate ?
-                            format(selectedDate, "PPP")
-                        :   placeholder}
+                            format(selectedDate, formatStr, {
+                                locale: dateFnsLocale,
+                            })
+                        :   <ClientTranslate translationKey={placeholder} />}
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent className="p-0" align="start">
                     <Calendar
+                        locale={dateFnsLocale}
                         captionLayout="dropdown"
                         endMonth={new Date(new Date().getFullYear() + 50, 11)}
                         {...calendarProps}

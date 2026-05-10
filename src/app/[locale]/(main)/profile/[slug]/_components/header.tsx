@@ -1,145 +1,140 @@
 "use client"
 
+import ClientTranslate from "@/components/common/translation/client-translate"
+import { Button } from "@/components/ui/button"
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog"
+import {
+    Drawer,
+    DrawerContent,
+    DrawerHeader,
+    DrawerTitle,
+} from "@/components/ui/drawer"
+import { useAllDestinationsQuery } from "@/hooks/react-query/use-all-destinations-query"
+import { useLanguage } from "@/hooks/use-language"
+import { useMediaQuery } from "@/hooks/use-media-query"
+import { useRouter } from "@/i18n/navigation"
+import { getHref } from "@/lib/utils/get-href"
 import { cn } from "@/lib/utils/shadcn"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import Image from "next/image"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { ChevronDown } from "lucide-react"
+import { useState } from "react"
 
-interface Slide {
-    id: number
-    image: string
-    title: string
-}
+const VISIBLE_COUNT = 12
 
-const slides: Slide[] = [
-    {
-        id: 1,
-        image: "https://uzbekistan.travel/storage/app/media/uploaded-files/samarkand-uzbekistan-kupol-mechet-ploshchad.png",
-        title: "Mening profil sahifam",
-    },
-    {
-        id: 2,
-        image: "https://uzbekistan.travel/storage/app/media/Rasmlar/Samarqand/umumiy/cropped-images/shutterstock_1979665571-0-0-0-0-1738745770.jpg",
-        title: "Mening profil sahifam",
-    },
-    {
-        id: 3,
-        image: "https://media.cnn.com/api/v1/images/stellar/prod/gettyimages-1185723641v2.jpg?c=original",
-        title: "Mening profil sahifam",
-    },
-]
-
-const AUTOPLAY_INTERVAL = 6000
-
-export const ProfileSlugHeader = () => {
-    const [current, setCurrent] = useState(0)
-    const [isAnimating, setIsAnimating] = useState(false)
-    const [direction, setDirection] = useState<"left" | "right">("right")
-    const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
-
-    const goTo = useCallback(
-        (index: number, dir: "left" | "right" = "right") => {
-            if (isAnimating) return
-            setDirection(dir)
-            setIsAnimating(true)
-            setTimeout(() => {
-                setCurrent(index)
-                setIsAnimating(false)
-            }, 500)
+export function ProfileHeader() {
+    const { isRussian } = useLanguage()
+    const router = useRouter()
+    const { allDestinations } = useAllDestinationsQuery({
+        params: {
+            pageType: "PROFILE",
         },
-        [isAnimating],
+    })
+    const [active, setActive] = useState<number | null>(null)
+    const [open, setOpen] = useState(false)
+    const isDesktop = useMediaQuery("(min-width: 768px)")
+
+    const visible = allDestinations?.slice(0, VISIBLE_COUNT)
+
+    const handleSelect = (id: number) => {
+        router.push(
+            getHref({
+                pathname: "/[locale]/catalog",
+                query: {
+                    destinations: [id],
+                },
+            }),
+        )
+        setOpen(false)
+    }
+
+    const renderGrid = () => (
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 pt-4">
+            {allDestinations?.map((dest) => (
+                <button
+                    key={dest.id}
+                    onClick={() => handleSelect(dest.id)}
+                    className={cn(
+                        "flex items-center justify-center p-3 rounded-xl text-sm font-medium transition-all duration-200 border cursor-pointer",
+                        active === dest.id ?
+                            "border-gray-900 bg-gray-900 text-white shadow-md"
+                        :   "border-gray-200 bg-white text-gray-700 hover:border-gray-900 hover:bg-gray-50",
+                    )}
+                >
+                    <span className="truncate">
+                        {isRussian ? dest?.nameRu : dest?.nameUz}
+                    </span>
+                </button>
+            ))}
+        </div>
     )
 
-    const prev = useCallback(() => {
-        const prevIndex = (current - 1 + slides.length) % slides.length
-        goTo(prevIndex, "left")
-    }, [current, goTo])
-
-    const next = useCallback(() => {
-        const nextIndex = (current + 1) % slides.length
-        goTo(nextIndex, "right")
-    }, [current, goTo])
-
-    const resetTimer = useCallback(() => {
-        if (timerRef.current) clearInterval(timerRef.current)
-        timerRef.current = setInterval(next, AUTOPLAY_INTERVAL)
-    }, [next])
-
-    useEffect(() => {
-        resetTimer()
-        return () => {
-            if (timerRef.current) clearInterval(timerRef.current)
-        }
-    }, [resetTimer])
-
-    const handlePrev = () => {
-        prev()
-        resetTimer()
-    }
-
-    const handleNext = () => {
-        next()
-        resetTimer()
-    }
-
-    const slide = slides[current]
-
     return (
-        <div className="relative w-full">
-            <div className="relative w-full h-[450px] lg:h-[60vh] overflow-hidden select-none group">
-                <div
-                    className={cn(
-                        "absolute inset-0 transition-all duration-500 ease-[0.25,1,0.5,1]",
-                        isAnimating ?
-                            direction === "right" ?
-                                "-translate-x-12 opacity-0"
-                            :   "translate-x-12 opacity-0"
-                        :   "translate-x-0 opacity-100",
-                    )}
-                >
-                    <div className="relative w-full h-full">
-                        <Image
-                            src={slide.image}
-                            alt={slide.title}
-                            fill
-                            priority
-                            unoptimized
-                            sizes="(max-width: 768px) 100vw, 100vw"
-                            className="object-cover transition-transform duration-[10000ms] ease-linear scale-100 group-hover:scale-110"
-                        />
-                    </div>
+        <div className="home-container mt-2">
+            <div className="flex items-center gap-2 md:gap-4 py-1.5 md:py-1">
+                <div className="flex items-center gap-4 md:gap-8 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden flex-1 min-w-0">
+                    {visible?.map((dest) => (
+                        <button
+                            key={dest.id}
+                            onClick={() => {
+                                setActive(active === dest?.id ? null : dest?.id)
+                                handleSelect(dest.id)
+                            }}
+                            className={cn(
+                                "relative flex items-center gap-1.5 py-2 rounded-lg text-[13px] md:text-sm font-medium whitespace-nowrap transition-all duration-200 flex-shrink-0 cursor-pointer",
+                                "after:content-[''] after:absolute after:bottom-0",
+                                "after:left-2 after:right-2 after:h-[2px]",
+                                "after:bg-gray-800 after:rounded-full",
+                                "after:scale-x-0 after:transition-transform after:duration-200 after:origin-left",
+                                "hover:after:scale-x-100",
+                                "text-gray-500 hover:text-gray-900",
+                            )}
+                        >
+                            <span>
+                                {isRussian ? dest?.nameRu : dest?.nameUz}
+                            </span>
+                        </button>
+                    ))}
                 </div>
 
-                <div className="absolute inset-0 bg-[#0F1B2D]/40 z-10 pointer-events-none" />
-                <div
-                    className={cn(
-                        "absolute inset-0 z-20 flex flex-col items-center justify-center transition-all duration-300 ease-out px-4",
-                        isAnimating ? "opacity-0 scale-95" : (
-                            "opacity-100 scale-100"
-                        ),
-                    )}
-                >
-                    <h1 className="text-white font-bold text-5xl sm:text-6xl md:text-7xl lg:text-6xl leading-tight  drop-shadow-xl text-center mb-3">
-                        {slide.title}
-                    </h1>
-                </div>
-
-                <button
-                    onClick={handlePrev}
-                    aria-label="Previous slide"
-                    className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-md border border-white/20 text-white opacity-0 group-hover:opacity-100 hover:bg-black/40 transition-all duration-300 hover:scale-105"
-                >
-                    <ChevronLeft className="w-6 h-6" />
-                </button>
-
-                <button
-                    onClick={handleNext}
-                    aria-label="Next slide"
-                    className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-md border border-white/20 text-white opacity-0 group-hover:opacity-100 hover:bg-black/40 transition-all duration-300 hover:scale-105"
-                >
-                    <ChevronRight className="w-6 h-6" />
-                </button>
+                {allDestinations && allDestinations.length > VISIBLE_COUNT && (
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setOpen(true)}
+                        className="flex items-center gap-1 px-3 py-2 h-auto text-sm font-semibold text-gray-500 hover:text-gray-800 rounded-lg shrink-0 whitespace-nowrap cursor-pointer"
+                    >
+                        <ClientTranslate translationKey="more" />
+                        <ChevronDown className="w-3.5 h-3.5" />
+                    </Button>
+                )}
             </div>
+
+            {isDesktop ?
+                <Dialog open={open} onOpenChange={setOpen}>
+                    <DialogContent className="max-w-4xl">
+                        <DialogHeader>
+                            <DialogTitle className="text-xl">
+                                <ClientTranslate translationKey="destinations" />
+                            </DialogTitle>
+                        </DialogHeader>
+                        {renderGrid()}
+                    </DialogContent>
+                </Dialog>
+            :   <Drawer open={open} onOpenChange={setOpen}>
+                    <DrawerContent className="max-h-[85vh]">
+                        <DrawerHeader className="text-left border-b pb-4">
+                            <DrawerTitle className="text-xl">
+                                <ClientTranslate translationKey="destinations" />
+                            </DrawerTitle>
+                        </DrawerHeader>
+                        <div className="px-4 pb-5">{renderGrid()}</div>
+                    </DrawerContent>
+                </Drawer>
+            }
         </div>
     )
 }

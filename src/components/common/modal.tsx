@@ -11,13 +11,13 @@ import {
     TDialogContent,
 } from "../ui/dialog"
 
-type Props = {
+type Props = Omit<TDialogContent, "title"> & {
     modalKey?: string
     title?: ReactNode
     description?: ReactNode
     children?: ReactNode
     onClose?: () => void
-} & TDialogContent
+}
 
 const Modal = ({
     title,

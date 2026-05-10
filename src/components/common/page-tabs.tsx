@@ -62,7 +62,7 @@ export default function PageTabs({ tabs, className }: Props) {
                                 >
                                     <TabsTrigger
                                         value={getPathSegment(t.href)}
-                                        className="h-10 rounded-lg bg-transparent py-1 px-4 flex items-center gap-2 text-text-900"
+                                        className="h-10 rounded-lg bg-transparent py-1 px-4 flex items-center sm:text-sm text-xs gap-2 text-text-900"
                                     >
                                         {isActive(pathname, t.href) ?
                                             activeIcon && (

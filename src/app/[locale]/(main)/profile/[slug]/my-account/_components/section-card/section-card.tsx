@@ -21,7 +21,7 @@ export function SectionCard({
                 className,
             )}
         >
-            <div className="px-6 py-5 border-b border-slate-100">
+            <div className="px-4 py-4 md:px-6 md:py-5 border-b border-slate-100">
                 <h2 className="text-sm font-semibold text-slate-800 tracking-tight">
                     <ClientTranslate translationKey={title} />
                 </h2>
@@ -31,7 +31,7 @@ export function SectionCard({
                     </p>
                 )}
             </div>
-            <div className="p-6">{children}</div>
+            <div className="p-4 md:p-6">{children}</div>
         </div>
     )
 }

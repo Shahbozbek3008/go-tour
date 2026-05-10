@@ -2,15 +2,23 @@ import Modal from "@/components/common/modal"
 import ClientTranslate from "@/components/common/translation/client-translate"
 import OtpField from "@/components/form/otp-field"
 import { Button } from "@/components/ui/button"
+import {
+    Drawer,
+    DrawerContent,
+    DrawerHeader,
+    DrawerTitle,
+} from "@/components/ui/drawer"
 import { Form } from "@/components/ui/form"
 import { useRequest } from "@/hooks/react-query/use-request"
+import { useMediaQuery } from "@/hooks/use-media-query"
 import { useModal } from "@/hooks/use-modal"
 import { useRouter } from "@/i18n/navigation"
 import { API } from "@/lib/constants/api-endpoints"
 import { MODAL_KEYS } from "@/lib/constants/modal-keys"
 import { ClientTokenService } from "@/lib/cookies/client-token-service"
 import { cn } from "@/lib/utils/shadcn"
-import { Phone, RotateCcw } from "lucide-react"
+import { Phone, RotateCcw, X } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { SubmitHandler, useFormContext } from "react-hook-form"
 
@@ -44,11 +52,12 @@ const formatTime = (s: number): string => {
 
 export const Verify = () => {
     const router = useRouter()
+    const t = useTranslations()
     const methods = useFormContext<FormValues>()
     const { openModal } = useModal(MODAL_KEYS.SIGN_IN_MODAL)
-    const { closeModal } = useModal(MODAL_KEYS.VERIFY_PHONE_MODAL)
+    const { closeModal, isOpen } = useModal(MODAL_KEYS.VERIFY_PHONE_MODAL)
     const { post, isPending } = useRequest()
-
+    const isDesktopOrTablet = useMediaQuery("(min-width: 768px)")
     const [countdown, setCountdown] = useState(RESEND_SECONDS)
     const [isResending, setIsResending] = useState(false)
     const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -116,90 +125,118 @@ export const Verify = () => {
         })
     }
 
-    return (
-        <Modal
-            title="Tasdiqlash"
-            className="w-[clamp(300px,90vw,420px)]"
-            modalKey={MODAL_KEYS.VERIFY_PHONE_MODAL}
-        >
-            <Form {...methods}>
-                <form onSubmit={methods.handleSubmit(onVerify)}>
-                    <div className="flex flex-col items-center gap-4 mt-5 pb-2">
-                        <div className="w-full flex items-center gap-3 bg-muted/50 rounded-xl px-3.5 py-3">
-                            <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
-                                <Phone className="w-4 h-4 text-blue-600" />
-                            </div>
-                            <div className="flex flex-col gap-0.5">
-                                <p className="text-[11px] text-zinc-400 leading-none">
-                                    <ClientTranslate translationKey="smsCodeSent" />
-                                </p>
-                                <p className="text-[14px] font-medium text-zinc-900 tracking-wide leading-none">
-                                    {phoneNumber}
-                                </p>
-                            </div>
+    const content = (
+        <Form {...methods}>
+            <form onSubmit={methods.handleSubmit(onVerify)}>
+                <div className="flex flex-col items-center gap-4 mt-5 pb-2">
+                    <div className="w-full flex items-center gap-3 bg-muted/50 rounded-xl px-3.5 py-3">
+                        <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
+                            <Phone className="w-4 h-4 text-blue-600" />
                         </div>
-
-                        <OtpField
-                            maxLength={6}
-                            name="smsCode"
-                            methods={methods}
-                            groupClassName="gap-[clamp(4px,1.5vw,10px)]"
-                            slotClassName="w-[calc((min(90vw,420px)-48px-40px)/6)] max-w-[48px] min-w-[30px] h-12 text-base"
-                        />
-
-                        <div className="w-full flex items-center justify-center h-7">
-                            {countdown > 0 ?
-                                <p className="text-[13px] text-zinc-400">
-                                    <ClientTranslate translationKey="resend" />{" "}
-                                    —{" "}
-                                    <span className="font-medium tabular-nums text-zinc-600">
-                                        {formatTime(countdown)}
-                                    </span>
-                                </p>
-                            :   <button
-                                    type="button"
-                                    onClick={handleResend}
-                                    disabled={isResending}
-                                    className={cn(
-                                        "flex items-center gap-1.5 text-[13px] font-medium text-blue-600",
-                                        "hover:text-blue-700 transition-colors duration-150",
-                                        "disabled:opacity-50 disabled:cursor-not-allowed",
-                                        "focus-visible:outline-none",
-                                    )}
-                                >
-                                    <RotateCcw
-                                        className={cn(
-                                            "w-3.5 h-3.5",
-                                            isResending && "animate-spin",
-                                        )}
-                                    />
-                                    <ClientTranslate translationKey="resend" />
-                                </button>
-                            }
+                        <div className="flex flex-col gap-0.5">
+                            <p className="text-[11px] text-zinc-400 leading-none">
+                                <ClientTranslate translationKey="smsCodeSent" />
+                            </p>
+                            <p className="text-[14px] font-medium text-zinc-900 tracking-wide leading-none">
+                                {phoneNumber}
+                            </p>
                         </div>
-
-                        <Button
-                            type="submit"
-                            className="w-full"
-                            isLoading={isPending}
-                        >
-                            <ClientTranslate translationKey="confirm" />
-                        </Button>
-
-                        <Button
-                            type="button"
-                            variant="link"
-                            className="text-sm text-primary"
-                            onClick={() => {
-                                openModal()
-                                closeModal()
-                            }}
-                        >
-                            <ClientTranslate translationKey="changePhoneNumber" />
-                        </Button>
                     </div>
-                </form>
-            </Form>
-        </Modal>
+
+                    <OtpField
+                        maxLength={6}
+                        name="smsCode"
+                        methods={methods}
+                        groupClassName="gap-[clamp(4px,1.5vw,10px)]"
+                        slotClassName="w-[calc((min(90vw,420px)-48px-40px)/6)] max-w-[48px] min-w-[30px] h-12 text-base"
+                    />
+
+                    <div className="w-full flex items-center justify-center h-7">
+                        {countdown > 0 ?
+                            <p className="text-[13px] text-zinc-400">
+                                <ClientTranslate translationKey="resend" /> —{" "}
+                                <span className="font-medium tabular-nums text-zinc-600">
+                                    {formatTime(countdown)}
+                                </span>
+                            </p>
+                        :   <button
+                                type="button"
+                                onClick={handleResend}
+                                disabled={isResending}
+                                className={cn(
+                                    "flex items-center gap-1.5 text-[13px] font-medium text-blue-600",
+                                    "hover:text-blue-700 transition-colors duration-150",
+                                    "disabled:opacity-50 disabled:cursor-not-allowed",
+                                    "focus-visible:outline-none",
+                                )}
+                            >
+                                <RotateCcw
+                                    className={cn(
+                                        "w-3.5 h-3.5",
+                                        isResending && "animate-spin",
+                                    )}
+                                />
+                                <ClientTranslate translationKey="resend" />
+                            </button>
+                        }
+                    </div>
+
+                    <Button
+                        type="submit"
+                        className="w-full"
+                        isLoading={isPending}
+                    >
+                        <ClientTranslate translationKey="confirm" />
+                    </Button>
+
+                    <Button
+                        type="button"
+                        variant="link"
+                        className="text-sm text-primary"
+                        onClick={() => {
+                            openModal()
+                            closeModal()
+                        }}
+                    >
+                        <ClientTranslate translationKey="changePhoneNumber" />
+                    </Button>
+                </div>
+            </form>
+        </Form>
+    )
+
+    if (isDesktopOrTablet) {
+        return (
+            <Modal
+                title={t("confirm")}
+                className="w-[clamp(300px,90vw,420px)]"
+                modalKey={MODAL_KEYS.VERIFY_PHONE_MODAL}
+            >
+                {content}
+            </Modal>
+        )
+    }
+
+    return (
+        <Drawer open={isOpen} onOpenChange={(open) => !open && closeModal()}>
+            <DrawerContent className="max-h-[88vh] rounded-t-2xl">
+                <DrawerHeader className="border-b border-zinc-100 pb-3">
+                    <div className="flex items-center justify-between gap-2">
+                        <DrawerTitle className="text-[17px] font-semibold">
+                            {t("confirm")}
+                        </DrawerTitle>
+                        <button
+                            type="button"
+                            onClick={closeModal}
+                            aria-label={t("catalogFilterClose")}
+                            className="flex items-center justify-center w-8 h-8 rounded-full bg-zinc-100 text-zinc-500"
+                        >
+                            <X className="w-4 h-4" />
+                        </button>
+                    </div>
+                </DrawerHeader>
+                <div className="px-1 pb-2">{content}</div>
+            </DrawerContent>
+        </Drawer>
     )
 }

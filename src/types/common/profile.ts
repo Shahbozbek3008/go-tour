@@ -83,6 +83,7 @@ export interface AuthResponse {
     status: number
     message: string
     data: {
+        favoriteCount: number
         userProfile: UserProfile
         token: string | null
         roles: string[] | null

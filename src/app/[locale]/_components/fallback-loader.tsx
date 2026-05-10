@@ -5,13 +5,36 @@ import { useEffect, useRef } from "react"
 
 type Props = {
     className?: string
+    locale?: string
 }
 
-const LOCATIONS = ["Samarqand", "Paris", "Bali", "Tokyo", "Dubai"]
+const LOCATION_KEYS = ["Antalya", "Paris", "Bali", "Tokyo", "Dubai"]
 const STAR_COUNT = 90
 
-export default function FallbackLoader({ className }: Props) {
+const TRANSLATIONS = {
+    uz: {
+        discoveringWorld: "Dunyoni kashf etmoqda",
+        locationAntalya: "Antaliya",
+        locationParis: "Parij",
+        locationBali: "Bali",
+        locationTokyo: "Tokio",
+        locationDubai: "Dubay",
+    },
+    ru: {
+        discoveringWorld: "Открываем мир",
+        locationAntalya: "Анталья",
+        locationParis: "Париж",
+        locationBali: "Бали",
+        locationTokyo: "Токио",
+        locationDubai: "Дубай",
+    },
+}
+
+export default function FallbackLoader({ className, locale = "uz" }: Props) {
     const starsRef = useRef<HTMLDivElement>(null)
+    const t = (key: keyof (typeof TRANSLATIONS)["uz"]) =>
+        TRANSLATIONS[locale as keyof typeof TRANSLATIONS]?.[key] ||
+        TRANSLATIONS["uz"][key]
 
     useEffect(() => {
         const container = starsRef.current
@@ -48,11 +71,8 @@ export default function FallbackLoader({ className }: Props) {
                 "bg-[#0a0f1e]",
                 className,
             )}
-            style={{ fontFamily: "'Outfit', sans-serif" }}
         >
             <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Outfit:wght@300;400&display=swap');
-
                 @keyframes twinkle {
                     0%, 100% { opacity: var(--min-op, 0.2); transform: scale(1); }
                     50%       { opacity: 1; transform: scale(1.4); }
@@ -181,8 +201,7 @@ export default function FallbackLoader({ className }: Props) {
                         margin: 0,
                     }}
                 >
-                    Travel
-                    <span style={{ color: "rgba(255,190,80,0.9)" }}>.</span>
+                    Go Tour.
                 </h1>
 
                 <div className="fl-dots flex items-center gap-2">
@@ -231,14 +250,14 @@ export default function FallbackLoader({ className }: Props) {
                             color: "rgba(255,255,255,0.35)",
                         }}
                     >
-                        Dunyoni kashf etmoqda
+                        {t("discoveringWorld")}
                     </span>
                 </div>
 
                 <div className="fl-chips flex items-center gap-2">
-                    {LOCATIONS.slice(0, 3).map((loc, i) => (
+                    {LOCATION_KEYS.slice(0, 3).map((locKey, i) => (
                         <div
-                            key={loc}
+                            key={locKey}
                             className={`fl-chip-${i + 1}`}
                             style={{
                                 padding: "5px 12px",
@@ -250,7 +269,7 @@ export default function FallbackLoader({ className }: Props) {
                                 color: "rgba(255,255,255,0.35)",
                             }}
                         >
-                            {loc}
+                            {t(`location${locKey}` as any)}
                         </div>
                     ))}
                 </div>

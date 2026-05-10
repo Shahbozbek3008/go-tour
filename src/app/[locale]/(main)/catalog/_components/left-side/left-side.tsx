@@ -2,29 +2,42 @@
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { RadioGroup } from "@/components/ui/radio-group"
 import { Slider } from "@/components/ui/slider"
+import { Switch } from "@/components/ui/switch"
+import ClientTranslate from "@/components/common/translation/client-translate"
+import { useTranslations } from "next-intl"
+
+import { useCurrency } from "@/app/_providers/currency-provider"
+import { useAllDestinationsQuery } from "@/hooks/react-query/use-all-destinations-query"
+import { useStickySidebar } from "@/hooks/use-sticky-sidebar"
+import { formatNumber } from "@/lib/utils/format-number"
+import { getCurrencySign } from "@/lib/utils/money"
 import { cn } from "@/lib/utils/shadcn"
-import {
-    CATEGORIES,
-    DURATIONS,
-    PRICE_MAX,
-    PRICE_MIN,
-    RATINGS,
-    TAGS,
-} from "../../_constants"
-import { useFilter } from "../../_hooks"
+import { Info, Minus, Plus } from "lucide-react"
+import { useState } from "react"
+import { CATEGORIES, DURATIONS, getPriceLimit, RATINGS } from "../../_constants"
+import { useAllLanguagesQuery, useFilter } from "../../_hooks"
+import { useParams } from "next/navigation"
+import { ActiveFilterBadge } from "../right-side/active-filter-badge"
 import { FilterSection } from "./filter-section"
 import { RadioItem } from "./radio-item"
 import { StarDisplay } from "./star-display"
 
+const CATEGORIES_DEFAULT_COUNT = 6
+const LANGUAGES_DEFAULT_COUNT = 5
+const DESTINATIONS_DEFAULT_COUNT = 5
+
 export const CatalogLeftSide = () => {
+    const t = useTranslations()
+    const { locale } = useParams() as { locale: string }
     const {
         filters,
         minInput,
         maxInput,
-        toggleTag,
         setFilters,
         resetFilters,
         handleMinInput,
@@ -32,14 +45,64 @@ export const CatalogLeftSide = () => {
         hasActiveFilters,
         handlePriceSlider,
         activeFiltersCount,
+        toggleLanguage,
+        toggleDestination,
     } = useFilter()
+    const { currency } = useCurrency()
+    const {
+        min: PRICE_MIN,
+        max: PRICE_MAX,
+        step: PRICE_STEP,
+    } = getPriceLimit(currency)
+    const currencySign = getCurrencySign(currency)
+    const sign = currencySign.symbol || currencySign.iso
+
+    const { allDestinations } = useAllDestinationsQuery()
+    const { allLanguages } = useAllLanguagesQuery()
+
+    const [showAllCategories, setShowAllCategories] = useState(false)
+    const [showAllLanguages, setShowAllLanguages] = useState(false)
+    const [showAllDestinations, setShowAllDestinations] = useState(false)
+
+    const visibleCategories =
+        showAllCategories ? CATEGORIES : (
+            CATEGORIES.slice(0, CATEGORIES_DEFAULT_COUNT)
+        )
+
+    const visibleDestinations =
+        showAllDestinations ? allDestinations : (
+            allDestinations.slice(0, DESTINATIONS_DEFAULT_COUNT)
+        )
+
+    const hasMoreCategories = CATEGORIES.length > CATEGORIES_DEFAULT_COUNT
+    const hiddenCount = CATEGORIES.length - CATEGORIES_DEFAULT_COUNT
+
+    const hasMoreLanguages = allLanguages?.length > LANGUAGES_DEFAULT_COUNT
+    const hiddenLanguageCount = allLanguages?.length - LANGUAGES_DEFAULT_COUNT
+
+    const hasMoreDestinations =
+        allDestinations.length > DESTINATIONS_DEFAULT_COUNT
+    const hiddenDestinationCount =
+        allDestinations.length - DESTINATIONS_DEFAULT_COUNT
+
+    const { sidebarRef } = useStickySidebar(100, 24)
 
     return (
-        <div className="w-full">
-            <aside className="w-[300px] border border-zinc-200 rounded-xl p-3 shrink-0 sticky top-24">
+        <div
+            ref={sidebarRef}
+            className="w-[300px] shrink-0 sticky hidden lg:block self-start transition-[top] duration-200 ease-out"
+            style={{ top: "var(--sticky-top, 100px)" }}
+        >
+            <div className="h-[48px] mb-6 flex items-center justify-start">
+                <ActiveFilterBadge
+                    activeFiltersCount={activeFiltersCount}
+                    resetFilters={resetFilters}
+                />
+            </div>
+            <aside className="w-full border border-zinc-200 bg-white rounded-xl p-3 shadow-sm">
                 <div className="flex items-center gap-2 mb-1">
                     <span className="text-[15px] font-bold text-zinc-900 tracking-tight">
-                        Filterlar
+                        <ClientTranslate translationKey="catalogFilterTitle" />
                     </span>
                     {activeFiltersCount > 0 && (
                         <Badge className="flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full bg-blue-600 text-white text-[11px] font-bold animate-in zoom-in duration-300">
@@ -49,7 +112,96 @@ export const CatalogLeftSide = () => {
                 </div>
 
                 <div className="divide-y divide-zinc-100">
-                    <FilterSection title="Kategoriya">
+                    <div className="py-2.5 flex flex-col gap-2">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-1.5 cursor-pointer select-none">
+                                <span className="text-[14px] text-zinc-900 font-medium">
+                                    <ClientTranslate translationKey="catalogFilterDiscountOnly" />
+                                </span>
+                                <Info
+                                    strokeWidth={1.5}
+                                    className="w-[18px] h-[18px] text-zinc-400"
+                                />
+                            </div>
+                            <Switch
+                                checked={filters.promotional}
+                                onCheckedChange={(val) =>
+                                    setFilters((p) => ({
+                                        ...p,
+                                        promotional: val,
+                                    }))
+                                }
+                                className="data-[state=checked]:bg-blue-600"
+                            />
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-1.5 cursor-pointer select-none">
+                                <span className="text-[14px] text-zinc-900 font-medium">
+                                    <ClientTranslate translationKey="catalogFilterTrustedOnly" />
+                                </span>
+                                <Info
+                                    strokeWidth={1.5}
+                                    className="w-[18px] h-[18px] text-zinc-400"
+                                />
+                            </div>
+                            <Switch
+                                checked={filters.guaranteed}
+                                onCheckedChange={(val) =>
+                                    setFilters((p) => ({
+                                        ...p,
+                                        guaranteed: val,
+                                    }))
+                                }
+                                className="data-[state=checked]:bg-blue-600"
+                            />
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-1.5 cursor-pointer select-none">
+                                <span className="text-[14px] text-zinc-900 font-medium">
+                                    <ClientTranslate translationKey="catalogFilterReviewsOnly" />
+                                </span>
+                                <Info
+                                    strokeWidth={1.5}
+                                    className="w-[18px] h-[18px] text-zinc-400"
+                                />
+                            </div>
+                            <Switch
+                                checked={filters.hasReviews}
+                                onCheckedChange={(val) =>
+                                    setFilters((p) => ({
+                                        ...p,
+                                        hasReviews: val,
+                                    }))
+                                }
+                                className="data-[state=checked]:bg-primary"
+                            />
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-1.5 cursor-pointer select-none">
+                                <span className="text-[14px] text-zinc-900 font-medium">
+                                    <ClientTranslate translationKey="catalogFilterNoVisa" />
+                                </span>
+                                <Info
+                                    strokeWidth={1.5}
+                                    className="w-[18px] h-[18px] text-zinc-400"
+                                />
+                            </div>
+                            <Switch
+                                checked={filters.visaRequired}
+                                onCheckedChange={(val) =>
+                                    setFilters((p) => ({
+                                        ...p,
+                                        visaRequired: val,
+                                    }))
+                                }
+                                className="data-[state=checked]:bg-blue-600"
+                            />
+                        </div>
+                    </div>
+
+                    <FilterSection title={t("catalogFilterCategory")}>
                         <RadioGroup
                             value={filters.category}
                             onValueChange={(val) =>
@@ -57,33 +209,63 @@ export const CatalogLeftSide = () => {
                             }
                             className="gap-0"
                         >
-                            {CATEGORIES.map(({ id, label }) => (
-                                <RadioItem
-                                    key={id}
-                                    id={`cat-${id}`}
-                                    value={id}
-                                    label={label}
-                                    isActive={filters.category === id}
-                                />
-                            ))}
+                            <div
+                                className={cn(
+                                    "overflow-hidden transition-all duration-300 ease-in-out",
+                                    showAllCategories ? "max-h-[1000px]" : (
+                                        "max-h-[220px]"
+                                    ),
+                                )}
+                            >
+                                {visibleCategories.map(({ id, label }) => (
+                                    <RadioItem
+                                        key={id}
+                                        id={`cat-${id}`}
+                                        value={id}
+                                        label={
+                                            <ClientTranslate translationKey={label} />
+                                        }
+                                        isActive={filters.category === id}
+                                    />
+                                ))}
+                            </div>
                         </RadioGroup>
+
+                        {hasMoreCategories && (
+                            <button
+                                onClick={() => setShowAllCategories((p) => !p)}
+                                className="cursor-pointer mt-2 w-full rounded-lg bg-zinc-100 py-2 text-[13px] font-medium text-zinc-600 transition-colors duration-150 focus-visible:outline-none"
+                            >
+                                {showAllCategories ?
+                                    t("catalogFilterShowLess")
+                                :   t("catalogFilterAllTours", { count: hiddenCount })}
+                            </button>
+                        )}
                     </FilterSection>
 
-                    {/* ── Narx ── */}
-                    <FilterSection title="Narx">
+                    <FilterSection title={t("catalogFilterPrice")}>
                         <div className="space-y-3 pt-1">
                             <Slider
                                 min={PRICE_MIN}
                                 max={PRICE_MAX}
-                                step={100}
+                                step={PRICE_STEP}
                                 value={filters.priceRange}
                                 onValueChange={handlePriceSlider}
                                 className="w-full"
                             />
                             <div className="flex items-center justify-between text-[11px] text-zinc-400 select-none">
-                                <span>$0</span>
-                                <span>$5,000</span>
-                                <span>$10,000</span>
+                                <span>
+                                    {formatNumber(PRICE_MIN, {
+                                        isShowZero: true,
+                                    })}{" "}
+                                    {sign}
+                                </span>
+                                <span>
+                                    {formatNumber(PRICE_MAX / 2)} {sign}
+                                </span>
+                                <span>
+                                    {formatNumber(PRICE_MAX)} {sign}
+                                </span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <div className="relative flex-1">
@@ -119,7 +301,7 @@ export const CatalogLeftSide = () => {
                         </div>
                     </FilterSection>
 
-                    <FilterSection title="Davomiylik" defaultOpen={false}>
+                    <FilterSection title={t("catalogFilterDuration")} defaultOpen={false}>
                         <RadioGroup
                             value={filters.duration}
                             onValueChange={(val) =>
@@ -132,18 +314,20 @@ export const CatalogLeftSide = () => {
                                     key={value}
                                     id={`dur-${value}`}
                                     value={value}
-                                    label={label}
+                                    label={
+                                        <ClientTranslate translationKey={label} />
+                                    }
                                     isActive={filters.duration === value}
                                 />
                             ))}
                         </RadioGroup>
                     </FilterSection>
 
-                    <FilterSection title="Reyting">
+                    <FilterSection title={t("catalogFilterRating")}>
                         <RadioGroup
-                            value={filters.rating}
+                            value={filters.rate}
                             onValueChange={(val) =>
-                                setFilters((p) => ({ ...p, rating: val }))
+                                setFilters((p) => ({ ...p, rate: val }))
                             }
                             className="gap-0"
                         >
@@ -152,10 +336,22 @@ export const CatalogLeftSide = () => {
                                     key={value}
                                     id={`rat-${value}`}
                                     value={value}
-                                    isActive={filters.rating === value}
+                                    isActive={filters.rate === value}
                                     label={
                                         <span className="flex items-center gap-2">
-                                            <span>{label}</span>
+                                            <span>
+                                                {value === "all" ?
+                                                    <ClientTranslate
+                                                        translationKey={label}
+                                                    />
+                                                :   <ClientTranslate
+                                                        translationKey="rat_stars"
+                                                        values={{
+                                                            stars: label,
+                                                        }}
+                                                    />
+                                                }
+                                            </span>
                                             {stars > 0 && (
                                                 <StarDisplay filled={stars} />
                                             )}
@@ -166,33 +362,170 @@ export const CatalogLeftSide = () => {
                         </RadioGroup>
                     </FilterSection>
 
-                    <FilterSection title="Mashhur shaharlar">
-                        <p className="text-[12px] text-zinc-400 py-1">
-                            Tez kunda…
-                        </p>
+                    <FilterSection title={t("catalogFilterPopularCities")}>
+                        <div className="flex flex-col gap-1 pt-0.5">
+                            <div
+                                className={cn(
+                                    "overflow-hidden transition-all duration-300 ease-in-out flex flex-col gap-2",
+                                    showAllDestinations ? "max-h-[1000px]" : (
+                                        "max-h-[185px]"
+                                    ),
+                                )}
+                            >
+                                {visibleDestinations.map((dest) => {
+                                    const active =
+                                        filters.destinations.includes(dest.id)
+                                    return (
+                                        <FieldGroup
+                                            className="w-full"
+                                            key={dest.id}
+                                        >
+                                            <Field orientation="horizontal">
+                                                <Checkbox
+                                                    id={`dest-${dest.id}`}
+                                                    name={`dest-${dest.id}`}
+                                                    checked={active}
+                                                    onCheckedChange={() =>
+                                                        toggleDestination(
+                                                            dest.id,
+                                                        )
+                                                    }
+                                                />
+                                                <FieldLabel
+                                                    htmlFor={`dest-${dest.id}`}
+                                                    className="cursor-pointer text-zinc-500 text-[14px]"
+                                                >
+                                                    {locale === "ru" ?
+                                                        dest.nameRu
+                                                    :   dest.nameUz}
+                                                </FieldLabel>
+                                            </Field>
+                                        </FieldGroup>
+                                    )
+                                })}
+                            </div>
+                            {hasMoreDestinations && (
+                                <button
+                                    onClick={() =>
+                                        setShowAllDestinations((prev) => !prev)
+                                    }
+                                    className="cursor-pointer mt-2 w-full rounded-lg bg-zinc-100 py-2 text-[13px] font-medium text-zinc-600 transition-colors duration-150 focus-visible:outline-none"
+                                >
+                                    {showAllDestinations ?
+                                        t("catalogFilterShowLess")
+                                    :   t("catalogFilterAllCities", { count: hiddenDestinationCount })
+                                    }
+                                </button>
+                            )}
+                        </div>
                     </FilterSection>
 
-                    <FilterSection title="Mashhur teglar">
-                        <div className="flex flex-wrap gap-1.5 pt-0.5">
-                            {TAGS.map((tag) => {
-                                const active = filters.tags.includes(tag)
-                                return (
-                                    <button
-                                        key={tag}
-                                        onClick={() => toggleTag(tag)}
-                                        className={cn(
-                                            "inline-flex items-center rounded-full px-2.5 py-1",
-                                            "text-[12px] font-medium transition-all duration-150",
-                                            "focus-visible:outline-none",
-                                            active ?
-                                                "bg-primary text-white"
-                                            :   "bg-zinc-100 text-zinc-500 hover:bg-zinc-200 hover:text-zinc-700",
-                                        )}
-                                    >
-                                        {tag}
-                                    </button>
-                                )
-                            })}
+                    <FilterSection title={t("catalogFilterByLanguage")}>
+                        <div className="flex flex-col gap-1 pt-0.5">
+                            <div
+                                className={cn(
+                                    "overflow-hidden transition-all duration-300 ease-in-out flex flex-col gap-2",
+                                    showAllLanguages ? "max-h-[1000px]" : (
+                                        "max-h-[185px]"
+                                    ),
+                                )}
+                            >
+                                {allLanguages?.map((lang) => {
+                                    const active = filters.languages.includes(
+                                        lang?.code,
+                                    )
+                                    return (
+                                        <FieldGroup
+                                            className="w-full"
+                                            key={lang?.code}
+                                        >
+                                            <Field orientation="horizontal">
+                                                <Checkbox
+                                                    id={`lang-${lang?.code}`}
+                                                    name={`lang-${lang?.code}`}
+                                                    checked={active}
+                                                    onCheckedChange={() =>
+                                                        toggleLanguage(
+                                                            lang?.code,
+                                                        )
+                                                    }
+                                                />
+                                                <FieldLabel
+                                                    htmlFor={`lang-${lang?.code}`}
+                                                    className="cursor-pointer text-zinc-500 text-[14px]"
+                                                >
+                                                    {locale === "ru" ?
+                                                        lang.nameRu
+                                                    :   lang.nameUz}
+                                                </FieldLabel>
+                                            </Field>
+                                        </FieldGroup>
+                                    )
+                                })}
+                            </div>
+                            {hasMoreLanguages && (
+                                <button
+                                    onClick={() =>
+                                        setShowAllLanguages((prev) => !prev)
+                                    }
+                                    className="cursor-pointer mt-2 w-full rounded-lg bg-zinc-100 py-2 text-[13px] font-medium text-zinc-600 transition-colors duration-150 focus-visible:outline-none"
+                                >
+                                    {showAllLanguages ?
+                                        t("catalogFilterShowLess")
+                                    :   t("catalogFilterAllLanguages", { count: hiddenLanguageCount })
+                                    }
+                                </button>
+                            )}
+                        </div>
+                    </FilterSection>
+
+                    <FilterSection title={t("catalogFilterAdditional")}>
+                        <div className="flex flex-col gap-4 pt-1">
+                            <div className="space-y-2">
+                                <span className="text-[13px] font-medium text-zinc-600 block">
+                                    <ClientTranslate translationKey="catalogFilterChildDiscount" />
+                                </span>
+                                <div className="flex items-center justify-between p-3 border border-zinc-200 rounded-xl bg-zinc-50/50">
+                                    <div className="flex flex-col">
+                                        <span className="text-[11px] text-zinc-400 font-medium leading-none mb-1">
+                                            <ClientTranslate translationKey="catalogFilterPeopleCount" />
+                                        </span>
+                                        <span className="text-[16px] font-bold text-zinc-900 tabular-nums">
+                                            {filters.childDiscount ?? 0}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={() =>
+                                                setFilters((p) => ({
+                                                    ...p,
+                                                    childDiscount: Math.max(
+                                                        0,
+                                                        (p.childDiscount ?? 0) -
+                                                            1,
+                                                    ),
+                                                }))
+                                            }
+                                            className="w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-white hover:opacity-90 transition-opacity"
+                                        >
+                                            <Minus className="w-4 h-4" />
+                                        </button>
+                                        <button
+                                            onClick={() =>
+                                                setFilters((p) => ({
+                                                    ...p,
+                                                    childDiscount:
+                                                        (p.childDiscount ?? 0) +
+                                                        1,
+                                                }))
+                                            }
+                                            className="w-8 h-8 flex items-center justify-center rounded-lg bg-zinc-100 text-zinc-400 hover:bg-zinc-200 transition-colors"
+                                        >
+                                            <Plus className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </FilterSection>
                 </div>
@@ -202,7 +535,7 @@ export const CatalogLeftSide = () => {
                     disabled={!hasActiveFilters}
                     className="w-full mt-4 rounded-lg"
                 >
-                    Tozalash
+                    <ClientTranslate translationKey="catalogFilterClear" />
                 </Button>
             </aside>
         </div>

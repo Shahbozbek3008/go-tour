@@ -19,7 +19,7 @@
     --color-background: var(--background);
     --color-foreground: var(--foreground);
     --font-sans:
-        var(--font-public-sans), ui-sans-serif, system-ui, sans-serif,
+        var(--font-inter), ui-sans-serif, system-ui, sans-serif,
         "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
         "Noto Color Emoji";
     --color-sidebar-ring: var(--sidebar-ring);
@@ -392,6 +392,15 @@
     }
     .title-6xl {
         @apply clamp-[text,4xl,6xl] font-medium;
+    }
+
+    .no-scrollbar {
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+        display: none; /* Chrome, Safari and Opera */
     }
 
     /* ================================== // ============================================= */

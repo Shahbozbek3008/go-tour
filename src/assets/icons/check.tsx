@@ -12,7 +12,7 @@ export const IconCheck = ({ stroke = "#2962FF", ...props }: IconProps) => {
         >
             <path
                 d="M3.75 9L7.5 12.75L15 5.25"
-                stroke={stroke}
+                stroke="currentColor"
                 strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"

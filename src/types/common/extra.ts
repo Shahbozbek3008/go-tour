@@ -1,4 +1,4 @@
-export type Currency = "usd" | "uzs" | "rub"
+export type Currency = "USD" | "UZS"
 
 export type Continent =
     | "asia"

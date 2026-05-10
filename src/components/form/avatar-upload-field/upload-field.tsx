@@ -6,6 +6,7 @@ import {
     FormItem,
     FormMessage,
 } from "@/components/ui/form"
+import ClientTranslate from "@/components/common/translation/client-translate"
 import { cn } from "@/lib/utils/shadcn"
 import { ImagePlus, Trash2, UploadCloud } from "lucide-react"
 import { useRef, useState } from "react"
@@ -100,7 +101,11 @@ export function AvatarUpload<T extends FieldValues>({
                                     onClick={() => inputRef.current?.click()}
                                     className="text-[11px] font-medium text-blue-600 hover:text-blue-700 transition-colors"
                                 >
-                                    {preview ? "O'zgartirish" : "Rasm yuklash"}
+                                    <ClientTranslate
+                                        translationKey={
+                                            preview ? "change" : "uploadPhoto"
+                                        }
+                                    />
                                 </button>
                             </div>
 
@@ -143,14 +148,15 @@ export function AvatarUpload<T extends FieldValues>({
                                 <div className="text-center">
                                     <p className="text-xs text-slate-600">
                                         <span className="font-medium text-blue-600">
-                                            Yuklash uchun bosing
+                                            <ClientTranslate translationKey="clickToUpload" />
                                         </span>{" "}
-                                        yoki sudrab tashlang
+                                        <ClientTranslate translationKey="orDragAndDrop" />
                                     </p>
                                     <p className="text-[10px] text-slate-400 mt-0.5">
-                                        SVG, PNG, JPG, GIF — max. 800×400px
+                                        <ClientTranslate translationKey="allowedJpg" />
                                     </p>
                                 </div>
+
                             </div>
 
                             <input

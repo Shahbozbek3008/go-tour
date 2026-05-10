@@ -1,10 +1,26 @@
 "use client"
 
+import { useCurrency } from "@/app/_providers/currency-provider"
+import logo from "@/assets/images/logo.png"
+import { useProfileQuery } from "@/hooks/react-query/use-profile-query"
+import { useRequest } from "@/hooks/react-query/use-request"
+import { useRevalidate } from "@/hooks/react-query/use-revalidate"
+import { useLanguage } from "@/hooks/use-language"
+import { useModal } from "@/hooks/use-modal"
+import { useRouter } from "@/i18n/navigation"
+import { API } from "@/lib/constants/api-endpoints"
+import { MODAL_KEYS } from "@/lib/constants/modal-keys"
+import { getHref } from "@/lib/utils/get-href"
 import { cn } from "@/lib/utils/shadcn"
+import { useQueryClient } from "@tanstack/react-query"
 import { motion } from "framer-motion"
 import { Heart, Star } from "lucide-react"
+import { useTranslations } from "next-intl"
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { toast } from "sonner"
+import ClientTranslate from "../common/translation/client-translate"
+import { Button } from "../ui/button"
 
 interface Tour {
     id: number
@@ -23,19 +39,113 @@ interface Tour {
     badge: string
     isNew?: boolean
     discount?: number
-    hasLike?: boolean
+    isFavorite?: boolean
+    installment?: {
+        hasInstallment: boolean
+        installmentAmount: number
+    }
+    slugUz?: string
+    slugRu?: string
 }
 
-export const Card = ({
-    tour,
-    wrapperClassName,
-    hasLike = true,
-}: {
+interface CardProps {
     tour: Tour
     wrapperClassName?: string
     hasLike?: boolean
-}) => {
-    const [liked, setLiked] = useState(false)
+}
+
+export const ProductCard = ({
+    tour,
+    wrapperClassName,
+    hasLike = true,
+}: CardProps) => {
+    const router = useRouter()
+    const t = useTranslations()
+    const { currency } = useCurrency()
+    const queryClient = useQueryClient()
+    const { isRussian } = useLanguage()
+    const { isAuthenticated } = useProfileQuery()
+    const { openModal } = useModal(MODAL_KEYS.SIGN_IN_MODAL)
+    const { post, isPending, remove } = useRequest()
+    const { invalidateByExactMatch } = useRevalidate()
+
+    const [imgError, setImgError] = useState(!tour?.image)
+    const [avatarError, setAvatarError] = useState(!tour?.authorAvatar)
+
+    useEffect(() => {
+        setImgError(!tour?.image)
+        setAvatarError(!tour?.authorAvatar)
+    }, [tour?.image, tour?.authorAvatar])
+
+    const handleFavorite = (e: React.MouseEvent) => {
+        e.stopPropagation()
+        if (!isAuthenticated) {
+            openModal()
+            return
+        }
+
+        const baseUrl = API.TOUR.FAVOURITES.replace("{slug}", String(tour?.id))
+        const url = `${baseUrl}?type=FAVORITE`
+
+        const options = {
+            onSuccess: () => {
+                queryClient.setQueriesData({ queryKey: [] }, (oldData: any) => {
+                    if (!oldData) return oldData
+
+                    const updateTour = (t: any) =>
+                        t.id === tour.id ?
+                            { ...t, isFavorite: !tour.isFavorite }
+                        :   t
+
+                    if (oldData.pages) {
+                        return {
+                            ...oldData,
+                            pages: oldData.pages.map((page: any) => ({
+                                ...page,
+                                tours: page.tours?.map(updateTour),
+                                results: page.results?.map(updateTour),
+                            })),
+                        }
+                    }
+
+                    if (Array.isArray(oldData.tours)) {
+                        return {
+                            ...oldData,
+                            tours: oldData.tours.map(updateTour),
+                        }
+                    }
+                    if (Array.isArray(oldData.results)) {
+                        return {
+                            ...oldData,
+                            results: oldData.results.map(updateTour),
+                        }
+                    }
+                    if (Array.isArray(oldData)) {
+                        return oldData.map(updateTour)
+                    }
+
+                    return oldData
+                })
+                if (tour?.isFavorite) {
+                    toast.success(t("removeFavouritesTour"))
+                } else {
+                    toast.success(t("addFavouritesTour"))
+                }
+                invalidateByExactMatch([
+                    API.TOUR.TOP_SELLING,
+                    API.TOUR.PROMOTIONAL,
+                    API.TOUR.FAVOURITES_LIST,
+                    API.PROFILE.INFO.ME,
+                ])
+            },
+        }
+
+        if (tour?.isFavorite) {
+            remove(url, {}, options)
+        } else {
+            post(url, {}, options)
+        }
+    }
 
     return (
         <motion.div
@@ -45,112 +155,180 @@ export const Card = ({
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
             className={cn(
-                "group bg-white rounded-2xl overflow-hidden shadow-sm transition-shadow duration-300 flex-shrink-0 w-full",
+                "group bg-white rounded-2xl overflow-hidden shadow-sm transition-shadow duration-300 flex-shrink-0 w-full cursor-pointer",
+                "flex flex-col h-full",
                 wrapperClassName,
             )}
+            onClick={() =>
+                router.push(
+                    getHref({
+                        pathname: "/[locale]/tour/[slug]",
+                        query: {
+                            slug: isRussian ? tour?.slugRu! : tour?.slugUz!,
+                        },
+                    }),
+                )
+            }
         >
-            <div className="relative overflow-hidden h-[200px]">
-                <div className="absolute top-3 left-3 z-20 flex gap-2">
+            <div className="relative overflow-hidden h-[200px] shrink-0 z-1">
+                <div className="absolute top-3 left-3 z-10 flex gap-2">
                     <span className="bg-blue-500 text-white text-[11px] font-semibold px-2.5 py-1 rounded-full">
-                        {tour.badge}
+                        {t(tour.badge)}
                     </span>
                 </div>
 
                 {hasLike && (
-                    <button
-                        onClick={() => setLiked((p) => !p)}
-                        className="absolute top-3 right-3 z-20 w-8 h-8  bg-transparent flex items-center justify-center transition-transform duration-200 hover:scale-110 active:scale-95"
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        isLoading={isPending}
+                        onClick={handleFavorite}
+                        className="absolute cursor-pointer top-3 right-3 z-100 w-8 h-8 bg-transparent hover:bg-transparent shadow-none flex items-center justify-center transition-transform duration-200 hover:scale-110 active:scale-95 group/heart"
                     >
                         <Heart
-                            size={28}
-                            className={
-                                liked ?
-                                    "fill-red-500 stroke-red-500"
-                                :   "stroke-white"
-                            }
+                            size={24}
+                            className={cn(
+                                "stroke-white transition-all duration-200 group-hover/heart:fill-red-500 group-hover/heart:stroke-red-500",
+                                tour?.isFavorite &&
+                                    "fill-red-500 stroke-red-500",
+                            )}
                         />
-                    </button>
+                    </Button>
                 )}
+
                 <div className="absolute bottom-3 left-3 z-20 flex items-center gap-2">
-                    <div className="relative w-7 h-7 rounded-full overflow-hidden border-2 border-white shadow-sm">
-                        <Image
-                            src={tour.authorAvatar}
-                            alt={tour.author}
-                            fill
-                            className="object-cover"
-                            sizes="28px"
-                        />
+                    <div className="relative w-7 h-7 rounded-full overflow-hidden border-2 border-white shadow-sm bg-slate-100">
+                        {avatarError ?
+                            <Image
+                                src={`https://ui-avatars.com/api/?name=${tour?.author || "A"}&background=random`}
+                                alt={tour?.author}
+                                fill
+                                className="object-cover"
+                                sizes="28px"
+                            />
+                        :   <Image
+                                src={tour?.authorAvatar}
+                                alt={tour?.author}
+                                fill
+                                className="object-cover"
+                                sizes="28px"
+                                onError={() => setAvatarError(true)}
+                            />
+                        }
                     </div>
-                    <span className="text-white text-[12px] font-medium drop-shadow-sm">
-                        {tour.author}
+                    <span className="text-white text-xs font-medium drop-shadow-sm">
+                        {tour?.author}
                     </span>
                 </div>
 
-                {tour.discount && (
+                {tour?.discount && (
                     <div className="absolute bottom-3 right-3 z-20 bg-red-500 text-white text-[11px] font-bold px-2 py-1 rounded-full">
-                        -{tour.discount}%
+                        -{tour?.discount}%
                     </div>
                 )}
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-10" />
 
-                <div className="relative w-full h-full transition-transform duration-500 ease-out group-hover:scale-105">
-                    <Image
-                        src={tour.image}
-                        alt={tour.title}
-                        fill
-                        className="object-cover"
-                        sizes="320px"
-                    />
+                <div className="relative w-full h-full transition-transform duration-500 ease-out group-hover:scale-105 bg-slate-50">
+                    {imgError ?
+                        <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-slate-100">
+                            <Image
+                                src={logo}
+                                alt="Gotour"
+                                className="w-20 opacity-15 grayscale mb-2"
+                                priority
+                            />
+                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">
+                                <ClientTranslate translationKey="imageNotFound" />
+                            </span>
+                        </div>
+                    :   <Image
+                            src={tour?.image}
+                            alt={tour?.title}
+                            fill
+                            className="object-cover"
+                            sizes="320px"
+                            onError={() => setImgError(true)}
+                        />
+                    }
                 </div>
             </div>
-
-            <div className="p-4">
-                <div className="flex items-center gap-1.5 mb-2">
+            <div className="p-4 flex flex-col flex-1">
+                <div className="flex items-center gap-1.5 mb-2 flex-wrap">
                     <Star
                         size={13}
-                        className="fill-amber-400 stroke-amber-400"
+                        className="fill-amber-400 stroke-amber-400 shrink-0"
                     />
-                    <span className="text-[12px] font-semibold text-slate-700">
-                        {tour.rating.toFixed(1)}
-                    </span>
+                    {tour?.rating === 0 || tour?.rating === null ?
+                        <>
+                            <span className="text-[12px] font-semibold text-amber-400">
+                                <ClientTranslate translationKey="new" />
+                            </span>
+                            <span className="text-slate-300 mx-1">·</span>
+                        </>
+                    :   <>
+                            <span className="text-[12px] font-semibold text-slate-700">
+                                {tour?.rating === null ?
+                                    "-"
+                                :   tour?.rating?.toFixed(1)}
+                            </span>
+                            <span className="text-[12px] text-slate-400">
+                                ({tour?.reviews === null ? "-" : tour?.reviews}{" "}
+                                <ClientTranslate translationKey="reviewCount" />
+                                )
+                            </span>
+                            <span className="text-slate-300 mx-1">·</span>
+                        </>
+                    }
                     <span className="text-[12px] text-slate-400">
-                        ({tour.reviews} ta sharh)
-                    </span>
-                    <span className="text-slate-300 mx-1">·</span>
-                    <span className="text-[12px] text-slate-400">
-                        {tour.location}
+                        {tour?.location}
                     </span>
                 </div>
-
                 <h3 className="text-[15px] font-bold text-slate-800 leading-snug mb-1 line-clamp-2">
-                    {tour.title}
+                    {tour?.title}
                 </h3>
-
-                <p className="text-[12px] text-slate-400 mb-3 line-clamp-2">
-                    {tour.subtitle}
+                <p className="text-[12px] text-slate-400 mb-3 line-clamp-2 flex-1">
+                    {tour?.subtitle}
                 </p>
-
-                <div className="flex items-end justify-between">
-                    <div>
-                        <div className="flex items-baseline gap-1.5">
-                            <span className="text-[18px] font-bold text-slate-800">
-                                ${tour.price.toLocaleString()}
+                <div className="flex flex-col gap-2 mt-auto border-t border-slate-100 pt-3">
+                    <div className="flex items-baseline gap-1.5 flex-wrap min-w-0">
+                        <span className="text-[17px] font-bold text-slate-800 break-all min-w-0 leading-tight">
+                            {tour?.price?.toLocaleString()}
+                            {currency === "USD" ?
+                                " $"
+                            :   <ClientTranslate translationKey="sum" />}
+                        </span>
+                        {tour?.originalPrice &&
+                            tour?.originalPrice !== tour?.price && (
+                                <span className="text-[13px] text-slate-400 line-through shrink-0">
+                                    {tour?.originalPrice?.toLocaleString()}
+                                    {currency === "USD" ?
+                                        " $"
+                                    :   <ClientTranslate translationKey="sum" />
+                                    }
+                                </span>
+                            )}
+                    </div>
+                    <div className="flex items-center justify-between gap-2 flex-wrap">
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                            <span className="text-[11px] text-slate-400 shrink-0">
+                                {tour?.days}{" "}
+                                <ClientTranslate translationKey="day" />
                             </span>
-                            {tour.originalPrice &&
-                                tour.originalPrice !== tour.price && (
-                                    <span className="text-[13px] text-slate-400 line-through">
-                                        ${tour.originalPrice.toLocaleString()}
-                                    </span>
-                                )}
+                            {tour?.installment?.hasInstallment && (
+                                <span className="text-[10px] font-semibold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-200 truncate max-w-[140px]">
+                                    {tour?.installment?.installmentAmount?.toLocaleString()}
+                                    {currency === "USD" ?
+                                        <ClientTranslate translationKey="monthInstallment" />
+                                    :   <ClientTranslate translationKey="sumMonth" />
+                                    }
+                                </span>
+                            )}
                         </div>
-                        <span className="text-[11px] text-slate-400">
-                            {tour.days} kun
+                        <span className="text-xs text-slate-500 bg-slate-50 px-2.5 py-1 rounded-full border border-slate-100 shrink-0 whitespace-nowrap">
+                            {tour?.dates}
                         </span>
                     </div>
-                    <span className="text-[12px] text-slate-500 bg-slate-50 px-2.5 py-1 rounded-full border border-slate-100">
-                        {tour.dates}
-                    </span>
                 </div>
             </div>
         </motion.div>

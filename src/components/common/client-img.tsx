@@ -1,5 +1,4 @@
 "use client"
-import placeholder from "@/assets/images/placeholder.jpg"
 import { cn } from "@/lib/utils/shadcn"
 import { StaticImport } from "next/dist/shared/lib/get-img-props"
 import Image, { ImageProps } from "next/image"
@@ -32,7 +31,9 @@ function ClientImgComponentBase({
     fallbackUrl,
     ...props
 }: Omit<ImageProps, "src"> & CustomProps) {
-    const DEFAULT_PLACEHOLDER = fallbackUrl || placeholder
+    const DEFAULT_PLACEHOLDER =
+        fallbackUrl ||
+        "https://images.unsplash.com/photo-1775926235479-7e5663a1da9b?q=80&w=2128&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     const [image, setImage] = useState<string | StaticImport>(
         src || DEFAULT_PLACEHOLDER,
     )

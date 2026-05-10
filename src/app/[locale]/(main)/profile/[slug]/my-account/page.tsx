@@ -4,11 +4,5 @@ import { MyAccountForm } from "./_components"
 
 export default function MyAccount({ params }: PropsWithLocaleSlug) {
     setLocale(params)
-    return (
-        // <PrefetchProvider endpoint={API.PROFILE.INFO.DISPLAY_PERMISSION}>
-        //     <PrefetchProvider endpoint={API.PROFILE.BUSINESS}>
-        <MyAccountForm />
-        // </PrefetchProvider>
-        // </PrefetchProvider>
-    )
+    return <MyAccountForm />
 }

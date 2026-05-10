@@ -1,30 +1,34 @@
-// components/sections/TourSection.tsx
 "use client"
 
-import { Card } from "@/components/card"
+import { ProductCard } from "@/components/card"
 import ClientTranslate from "@/components/common/translation/client-translate"
-import { Button } from "@/components/ui/button"
+import { useTourSearch } from "@/hooks/react-query/use-tour-search-query"
 import { useRouter } from "@/i18n/navigation"
-import { TOURS } from "@/lib/constants/tours"
+import { adaptTours } from "@/lib/adapters/tour.adapter"
 import { getHref } from "@/lib/utils/get-href"
+import { keepPreviousData } from "@tanstack/react-query"
 import useEmblaCarousel from "embla-carousel-react"
 import { AnimatePresence, motion } from "framer-motion"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import { useCallback, useState } from "react"
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react"
+import { useCallback, useMemo, useState } from "react"
+import {
+    useTourDiscountsQuery,
+    useTourRecommendedQuery,
+    useTourTopSellingQuery,
+} from "./_hooks"
 
 type Tab = {
     id: string
     label: string
-    highlight?: boolean
 }
 
-const tabs: Tab[] = [
-    { id: "all", label: "Barchasi" },
-    { id: "bestseller", label: "Eng ko'p sotiladigan" },
-    { id: "discount", label: "Chegirmali turlar" },
-    { id: "best", label: "Eng yaxshi turlar" },
-    { id: "new", label: "Yangi turlar" },
-    { id: "special", label: "Maxsus takliflar" },
+const TABS: Tab[] = [
+    { id: "all", label: "all2" },
+    { id: "bestseller", label: "bestseller" },
+    { id: "discount", label: "discount" },
+    { id: "best", label: "best" },
+    { id: "new", label: "newTours" },
+    { id: "special", label: "specialOffers" },
 ]
 
 export const TourSection = () => {
@@ -35,18 +39,50 @@ export const TourSection = () => {
         dragFree: true,
         containScroll: "trimSnaps",
     })
+    const { tours: rawTours } = useTourSearch({
+        data: {
+            sortBy:
+                activeTab === "new" ? "NEWEST"
+                : activeTab === "best" ? "RATING_DESC"
+                : undefined,
+        },
+        options: {
+            placeholderData: keepPreviousData,
+        },
+    })
+    const { topSellingTours } = useTourTopSellingQuery({
+        options: {
+            enabled: activeTab === "bestseller",
+            placeholderData: keepPreviousData,
+        },
+    })
+    const { recommendedTours } = useTourRecommendedQuery()
+    const { discountTours } = useTourDiscountsQuery({
+        options: {
+            enabled: activeTab === "discount",
+            placeholderData: keepPreviousData,
+        },
+    })
 
     const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi])
     const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi])
 
-    const filtered =
-        activeTab === "all" ? TOURS : (
-            TOURS.filter((t) => t.category === activeTab)
-        )
+    const tours = useMemo(() => {
+        if (activeTab === "bestseller") {
+            return adaptTours(topSellingTours ?? [])
+        }
+        if (activeTab === "special") {
+            return adaptTours(recommendedTours ?? [])
+        }
+        if (activeTab === "discount") {
+            return adaptTours(discountTours ?? [])
+        }
+        return adaptTours(rawTours ?? [])
+    }, [rawTours, topSellingTours, recommendedTours, discountTours, activeTab])
 
     return (
         <section className="w-full bg-[#F8FAFC] py-16 md:py-24 overflow-hidden">
-            <div className="w-full mx-auto px-4 sm:px-6 lg:px-15">
+            <div className="w-full home-container">
                 <div className="flex flex-col items-center justify-center mb-10">
                     <motion.h2
                         initial={{ opacity: 0, y: -8 }}
@@ -54,11 +90,11 @@ export const TourSection = () => {
                         transition={{ duration: 0.5 }}
                         className="text-3xl md:text-[40px] font-bold text-center text-slate-900 mb-8 tracking-tight"
                     >
-                        Toping mukammal sarguzashtni
+                        <ClientTranslate translationKey="findThePerfectAdventure" />
                     </motion.h2>
 
                     <div className="flex items-center justify-start md:justify-center gap-1 p-1.5 bg-slate-200/50 rounded-full overflow-x-auto whitespace-nowrap w-full md:w-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                        {tabs.map((tab) => (
+                        {TABS.map((tab) => (
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
@@ -68,7 +104,7 @@ export const TourSection = () => {
                                     :   "text-slate-500 hover:text-slate-800 hover:bg-slate-200/50"
                                 }`}
                             >
-                                {tab.label}
+                                <ClientTranslate translationKey={tab?.label} /> 
                             </button>
                         ))}
                     </div>
@@ -80,10 +116,10 @@ export const TourSection = () => {
                 >
                     <AnimatePresence mode="popLayout">
                         <motion.div className="flex gap-4 pl-0.5 pb-2">
-                            {filtered.map((tour) => (
-                                <Card
-                                    key={`${activeTab}-${tour.id}`}
+                            {tours?.map((tour) => (
+                                <ProductCard
                                     tour={tour}
+                                    key={`${activeTab}-${tour.id}`}
                                     wrapperClassName="w-full md:w-[320px]"
                                 />
                             ))}
@@ -109,9 +145,7 @@ export const TourSection = () => {
                             />
                         </button>
                     </div>
-
-                    <Button
-                        variant="ghost"
+                    <button
                         onClick={() =>
                             router.push(
                                 getHref({
@@ -119,11 +153,14 @@ export const TourSection = () => {
                                 }),
                             )
                         }
-                        className="px-6 py-2.5 rounded-full font-semibold hover:bg-transparent hover:text-black active:scale-95 flex items-center gap-2"
+                        className="flex items-center cursor-pointer gap-1.5 text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors duration-200 group"
                     >
-                        <ClientTranslate translationKey="allView" />
-                        <ChevronRight size={16} />
-                    </Button>
+                        <ClientTranslate translationKey="exploreAll" />
+                        <ArrowRight
+                            size={15}
+                            className="transition-transform duration-200 group-hover:translate-x-0.5"
+                        />
+                    </button>
                 </div>
             </div>
         </section>
