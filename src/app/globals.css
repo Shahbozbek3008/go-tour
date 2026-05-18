@@ -324,6 +324,17 @@
     --info-foreground: oklch(0.379 0.146 265.522);
 }
 
+@media (max-width: 640px) {
+    [data-tour-session-item] .select-item-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        min-width: unset !important;
+        width: 100%;
+        padding-right: 0;
+    }
+}
+
 @layer base {
     * {
         @apply border-border outline-ring/50;

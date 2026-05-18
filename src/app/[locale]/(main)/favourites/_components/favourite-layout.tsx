@@ -44,7 +44,12 @@ export const FavouriteLayout = () => {
                     <h2 className="text-2xl font-semibold">
                         <ClientTranslate translationKey="favourites" />
                     </h2>
-                    <SortDropdown />
+                    <div className="hidden lg:block">
+                        <SortDropdown />
+                    </div>
+                    <div className="lg:hidden block">
+                        <SortDropdown iconOnly />
+                    </div>
                 </div>
             )}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">

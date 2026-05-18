@@ -10,10 +10,9 @@ export function setupClientFetchInterceptors({
     queryClient: QueryClient
     locale: Locale
 }) {
-    const accessToken = ClientTokenService.getAccessToken()
-
     // Request interceptor
     fetchInstance.addRequestInterceptor((config) => {
+        const accessToken = ClientTokenService.getAccessToken()
         // Add language header from cookie
 
         return {

@@ -4,11 +4,11 @@ import { usePathname, useRouter } from "@/i18n/navigation"
 import { getHref } from "@/lib/utils/get-href"
 import { cn } from "@/lib/utils/shadcn"
 import { AnimatePresence, motion } from "framer-motion"
-import { Check, ChevronDown } from "lucide-react"
+import { Check, ChevronDown, SlidersHorizontal } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { useSearchParams } from "next/navigation"
 import React from "react"
 import ClientTranslate from "./translation/client-translate"
-import { useTranslations } from "next-intl"
 
 export type SortKey =
     | "POPULARITY"
@@ -36,9 +36,15 @@ const SORT_OPTIONS: SortOption[] = [
 
 const VALID_SORT_KEYS = new Set(SORT_OPTIONS.map((o) => o.key))
 
-const DEFAULT_LABEL = "sort_label"
+interface SortDropdownProps {
+    /**
+     * iconOnly=true — faqat icon ko'rsatadi (mobil uchun).
+     * Active sort tanlangan bo'lsa ustida kichik ko'k nuqta chiqadi.
+     */
+    iconOnly?: boolean
+}
 
-export const SortDropdown = () => {
+export const SortDropdown = ({ iconOnly = false }: SortDropdownProps) => {
     const t = useTranslations()
     const router = useRouter()
     const pathname = usePathname()
@@ -61,7 +67,6 @@ export const SortDropdown = () => {
             }
         }
         document.addEventListener("mousedown", handleClick)
-
         return () => document.removeEventListener("mousedown", handleClick)
     }, [])
 
@@ -99,38 +104,55 @@ export const SortDropdown = () => {
         <div ref={ref} className="relative">
             <button
                 onClick={() => setOpen((p) => !p)}
+                aria-label={t("sort_label")}
                 className={cn(
-                    "flex items-center gap-2 px-3.5 py-2 rounded-xl",
-                    "text-[13px] font-medium",
-                    "border transition-all duration-150 focus-visible:outline-none",
+                    "relative flex items-center transition-all duration-150",
+                    "border focus-visible:outline-none",
                     "shadow-[0_1px_3px_rgba(0,0,0,0.06)]",
-                    current ?
-                        "bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100 hover:border-blue-300"
-                    :   "bg-white border-zinc-200/80 text-zinc-700 hover:border-zinc-300 hover:bg-zinc-50",
+                    // Icon-only rejimi: kichik kvadrat tugma
+                    iconOnly ?
+                        cn(
+                            "justify-center rounded-xl p-2",
+                            current ?
+                                "bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100"
+                            :   "bg-white border-zinc-200/80 text-zinc-500 hover:bg-zinc-50 hover:border-zinc-300",
+                        )
+                    :   cn(
+                            "gap-2 px-3.5 py-2 rounded-xl text-[13px] font-medium",
+                            current ?
+                                "bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100 hover:border-blue-300"
+                            :   "bg-white border-zinc-200/80 text-zinc-700 hover:border-zinc-300 hover:bg-zinc-50",
+                        ),
                 )}
             >
-                <span
-                    className={cn(
-                        "text-[12px] font-normal",
-                        current ? "text-blue-400" : "text-zinc-400",
-                    )}
-                >
-                    <ClientTranslate translationKey={DEFAULT_LABEL} />:
-                </span>
+                {iconOnly ?
+                    <>
+                        <SlidersHorizontal className="h-4 w-4" />
 
-                <span className="text-primary">
-                    {current ?
-                        <ClientTranslate translationKey={current.label} />
-                    :   null}
-                </span>
-
-                <ChevronDown
-                    className={cn(
-                        "h-3.5 w-3.5 transition-transform duration-200",
-                        current ? "text-blue-400" : "text-zinc-400",
-                        open && "rotate-180",
-                    )}
-                />
+                        {current && (
+                            <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-blue-500 ring-2 ring-white" />
+                        )}
+                    </>
+                :   <>
+                        <span className="text-primary">
+                            {current ?
+                                <ClientTranslate
+                                    translationKey={current.label}
+                                />
+                            :   <span className="text-zinc-400">
+                                    {t("sort_label")}
+                                </span>
+                            }
+                        </span>
+                        <ChevronDown
+                            className={cn(
+                                "h-3.5 w-3.5 transition-transform duration-200",
+                                current ? "text-blue-400" : "text-zinc-400",
+                                open && "rotate-180",
+                            )}
+                        />
+                    </>
+                }
             </button>
 
             <AnimatePresence>
@@ -161,7 +183,7 @@ export const SortDropdown = () => {
                                     :   "text-zinc-500 hover:bg-zinc-50 hover:text-zinc-800",
                                 )}
                             >
-                                    <ClientTranslate translationKey={opt.label} />
+                                <ClientTranslate translationKey={opt.label} />
                                 {opt.key === value && (
                                     <Check className="h-3.5 w-3.5 text-zinc-900" />
                                 )}

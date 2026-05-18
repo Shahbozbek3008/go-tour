@@ -2,6 +2,8 @@
 
 import ClientTranslate from "@/components/common/translation/client-translate"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "@/i18n/navigation"
+import { getHref } from "@/lib/utils/get-href"
 import { motion } from "framer-motion"
 import { RotateCcw, SearchX } from "lucide-react"
 import { useTranslations } from "next-intl"
@@ -9,6 +11,7 @@ import { useFilter } from "../../_hooks"
 
 export const EmptyState = () => {
     const t = useTranslations()
+    const router = useRouter()
     const { resetFilters } = useFilter()
 
     return (
@@ -42,7 +45,14 @@ export const EmptyState = () => {
             <Button
                 size="lg"
                 variant="outline"
-                onClick={resetFilters}
+                onClick={() => {
+                    resetFilters()
+                    router.replace(
+                        getHref({
+                            pathname: "/[locale]/catalog",
+                        }),
+                    )
+                }}
                 className="group flex items-center gap-2 px-8 py-6 rounded-2xl border-blue-100 hover:border-blue-200 hover:bg-blue-50/30 text-blue-600 font-bold transition-all duration-300 active:scale-95"
             >
                 <RotateCcw className="w-4 h-4 transition-transform group-hover:rotate-[-45deg] duration-300" />

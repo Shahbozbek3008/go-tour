@@ -16,10 +16,14 @@ export const useFilter = () => {
         setMaxInput,
     } = useFilterContext()
     const { currency } = useCurrency()
-    const { min: PRICE_MIN, max: PRICE_MAX } = getPriceLimit(currency)
+    const {
+        min: PRICE_MIN,
+        max: PRICE_MAX,
+        step: PRICE_STEP,
+    } = getPriceLimit(currency)
 
     const hasActiveFilters =
-        // filters.category !== "all" ||
+        filters.category !== "all" ||
         filters.priceRange[0] !== PRICE_MIN ||
         filters.priceRange[1] !== PRICE_MAX ||
         filters.duration !== "all" ||
@@ -27,7 +31,9 @@ export const useFilter = () => {
         filters.promotional ||
         filters.guaranteed ||
         filters.visaRequired ||
-        filters.childDiscount !== null ||
+        filters.hasReviews ||
+        filters.childrenCount !== null ||
+        filters.childAge !== null ||
         filters.tags.length > 0 ||
         filters.languages.length > 0 ||
         filters.destinations.length > 0
@@ -39,11 +45,42 @@ export const useFilter = () => {
         setMaxInput(String(max))
     }
 
+    const handleMaxInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const raw = e.target.value
+        const num = Number(raw)
+        if (!isNaN(num) && num > PRICE_MAX) {
+            setMaxInput(String(PRICE_MAX))
+            setFilters((prev) => ({
+                ...prev,
+                priceRange: [prev.priceRange[0], PRICE_MAX],
+            }))
+            return
+        }
+        setMaxInput(raw)
+        if (!isNaN(num) && num <= PRICE_MAX && num >= filters.priceRange[0]) {
+            setFilters((prev) => ({
+                ...prev,
+                priceRange: [prev.priceRange[0], num],
+            }))
+        }
+    }
+
     const handleMinInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const raw = e.target.value
-        setMinInput(raw)
         const num = Number(raw)
-        if (!isNaN(num) && num >= PRICE_MIN && num <= filters.priceRange[1]) {
+        if (!isNaN(num) && num >= filters.priceRange[1]) {
+            setMinInput(String(filters.priceRange[1] - PRICE_STEP))
+            setFilters((prev) => ({
+                ...prev,
+                priceRange: [
+                    filters.priceRange[1] - PRICE_STEP,
+                    prev.priceRange[1],
+                ],
+            }))
+            return
+        }
+        setMinInput(raw)
+        if (!isNaN(num) && num >= PRICE_MIN && num < filters.priceRange[1]) {
             setFilters((prev) => ({
                 ...prev,
                 priceRange: [num, prev.priceRange[1]],
@@ -51,15 +88,29 @@ export const useFilter = () => {
         }
     }
 
-    const handleMaxInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const raw = e.target.value
-        setMaxInput(raw)
-        const num = Number(raw)
-        if (!isNaN(num) && num <= PRICE_MAX && num >= filters.priceRange[0]) {
+    const handleMaxInputBlur = () => {
+        const num = Number(maxInput)
+        if (isNaN(num) || num > PRICE_MAX) {
+            setMaxInput(String(PRICE_MAX))
             setFilters((prev) => ({
                 ...prev,
-                priceRange: [prev.priceRange[0], num],
+                priceRange: [prev.priceRange[0], PRICE_MAX],
             }))
+        } else if (num < filters.priceRange[0]) {
+            setMaxInput(String(filters.priceRange[0]))
+        }
+    }
+
+    const handleMinInputBlur = () => {
+        const num = Number(minInput)
+        if (isNaN(num) || num < PRICE_MIN) {
+            setMinInput(String(PRICE_MIN))
+            setFilters((prev) => ({
+                ...prev,
+                priceRange: [PRICE_MIN, prev.priceRange[1]],
+            }))
+        } else if (num > filters.priceRange[1]) {
+            setMinInput(String(filters.priceRange[1]))
         }
     }
 
@@ -94,7 +145,7 @@ export const useFilter = () => {
     }
 
     const resetFilters = () => {
-        setFilters((prev) => ({
+        setFilters(() => ({
             ...DEFAULT_FILTERS,
             priceRange: [PRICE_MIN, PRICE_MAX],
         }))
@@ -113,7 +164,8 @@ export const useFilter = () => {
             filters.guaranteed,
             filters.visaRequired,
             filters.hasReviews,
-            filters.childDiscount !== null,
+            filters.childrenCount !== null,
+            filters.childAge !== null,
         ].filter(Boolean).length +
         filters.tags.length +
         filters.languages.length +
@@ -135,10 +187,18 @@ export const useFilter = () => {
             badges.push({ key: "visaRequired", label: "Vizasiz" })
         if (filters.hasReviews)
             badges.push({ key: "hasReviews", label: "Otziv bor" })
-        if (filters.childDiscount !== null)
+        if (filters.childrenCount !== null)
             badges.push({
-                key: "childDiscount",
-                label: `Bolalar chegirmasi: ${filters.childDiscount}`,
+                key: "childrenCount",
+                label: `Bolalar soni: ${filters.childrenCount}`,
+            })
+        if (filters.childAge !== null)
+            badges.push({
+                key: "childAge",
+                label:
+                    filters.childAge === 0 ?
+                        "1 yoshdan kichik"
+                    :   `${filters.childAge} yosh`,
             })
         filters.tags.forEach((tag) =>
             badges.push({ key: `tag-${tag}`, label: tag }),
@@ -146,9 +206,6 @@ export const useFilter = () => {
         filters.languages.forEach((lang) =>
             badges.push({ key: `lang-${lang}`, label: lang }),
         )
-        // filters.destinations.forEach((destId) =>
-        //     badges.push({ key: `dest-${destId}`, label: `Dest: ${destId}` }),
-        // )
         return badges
     }, [filters])
 
@@ -160,7 +217,9 @@ export const useFilter = () => {
             if (key === "promotional") return { ...prev, promotional: false }
             if (key === "guaranteed") return { ...prev, guaranteed: false }
             if (key === "visaRequired") return { ...prev, visaRequired: false }
-            if (key === "childDiscount") return { ...prev, childDiscount: null }
+            if (key === "hasReviews") return { ...prev, hasReviews: false }
+            if (key === "childrenCount") return { ...prev, childrenCount: null }
+            if (key === "childAge") return { ...prev, childAge: null }
             if (key.startsWith("tag-"))
                 return {
                     ...prev,
@@ -202,5 +261,7 @@ export const useFilter = () => {
         removeFilterBadge,
         toggleLanguage,
         toggleDestination,
+        handleMaxInputBlur,
+        handleMinInputBlur,
     }
 }

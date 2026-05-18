@@ -10,10 +10,10 @@ import {
     useController,
     UseFormReturn,
 } from "react-hook-form"
+import ClientTranslate from "../common/translation/client-translate"
 import ErrorMessage from "../ui/error-message"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
-import ClientTranslate from "../common/translation/client-translate"
 
 interface IProps<IForm extends FieldValues> {
     methods: UseFormReturn<IForm>
@@ -25,6 +25,7 @@ interface IProps<IForm extends FieldValues> {
     labelClassName?: string
     onValueChange?: (e: ChangeEvent<HTMLInputElement>) => void
     placeholder?: string
+    sanitize?: boolean
 }
 
 export default function ControlledInput<IForm extends FieldValues>({
@@ -38,6 +39,7 @@ export default function ControlledInput<IForm extends FieldValues>({
     onValueChange,
     labelClassName,
     placeholder,
+    sanitize = false,
     ...props
 }: IProps<IForm> & React.InputHTMLAttributes<HTMLInputElement>) {
     const t = useTranslations()
@@ -52,6 +54,11 @@ export default function ControlledInput<IForm extends FieldValues>({
         },
         defaultValue: "" as PathValue<IForm, Path<IForm>>,
     })
+
+    const sanitizeValue = (value: string) => {
+        if (!sanitize) return value
+        return value.replace(/['";\-\-<>{}()`\\\/\*=]/g, "")
+    }
 
     return (
         <fieldset
@@ -72,12 +79,9 @@ export default function ControlledInput<IForm extends FieldValues>({
             <Input
                 className={cn("", className)}
                 autoComplete="off"
-                placeholder={
-                    placeholder ?
-                        t(placeholder)
-                    :   undefined
-                }
+                placeholder={placeholder ? t(placeholder) : undefined}
                 onChange={(e) => {
+                    e.target.value = sanitizeValue(e.target.value)
                     onChange(e)
                     onValueChange?.(e)
                 }}

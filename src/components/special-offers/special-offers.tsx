@@ -4,6 +4,7 @@ import { useTourRecommendedQuery } from "@/app/[locale]/(main)/_components/tours
 import { useRouter } from "@/i18n/navigation"
 import { adaptTours } from "@/lib/adapters/tour.adapter"
 import { getHref } from "@/lib/utils/get-href"
+import { keepPreviousData } from "@tanstack/react-query"
 import useEmblaCarousel from "embla-carousel-react"
 import { AnimatePresence, motion } from "framer-motion"
 import { ArrowRight } from "lucide-react"
@@ -21,7 +22,11 @@ export const SpecialOffers = ({
     hasLike,
 }: SpecialOffersProps) => {
     const router = useRouter()
-    const { recommendedTours } = useTourRecommendedQuery()
+    const { recommendedTours } = useTourRecommendedQuery({
+        options: {
+            placeholderData: keepPreviousData,
+        },
+    })
     const [emblaRef] = useEmblaCarousel({
         align: "start",
         dragFree: true,

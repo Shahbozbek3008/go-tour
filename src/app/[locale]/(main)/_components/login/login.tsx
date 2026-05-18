@@ -19,6 +19,8 @@ import { getHref } from "@/lib/utils/get-href"
 import { X } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { SubmitHandler, useFormContext } from "react-hook-form"
+import { toast } from "sonner"
+import { useKeyboardAware } from "./_hooks/use-keyboard-aware"
 
 interface FormValues {
     phoneNumber: string
@@ -31,12 +33,17 @@ export const Login = () => {
     const { openModal } = useModal(MODAL_KEYS.VERIFY_PHONE_MODAL)
     const { post, isPending } = useRequest()
     const isDesktopOrTablet = useMediaQuery("(min-width: 768px)")
+    const keyboardHeight = useKeyboardAware()
 
-    const onSubmit: SubmitHandler<FormValues> = (credentails) => {
-        post(API.AUTH.SMS_ASK, credentails, {
-            onSuccess: () => {
-                openModal()
-                closeModal()
+    const onSubmit: SubmitHandler<FormValues> = (credentials) => {
+        post(API.AUTH.SMS_ASK, credentials, {
+            onSuccess: (res) => {
+                if (res?.status === 0) {
+                    openModal()
+                    closeModal()
+                } else {
+                    toast.error(res?.message)
+                }
             },
         })
     }
@@ -101,8 +108,14 @@ export const Login = () => {
 
     return (
         <Drawer open={isOpen} onOpenChange={(open) => !open && closeModal()}>
-            <DrawerContent className="max-h-[88vh] rounded-t-2xl">
-                <DrawerHeader className="border-b border-zinc-100 pb-3">
+            <DrawerContent
+                className="max-h-[88vh] rounded-t-2xl flex flex-col"
+                style={{
+                    paddingBottom: keyboardHeight,
+                    transition: "padding-bottom 200ms ease",
+                }}
+            >
+                <DrawerHeader className="border-b border-zinc-100 pb-3 shrink-0">
                     <div className="flex items-center justify-between gap-2">
                         <DrawerTitle className="text-[17px] font-semibold">
                             {t("signInSystem")}
@@ -117,7 +130,7 @@ export const Login = () => {
                         </button>
                     </div>
                 </DrawerHeader>
-                <div className="px-1 pb-2">{content}</div>
+                <div className="px-1 pb-2 overflow-y-auto">{content}</div>
             </DrawerContent>
         </Drawer>
     )

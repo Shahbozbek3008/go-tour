@@ -90,6 +90,8 @@ export type FilterState = {
     destinations: number[]
     visaRequired: boolean
     childDiscount: number | null
+    childrenCount: number | null // ilgari: childDiscount
+    childAge: number | null
 }
 
 export const DEFAULT_FILTERS: FilterState = {
@@ -105,4 +107,6 @@ export const DEFAULT_FILTERS: FilterState = {
     destinations: [],
     visaRequired: false,
     childDiscount: null,
+    childrenCount: null,
+    childAge: null,
 }

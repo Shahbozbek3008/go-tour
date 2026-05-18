@@ -10,6 +10,7 @@ import { CatalogRightSide } from "./right-side"
 
 export const CatalogLayout = () => {
     const [sheetOpen, setSheetOpen] = useState(false)
+    const [totalTours, setTotalTours] = useState(0)
 
     return (
         <FilterProvider>
@@ -21,7 +22,10 @@ export const CatalogLayout = () => {
                 <div className="home-container flex items-start gap-8 lg:py-16 py-6">
                     <CatalogLeftSide />
                     <div className="flex-1 min-w-0 w-full">
-                        <CatalogRightSide setSheetOpen={setSheetOpen} />
+                        <CatalogRightSide
+                            setSheetOpen={setSheetOpen}
+                            setTotalTours={setTotalTours}
+                        />
                     </div>
                 </div>
 
@@ -32,6 +36,7 @@ export const CatalogLayout = () => {
                     <FilterBottomSheet
                         open={sheetOpen}
                         onOpenChange={setSheetOpen}
+                        totalTours={totalTours}
                     />
                 </div>
             </div>

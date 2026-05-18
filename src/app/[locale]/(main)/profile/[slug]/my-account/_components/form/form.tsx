@@ -10,6 +10,10 @@ import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { useModal } from "@/hooks/use-modal"
 import { MODAL_KEYS } from "@/lib/constants/modal-keys"
+import { ClientTokenService } from "@/lib/cookies/client-token-service"
+import { getHref } from "@/lib/utils/get-href"
+import { useQueryClient } from "@tanstack/react-query"
+import { LogOut } from "lucide-react"
 import { GENDER_OPTIONS } from "../../_constants"
 import { useUpdateProfile } from "../../_hooks"
 import { SectionCard } from "../section-card"
@@ -17,8 +21,16 @@ import { TelegramConnect } from "../telegram-connect"
 import { FieldRow } from "./field-row"
 
 export function MyAccountForm() {
+    const queryClient = useQueryClient()
     const { methods, onSubmit, isPending } = useUpdateProfile()
     const { isOpen, openModal } = useModal(MODAL_KEYS.TELEGRAM_CONNECT)
+
+    const handleLogout = () => {
+        ClientTokenService.removeAccessToken()
+        ClientTokenService.removeRefreshToken()
+        queryClient.clear()
+        window.location.href = getHref({ pathname: "/[locale]" })
+    }
 
     return (
         <div className="">
@@ -52,7 +64,7 @@ export function MyAccountForm() {
                                     methods={methods}
                                     name="email"
                                     type="email"
-                                    optional
+                                    showError
                                     placeholder="emailPlaceholder"
                                     className="h-10 text-sm rounded-lg placeholder:text-sm"
                                 />
@@ -84,7 +96,6 @@ export function MyAccountForm() {
                                     withoutDescription
                                 />
                             </FieldRow>
-
 
                             <FieldRow label="phoneNumber">
                                 <PhoneField
@@ -120,7 +131,7 @@ export function MyAccountForm() {
                             size="lg"
                             type="button"
                             variant="outline"
-                            className="rounded-lg w-full sm:w-auto"
+                            className="rounded-lg w-full sm:w-auto text-sm"
                             onClick={() => methods.reset()}
                         >
                             <ClientTranslate translationKey="cancel" />
@@ -130,9 +141,21 @@ export function MyAccountForm() {
                             type="submit"
                             variant="default"
                             isLoading={isPending}
-                            className="rounded-lg w-full sm:w-auto"
+                            className="rounded-lg w-full text-sm sm:w-auto"
                         >
                             <ClientTranslate translationKey="save" />
+                        </Button>
+                    </div>
+                    <div className="sm:hidden pt-1 flex justify-end">
+                        <Button
+                            size="lg"
+                            type="button"
+                            variant="ghost"
+                            onClick={handleLogout}
+                            className="rounded-lg w-full sm:w-auto text-sm text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors duration-200 flex items-center justify-center gap-2"
+                        >
+                            <LogOut className="w-4 h-4" />
+                            <ClientTranslate translationKey="logoutAccount" />
                         </Button>
                     </div>
                 </form>

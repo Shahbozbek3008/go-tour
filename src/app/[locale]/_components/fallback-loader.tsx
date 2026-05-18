@@ -148,18 +148,6 @@ export default function FallbackLoader({ className, locale = "uz" }: Props) {
                 />
             </svg>
 
-            <div
-                className="absolute"
-                style={{
-                    background:
-                        "linear-gradient(90deg, transparent, rgba(180,210,255,0.15), rgba(255,190,100,0.25), rgba(180,210,255,0.15), transparent)",
-                    height: 1,
-                    bottom: "38%",
-                    left: 0,
-                    right: 0,
-                }}
-            />
-
             <div className="fl-plane absolute" style={{ zIndex: 5 }}>
                 <div
                     className="fl-trail absolute top-1/2 -translate-y-1/2"

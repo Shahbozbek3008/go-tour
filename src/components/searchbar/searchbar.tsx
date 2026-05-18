@@ -185,6 +185,7 @@ export function SearchBar({
                     value={effectiveLocValue ?? null}
                     onSelect={handleLocationSelect}
                     onQueryChange={handleQueryChange}
+                    onEnter={handleSearch}
                     autoOpen={autoOpen}
                 />
 
@@ -215,6 +216,7 @@ export function SearchBar({
                     value={effectiveLocValue ?? null}
                     onSelect={handleLocationSelect}
                     onQueryChange={handleQueryChange}
+                    onEnter={handleSearch}
                     autoOpen={autoOpen}
                 />
 

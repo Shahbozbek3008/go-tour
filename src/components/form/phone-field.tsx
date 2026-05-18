@@ -48,6 +48,7 @@ export default function PhoneField<IForm extends FieldValues>({
 }: IProps<IForm> & PhoneInputProps & React.RefAttributes<PhoneInputRefType>) {
     const t = useTranslations()
     const { control } = methods
+
     const isPhoneValid = (phone: string) => {
         try {
             return phoneUtil.isValidNumber(
@@ -58,6 +59,7 @@ export default function PhoneField<IForm extends FieldValues>({
             return false
         }
     }
+
     const {
         field: { value, onChange, ...field },
         fieldState: { error },
@@ -109,10 +111,8 @@ export default function PhoneField<IForm extends FieldValues>({
                 </Label>
             )}
             <PhoneInput
-                // hideDropdown
-                // forceDialCode
                 className={cn(
-                    "w-full  placeholder:clamp-[text,sm,base] clamp-[h,10,12] rounded-lg !outline-none",
+                    "w-full placeholder:clamp-[text,sm,base] clamp-[h,10,12] rounded-lg !outline-none",
                     className,
                 )}
                 inputClassName={cn(
@@ -120,7 +120,6 @@ export default function PhoneField<IForm extends FieldValues>({
                     inputClassName,
                 )}
                 countrySelectorStyleProps={{
-                    // className="hidden",
                     buttonClassName:
                         "!h-full !px-3 !rounded-l-lg !bg-background !border-input",
                     ...countrySelectorStyleProps,

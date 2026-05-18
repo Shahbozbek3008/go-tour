@@ -84,6 +84,8 @@ export default function OtpField<IForm extends FieldValues>({
                 id={name}
                 containerClassName="self-center"
                 autoFocus
+                pattern="^[0-9]*$"
+                autoComplete="one-time-code"
                 {...field}
                 {...props}
                 maxLength={maxLength}
@@ -95,6 +97,7 @@ export default function OtpField<IForm extends FieldValues>({
                             index={index}
                             aria-invalid={!!error}
                             className={slotClassName}
+                            inputMode="numeric"
                         />
                     ))}
                 </InputOTPGroup>

@@ -14,6 +14,8 @@ export default async function Providers({
 }) {
     const accessToken = await ServerTokenService.getAccessToken()
     const initialCurrency = await ServerCurrencyService.getCurrency()
+
+    console.log(accessToken, "access-token")
     return (
         <NextIntlClientProvider>
             <ReactQueryProvider>

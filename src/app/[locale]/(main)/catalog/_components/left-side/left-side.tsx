@@ -1,5 +1,6 @@
 "use client"
 
+import ClientTranslate from "@/components/common/translation/client-translate"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -8,7 +9,6 @@ import { Input } from "@/components/ui/input"
 import { RadioGroup } from "@/components/ui/radio-group"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
-import ClientTranslate from "@/components/common/translation/client-translate"
 import { useTranslations } from "next-intl"
 
 import { useCurrency } from "@/app/_providers/currency-provider"
@@ -18,11 +18,12 @@ import { formatNumber } from "@/lib/utils/format-number"
 import { getCurrencySign } from "@/lib/utils/money"
 import { cn } from "@/lib/utils/shadcn"
 import { Info, Minus, Plus } from "lucide-react"
+import { useParams } from "next/navigation"
 import { useState } from "react"
 import { CATEGORIES, DURATIONS, getPriceLimit, RATINGS } from "../../_constants"
 import { useAllLanguagesQuery, useFilter } from "../../_hooks"
-import { useParams } from "next/navigation"
 import { ActiveFilterBadge } from "../right-side/active-filter-badge"
+import { ChildAgeSelect } from "./child-select"
 import { FilterSection } from "./filter-section"
 import { RadioItem } from "./radio-item"
 import { StarDisplay } from "./star-display"
@@ -47,6 +48,8 @@ export const CatalogLeftSide = () => {
         activeFiltersCount,
         toggleLanguage,
         toggleDestination,
+        handleMaxInputBlur,
+        handleMinInputBlur,
     } = useFilter()
     const { currency } = useCurrency()
     const {
@@ -76,10 +79,8 @@ export const CatalogLeftSide = () => {
 
     const hasMoreCategories = CATEGORIES.length > CATEGORIES_DEFAULT_COUNT
     const hiddenCount = CATEGORIES.length - CATEGORIES_DEFAULT_COUNT
-
     const hasMoreLanguages = allLanguages?.length > LANGUAGES_DEFAULT_COUNT
     const hiddenLanguageCount = allLanguages?.length - LANGUAGES_DEFAULT_COUNT
-
     const hasMoreDestinations =
         allDestinations.length > DESTINATIONS_DEFAULT_COUNT
     const hiddenDestinationCount =
@@ -99,6 +100,7 @@ export const CatalogLeftSide = () => {
                     resetFilters={resetFilters}
                 />
             </div>
+
             <aside className="w-full border border-zinc-200 bg-white rounded-xl p-3 shadow-sm">
                 <div className="flex items-center gap-2 mb-1">
                     <span className="text-[15px] font-bold text-zinc-900 tracking-tight">
@@ -112,6 +114,7 @@ export const CatalogLeftSide = () => {
                 </div>
 
                 <div className="divide-y divide-zinc-100">
+                    {/* ── Toggle switchlar ── */}
                     <div className="py-2.5 flex flex-col gap-2">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-1.5 cursor-pointer select-none">
@@ -134,7 +137,6 @@ export const CatalogLeftSide = () => {
                                 className="data-[state=checked]:bg-blue-600"
                             />
                         </div>
-
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-1.5 cursor-pointer select-none">
                                 <span className="text-[14px] text-zinc-900 font-medium">
@@ -156,7 +158,6 @@ export const CatalogLeftSide = () => {
                                 className="data-[state=checked]:bg-blue-600"
                             />
                         </div>
-
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-1.5 cursor-pointer select-none">
                                 <span className="text-[14px] text-zinc-900 font-medium">
@@ -201,6 +202,7 @@ export const CatalogLeftSide = () => {
                         </div>
                     </div>
 
+                    {/* ── Kategoriya ── */}
                     <FilterSection title={t("catalogFilterCategory")}>
                         <RadioGroup
                             value={filters.category}
@@ -223,14 +225,15 @@ export const CatalogLeftSide = () => {
                                         id={`cat-${id}`}
                                         value={id}
                                         label={
-                                            <ClientTranslate translationKey={label} />
+                                            <ClientTranslate
+                                                translationKey={label}
+                                            />
                                         }
                                         isActive={filters.category === id}
                                     />
                                 ))}
                             </div>
                         </RadioGroup>
-
                         {hasMoreCategories && (
                             <button
                                 onClick={() => setShowAllCategories((p) => !p)}
@@ -238,11 +241,15 @@ export const CatalogLeftSide = () => {
                             >
                                 {showAllCategories ?
                                     t("catalogFilterShowLess")
-                                :   t("catalogFilterAllTours", { count: hiddenCount })}
+                                :   t("catalogFilterAllTours", {
+                                        count: hiddenCount,
+                                    })
+                                }
                             </button>
                         )}
                     </FilterSection>
 
+                    {/* ── Narx ── */}
                     <FilterSection title={t("catalogFilterPrice")}>
                         <div className="space-y-3 pt-1">
                             <Slider
@@ -278,6 +285,7 @@ export const CatalogLeftSide = () => {
                                         min={PRICE_MIN}
                                         max={filters.priceRange[1]}
                                         type="number"
+                                        onBlur={handleMinInputBlur}
                                         className="pl-5 h-8 text-[12px] tabular-nums border-zinc-200 rounded-lg bg-zinc-50 shadow-none focus-visible:ring-0 focus-visible:border-zinc-400"
                                     />
                                 </div>
@@ -294,6 +302,7 @@ export const CatalogLeftSide = () => {
                                         onChange={handleMaxInput}
                                         min={filters.priceRange[0]}
                                         max={PRICE_MAX}
+                                        onBlur={handleMaxInputBlur}
                                         className="pl-5 h-8 text-[12px] tabular-nums border-zinc-200 rounded-lg bg-zinc-50 shadow-none focus-visible:ring-0 focus-visible:border-zinc-400"
                                     />
                                 </div>
@@ -301,7 +310,11 @@ export const CatalogLeftSide = () => {
                         </div>
                     </FilterSection>
 
-                    <FilterSection title={t("catalogFilterDuration")} defaultOpen={false}>
+                    {/* ── Davomiylik ── */}
+                    <FilterSection
+                        title={t("catalogFilterDuration")}
+                        defaultOpen={false}
+                    >
                         <RadioGroup
                             value={filters.duration}
                             onValueChange={(val) =>
@@ -315,7 +328,9 @@ export const CatalogLeftSide = () => {
                                     id={`dur-${value}`}
                                     value={value}
                                     label={
-                                        <ClientTranslate translationKey={label} />
+                                        <ClientTranslate
+                                            translationKey={label}
+                                        />
                                     }
                                     isActive={filters.duration === value}
                                 />
@@ -323,6 +338,7 @@ export const CatalogLeftSide = () => {
                         </RadioGroup>
                     </FilterSection>
 
+                    {/* ── Reyting ── */}
                     <FilterSection title={t("catalogFilterRating")}>
                         <RadioGroup
                             value={filters.rate}
@@ -362,6 +378,7 @@ export const CatalogLeftSide = () => {
                         </RadioGroup>
                     </FilterSection>
 
+                    {/* ── Shaharlar ── */}
                     <FilterSection title={t("catalogFilterPopularCities")}>
                         <div className="flex flex-col gap-1 pt-0.5">
                             <div
@@ -413,13 +430,82 @@ export const CatalogLeftSide = () => {
                                 >
                                     {showAllDestinations ?
                                         t("catalogFilterShowLess")
-                                    :   t("catalogFilterAllCities", { count: hiddenDestinationCount })
+                                    :   t("catalogFilterAllCities", {
+                                            count: hiddenDestinationCount,
+                                        })
                                     }
                                 </button>
                             )}
                         </div>
                     </FilterSection>
 
+                    <FilterSection title={t("catalogFilterAdditional")}>
+                        <div className="flex flex-col gap-4 pt-1">
+                            <div className="space-y-2">
+                                <span className="text-[13px] font-medium text-zinc-600 block">
+                                    <ClientTranslate translationKey="catalogFilterChildCount" />
+                                </span>
+                                <div className="flex items-center justify-between p-3 border border-zinc-200 rounded-xl bg-zinc-50/50">
+                                    <div className="flex flex-col">
+                                        <span className="text-[11px] text-zinc-400 font-medium leading-none mb-1">
+                                            <ClientTranslate translationKey="catalogFilterChildCount" />
+                                        </span>
+                                        <span className="text-[16px] font-bold text-zinc-900 tabular-nums">
+                                            {filters.childrenCount ?? 0}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={() =>
+                                                setFilters((p) => ({
+                                                    ...p,
+                                                    childrenCount:
+                                                        (
+                                                            (p.childrenCount ??
+                                                                0) <= 1
+                                                        ) ?
+                                                            null
+                                                        :   (p.childrenCount ??
+                                                                0) - 1,
+                                                }))
+                                            }
+                                            className="w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-white hover:opacity-90 transition-opacity"
+                                        >
+                                            <Minus className="w-4 h-4" />
+                                        </button>
+                                        <button
+                                            onClick={() =>
+                                                setFilters((p) => ({
+                                                    ...p,
+                                                    childrenCount:
+                                                        (p.childrenCount ?? 0) +
+                                                        1,
+                                                }))
+                                            }
+                                            className="w-8 h-8 flex items-center justify-center rounded-lg bg-zinc-100 text-zinc-400 hover:bg-zinc-200 transition-colors"
+                                        >
+                                            <Plus className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <span className="text-[13px] font-medium text-zinc-600 block">
+                                    <ClientTranslate translationKey="catalogFilterChildAgeLabel" />
+                                </span>
+                                <ChildAgeSelect
+                                    value={filters.childAge}
+                                    onChange={(val) =>
+                                        setFilters((p) => ({
+                                            ...p,
+                                            childAge: val,
+                                        }))
+                                    }
+                                />
+                            </div>
+                        </div>
+                    </FilterSection>
                     <FilterSection title={t("catalogFilterByLanguage")}>
                         <div className="flex flex-col gap-1 pt-0.5">
                             <div
@@ -472,63 +558,16 @@ export const CatalogLeftSide = () => {
                                 >
                                     {showAllLanguages ?
                                         t("catalogFilterShowLess")
-                                    :   t("catalogFilterAllLanguages", { count: hiddenLanguageCount })
+                                    :   t("catalogFilterAllLanguages", {
+                                            count: hiddenLanguageCount,
+                                        })
                                     }
                                 </button>
                             )}
                         </div>
                     </FilterSection>
-
-                    <FilterSection title={t("catalogFilterAdditional")}>
-                        <div className="flex flex-col gap-4 pt-1">
-                            <div className="space-y-2">
-                                <span className="text-[13px] font-medium text-zinc-600 block">
-                                    <ClientTranslate translationKey="catalogFilterChildDiscount" />
-                                </span>
-                                <div className="flex items-center justify-between p-3 border border-zinc-200 rounded-xl bg-zinc-50/50">
-                                    <div className="flex flex-col">
-                                        <span className="text-[11px] text-zinc-400 font-medium leading-none mb-1">
-                                            <ClientTranslate translationKey="catalogFilterPeopleCount" />
-                                        </span>
-                                        <span className="text-[16px] font-bold text-zinc-900 tabular-nums">
-                                            {filters.childDiscount ?? 0}
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <button
-                                            onClick={() =>
-                                                setFilters((p) => ({
-                                                    ...p,
-                                                    childDiscount: Math.max(
-                                                        0,
-                                                        (p.childDiscount ?? 0) -
-                                                            1,
-                                                    ),
-                                                }))
-                                            }
-                                            className="w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-white hover:opacity-90 transition-opacity"
-                                        >
-                                            <Minus className="w-4 h-4" />
-                                        </button>
-                                        <button
-                                            onClick={() =>
-                                                setFilters((p) => ({
-                                                    ...p,
-                                                    childDiscount:
-                                                        (p.childDiscount ?? 0) +
-                                                        1,
-                                                }))
-                                            }
-                                            className="w-8 h-8 flex items-center justify-center rounded-lg bg-zinc-100 text-zinc-400 hover:bg-zinc-200 transition-colors"
-                                        >
-                                            <Plus className="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </FilterSection>
                 </div>
+
                 <Button
                     size="lg"
                     onClick={resetFilters}

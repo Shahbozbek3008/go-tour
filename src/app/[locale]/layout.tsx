@@ -23,6 +23,12 @@ export const metadata: Metadata = {
     description: "Developed by upgrow.uz",
 }
 
+export const viewport = {
+    width: "device-width",
+    initialScale: 1,
+    interactiveWidget: "resizes-content",
+}
+
 export function generateStaticParams() {
     return routing.locales.map((locale) => ({ locale }))
 }
@@ -48,7 +54,7 @@ export default async function LocaleLayout({
                 <Suspense fallback={<FallbackLoader locale={locale} />}>
                     <Providers>
                         {children}
-                        <Toaster />
+                        <Toaster position="top-right" />
                     </Providers>
                 </Suspense>
             </body>

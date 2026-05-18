@@ -18,7 +18,6 @@ import { Heart, Star } from "lucide-react"
 import { useTranslations } from "next-intl"
 import Image from "next/image"
 import { useEffect, useState } from "react"
-import { toast } from "sonner"
 import ClientTranslate from "../common/translation/client-translate"
 import { Button } from "../ui/button"
 
@@ -65,9 +64,9 @@ export const ProductCard = ({
     const queryClient = useQueryClient()
     const { isRussian } = useLanguage()
     const { isAuthenticated } = useProfileQuery()
-    const { openModal } = useModal(MODAL_KEYS.SIGN_IN_MODAL)
     const { post, isPending, remove } = useRequest()
     const { invalidateByExactMatch } = useRevalidate()
+    const { openModal } = useModal(MODAL_KEYS.SIGN_IN_MODAL)
 
     const [imgError, setImgError] = useState(!tour?.image)
     const [avatarError, setAvatarError] = useState(!tour?.authorAvatar)
@@ -126,11 +125,6 @@ export const ProductCard = ({
 
                     return oldData
                 })
-                if (tour?.isFavorite) {
-                    toast.success(t("removeFavouritesTour"))
-                } else {
-                    toast.success(t("addFavouritesTour"))
-                }
                 invalidateByExactMatch([
                     API.TOUR.TOP_SELLING,
                     API.TOUR.PROMOTIONAL,
@@ -189,7 +183,8 @@ export const ProductCard = ({
                             size={24}
                             className={cn(
                                 "stroke-white transition-all duration-200 group-hover/heart:fill-red-500 group-hover/heart:stroke-red-500",
-                                tour?.isFavorite &&
+                                isAuthenticated &&
+                                    tour?.isFavorite &&
                                     "fill-red-500 stroke-red-500",
                             )}
                         />
@@ -284,10 +279,10 @@ export const ProductCard = ({
                         {tour?.location}
                     </span>
                 </div>
-                <h3 className="text-[15px] font-bold text-slate-800 leading-snug mb-1 line-clamp-2">
+                <h3 className="text-[15px] font-bold text-slate-800 leading-snug mb-1 line-clamp-2 min-h-[2.625rem]">
                     {tour?.title}
                 </h3>
-                <p className="text-[12px] text-slate-400 mb-3 line-clamp-2 flex-1">
+                <p className="text-[12px] text-slate-400 mb-3 line-clamp-2 min-h-[2.25rem]">
                     {tour?.subtitle}
                 </p>
                 <div className="flex flex-col gap-2 mt-auto border-t border-slate-100 pt-3">
@@ -316,7 +311,7 @@ export const ProductCard = ({
                                 <ClientTranslate translationKey="day" />
                             </span>
                             {tour?.installment?.hasInstallment && (
-                                <span className="text-[10px] font-semibold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-200 truncate max-w-[140px]">
+                                <span className="text-xs font-semibold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-200 truncate max-w-[140px]">
                                     {tour?.installment?.installmentAmount?.toLocaleString()}
                                     {currency === "USD" ?
                                         <ClientTranslate translationKey="monthInstallment" />

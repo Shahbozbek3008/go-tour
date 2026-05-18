@@ -31,7 +31,7 @@ export const AllReviewers = ({
             {/* Fixed Header */}
             <div className="shrink-0 pt-5 pb-5 px-5  sm:pb-6 sm:px-8 border-b border-border">
                 <div className="flex items-center gap-2.5">
-                    <Star className="size-6 sm:size-7 fill-[#ADC227] text-[#ADC227]" />
+                    <Star className="size-6 sm:size-7 fill-amber-400 text-amber-400" />
                     <span className="text-[22px] sm:text-2xl font-bold text-foreground leading-none">
                         Rating {rating.toFixed(1)} • {totalCount} reviews
                     </span>

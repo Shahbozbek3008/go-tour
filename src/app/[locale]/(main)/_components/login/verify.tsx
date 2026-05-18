@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/drawer"
 import { Form } from "@/components/ui/form"
 import { useRequest } from "@/hooks/react-query/use-request"
+import { useRevalidate } from "@/hooks/react-query/use-revalidate"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { useModal } from "@/hooks/use-modal"
 import { useRouter } from "@/i18n/navigation"
@@ -21,6 +22,8 @@ import { Phone, RotateCcw, X } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { SubmitHandler, useFormContext } from "react-hook-form"
+import { toast } from "sonner"
+import { useKeyboardAware } from "./_hooks/use-keyboard-aware"
 
 interface FormValues {
     smsCode: string
@@ -57,7 +60,10 @@ export const Verify = () => {
     const { openModal } = useModal(MODAL_KEYS.SIGN_IN_MODAL)
     const { closeModal, isOpen } = useModal(MODAL_KEYS.VERIFY_PHONE_MODAL)
     const { post, isPending } = useRequest()
+    const { invalidateByExactMatch } = useRevalidate()
     const isDesktopOrTablet = useMediaQuery("(min-width: 768px)")
+    const keyboardHeight = useKeyboardAware()
+
     const [countdown, setCountdown] = useState(RESEND_SECONDS)
     const [isResending, setIsResending] = useState(false)
     const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -110,17 +116,23 @@ export const Verify = () => {
 
         post(API.AUTH.SMS_CHECK, payload, {
             onSuccess: (res) => {
-                if (res?.data?.token) {
-                    ClientTokenService.setAccessToken(
-                        res.data?.token?.accessToken,
-                    )
-                    ClientTokenService.setRefreshToken(
-                        res.data?.token?.refreshToken,
-                    )
+                if (res?.status === 0) {
+                    if (res?.data?.token) {
+                        ClientTokenService.setAccessToken(
+                            res.data?.token?.accessToken,
+                        )
+                        ClientTokenService.setRefreshToken(
+                            res.data?.token?.refreshToken,
+                        )
+                        invalidateByExactMatch([API.PROFILE.INFO.ME])
+                    }
+                    toast.success(t("loginSuccess"))
+                    router.refresh()
+                    closeModal()
+                    methods.reset()
+                } else {
+                    toast.error(res?.message)
                 }
-                router.refresh()
-                closeModal()
-                methods.reset()
             },
         })
     }
@@ -219,8 +231,14 @@ export const Verify = () => {
 
     return (
         <Drawer open={isOpen} onOpenChange={(open) => !open && closeModal()}>
-            <DrawerContent className="max-h-[88vh] rounded-t-2xl">
-                <DrawerHeader className="border-b border-zinc-100 pb-3">
+            <DrawerContent
+                className="max-h-[88vh] rounded-t-2xl flex flex-col"
+                style={{
+                    paddingBottom: keyboardHeight,
+                    transition: "padding-bottom 200ms ease",
+                }}
+            >
+                <DrawerHeader className="border-b border-zinc-100 pb-3 shrink-0">
                     <div className="flex items-center justify-between gap-2">
                         <DrawerTitle className="text-[17px] font-semibold">
                             {t("confirm")}
@@ -235,7 +253,7 @@ export const Verify = () => {
                         </button>
                     </div>
                 </DrawerHeader>
-                <div className="px-1 pb-2">{content}</div>
+                <div className="px-1 pb-2 overflow-y-auto">{content}</div>
             </DrawerContent>
         </Drawer>
     )

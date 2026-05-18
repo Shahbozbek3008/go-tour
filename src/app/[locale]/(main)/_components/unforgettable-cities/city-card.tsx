@@ -25,7 +25,7 @@ const RegionBadge = memo(function RegionBadge({
     country: string
 }) {
     return (
-        <div className="inline-flex items-center gap-1 text-amber-400 text-[10px] font-semibold uppercase tracking-wider bg-amber-400/10 border border-amber-400/25 rounded-full px-2 py-1 md:px-3 md:py-1 mb-2 md:mb-3">
+        <div className="inline-flex items-center gap-1 text-amber-400 text-[9px] md:text-[10px] font-semibold uppercase tracking-wider bg-amber-400/10 border border-amber-400/25 rounded-full px-2 py-0.5 md:px-3 md:py-1 mb-1.5 md:mb-3">
             {region} · {country}
         </div>
     )
@@ -39,12 +39,12 @@ const RatingRow = memo(function RatingRow({
     toursCount: number
 }) {
     return (
-        <div className="flex items-center gap-3 mb-0">
-            <div className="flex items-center gap-1 text-amber-400 text-[13px] font-medium">
-                <Star size={12} fill="currentColor" aria-hidden />
+        <div className="flex items-center gap-2 md:gap-3">
+            <div className="flex items-center gap-1 text-amber-400 text-[11px] md:text-[13px] font-medium">
+                <Star size={10} fill="currentColor" aria-hidden />
                 {rating > 0 ? rating.toFixed(1) : "Yangi"}
             </div>
-            <span className="text-white/45 text-[13px]">
+            <span className="text-white/45 text-[11px] md:text-[13px]">
                 {toursCount}+ <ClientTranslate translationKey="tours" />
             </span>
         </div>
@@ -85,14 +85,14 @@ export const CityCard = memo(function CityCard({ destination }: CityCardProps) {
         >
             {featured && (
                 <div
-                    className="absolute top-4 left-4 z-30 bg-amber-400 text-[#0a0f1e] text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full"
+                    className="absolute top-3 left-3 md:top-4 md:left-4 z-30 bg-amber-400 text-[#0a0f1e] text-[9px] md:text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 md:px-3 md:py-1.5 rounded-full"
                     aria-label="Tanlangan"
                 >
                     ✦ <ClientTranslate translationKey="selected" />
                 </div>
             )}
 
-            <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/85 via-black/30 to-black/5 transition-all duration-400 group-hover:from-black/90 group-hover:via-black/40" />
+            <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/90 via-black/35 to-black/5 transition-all duration-400 group-hover:from-black/90 group-hover:via-black/40" />
 
             <div className="relative w-full h-full overflow-hidden">
                 <motion.div
@@ -113,13 +113,13 @@ export const CityCard = memo(function CityCard({ destination }: CityCardProps) {
                 </motion.div>
             </div>
 
-            <div className="absolute bottom-0 left-0 right-0 z-20 p-4 md:p-6 translate-y-1 group-hover:translate-y-0 transition-transform duration-350">
+            <div className="absolute bottom-0 left-0 right-0 z-20 p-3 md:p-6 translate-y-0 md:translate-y-1 group-hover:translate-y-0 transition-transform duration-350">
                 <RegionBadge region={region} country={country} />
 
                 <h3
                     className={cn(
-                        "font-bold text-white leading-tight md:mb-2",
-                        "text-xl md:text-2xl",
+                        "font-bold text-white leading-tight mb-1 md:mb-2",
+                        "text-base md:text-2xl",
                     )}
                 >
                     {name}
@@ -128,14 +128,14 @@ export const CityCard = memo(function CityCard({ destination }: CityCardProps) {
                 <RatingRow rating={rating} toursCount={toursCount} />
 
                 {description && (
-                    <div className="max-h-0 overflow-hidden opacity-0 group-hover:max-h-16 group-hover:opacity-100 transition-all duration-400 ease-in-out mt-2">
+                    <div className="hidden md:block max-h-0 overflow-hidden opacity-0 group-hover:max-h-16 group-hover:opacity-100 transition-all duration-400 ease-in-out mt-2">
                         <p className="text-white/55 text-[13px] leading-relaxed line-clamp-3">
                             {description}
                         </p>
                     </div>
                 )}
 
-                <div className="max-h-0 overflow-hidden opacity-0 group-hover:max-h-10 group-hover:opacity-100 transition-all duration-400 delay-75 ease-in-out mt-3">
+                <div className="hidden md:block max-h-0 overflow-hidden opacity-0 group-hover:max-h-10 group-hover:opacity-100 transition-all duration-400 delay-75 ease-in-out mt-3">
                     <span className="inline-flex items-center gap-1.5 text-amber-400 text-[11px] font-semibold uppercase tracking-wider">
                         <ClientTranslate translationKey="discovery" />
                         <ArrowRight

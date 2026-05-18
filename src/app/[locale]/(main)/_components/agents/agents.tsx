@@ -65,6 +65,16 @@ export const Agents = () => {
                         {multiplied.map((agent) => (
                             <div
                                 key={agent._key}
+                                onClick={() =>
+                                    router.push(
+                                        getHref({
+                                            pathname: "/[locale]/agents",
+                                            query: {
+                                                agentId: agent?.id,
+                                            },
+                                        }),
+                                    )
+                                }
                                 className="min-w-0 pl-4 sm:pl-6 flex-[0_0_85%] sm:flex-[0_0_45%] md:flex-[0_0_33.33%] lg:flex-[0_0_25%]"
                             >
                                 <AgentChip agent={agent} />

@@ -17,6 +17,8 @@ import { Input } from "@/components/ui/input"
 import { RadioGroup } from "@/components/ui/radio-group"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
+import { useAllDestinationsQuery } from "@/hooks/react-query/use-all-destinations-query"
+import { useLanguage } from "@/hooks/use-language"
 import { formatNumber } from "@/lib/utils/format-number"
 import { getCurrencySign } from "@/lib/utils/money"
 import { cn } from "@/lib/utils/shadcn"
@@ -31,21 +33,25 @@ import {
     RATINGS,
 } from "../../_constants"
 import { useFilter } from "../../_hooks"
+import { ChildAgeSelect } from "./child-select"
 import { FilterSection } from "./filter-section"
 import { RadioItem } from "./radio-item"
 import { StarDisplay } from "./star-display"
 
 const CATEGORIES_DEFAULT_COUNT = 6
 const LANGUAGES_DEFAULT_COUNT = 4
+const DESTINATIONS_DEFAULT_COUNT = 5
 
 interface FilterBottomSheetProps {
     open: boolean
     onOpenChange: (open: boolean) => void
+    totalTours: number
 }
 
 export const FilterBottomSheet = ({
     open,
     onOpenChange,
+    totalTours,
 }: FilterBottomSheetProps) => {
     const t = useTranslations()
     const {
@@ -60,8 +66,10 @@ export const FilterBottomSheet = ({
         handlePriceSlider,
         activeFiltersCount,
         toggleLanguage,
+        toggleDestination,
     } = useFilter()
     const { currency } = useCurrency()
+    const { isRussian } = useLanguage()
     const {
         min: PRICE_MIN,
         max: PRICE_MAX,
@@ -69,7 +77,8 @@ export const FilterBottomSheet = ({
     } = getPriceLimit(currency)
     const currencySign = getCurrencySign(currency)
     const sign = currencySign.symbol || currencySign.iso
-
+    const { allDestinations } = useAllDestinationsQuery()
+    const [showAllDestinations, setShowAllDestinations] = useState(false)
     const [showAllCategories, setShowAllCategories] = useState(false)
     const [showAllLanguages, setShowAllLanguages] = useState(false)
 
@@ -83,11 +92,21 @@ export const FilterBottomSheet = ({
             LANGUAGES.slice(0, LANGUAGES_DEFAULT_COUNT)
         )
 
+    const visibleDestinations =
+        showAllDestinations ? allDestinations : (
+            allDestinations.slice(0, DESTINATIONS_DEFAULT_COUNT)
+        )
+
     const hasMoreCategories = CATEGORIES.length > CATEGORIES_DEFAULT_COUNT
     const hiddenCount = CATEGORIES.length - CATEGORIES_DEFAULT_COUNT
 
     const hasMoreLanguages = LANGUAGES.length > LANGUAGES_DEFAULT_COUNT
     const hiddenLanguageCount = LANGUAGES.length - LANGUAGES_DEFAULT_COUNT
+    const hiddenDestinationCount =
+        allDestinations.length - DESTINATIONS_DEFAULT_COUNT
+
+    const hasMoreDestinations =
+        allDestinations.length > DESTINATIONS_DEFAULT_COUNT
 
     return (
         <Drawer open={open} onOpenChange={onOpenChange}>
@@ -111,14 +130,23 @@ export const FilterBottomSheet = ({
                                 </Badge>
                             )}
                         </DrawerTitle>
-                        <DrawerClose asChild>
-                            <button
-                                className="flex items-center justify-center w-8 h-8 rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-500 hover:text-zinc-700 transition-colors duration-150 focus-visible:outline-none"
-                                aria-label={t("catalogFilterClose")}
+                        {hasActiveFilters ?
+                            <Button
+                                variant="ghost"
+                                onClick={resetFilters}
+                                className="text-red-500 hover:text-red-600 p-0! hover:bg-transparent"
                             >
-                                <X className="w-4 h-4" />
-                            </button>
-                        </DrawerClose>
+                                <ClientTranslate translationKey="catalogFilterClear" />
+                            </Button>
+                        :   <DrawerClose asChild>
+                                <button
+                                    className="flex items-center justify-center w-8 h-8 rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-500 hover:text-zinc-700 transition-colors duration-150 focus-visible:outline-none"
+                                    aria-label={t("catalogFilterClose")}
+                                >
+                                    <X className="w-4 h-4" />
+                                </button>
+                            </DrawerClose>
+                        }
                     </div>
                 </DrawerHeader>
 
@@ -183,6 +211,27 @@ export const FilterBottomSheet = ({
                                     setFilters((p) => ({
                                         ...p,
                                         hasReviews: val,
+                                    }))
+                                }
+                                className="data-[state=checked]:bg-blue-600"
+                            />
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-1.5 cursor-pointer select-none">
+                                <span className="text-[14px] text-zinc-900 font-medium">
+                                    <ClientTranslate translationKey="catalogFilterNoVisa" />
+                                </span>
+                                <Info
+                                    strokeWidth={1.5}
+                                    className="w-[18px] h-[18px] text-zinc-400"
+                                />
+                            </div>
+                            <Switch
+                                checked={filters.visaRequired}
+                                onCheckedChange={(val) =>
+                                    setFilters((p) => ({
+                                        ...p,
+                                        visaRequired: val,
                                     }))
                                 }
                                 className="data-[state=checked]:bg-blue-600"
@@ -274,7 +323,7 @@ export const FilterBottomSheet = ({
                                         onChange={handleMinInput}
                                         min={PRICE_MIN}
                                         max={filters.priceRange[1]}
-                                        className="pl-5 h-8 text-[12px] tabular-nums border-zinc-200 rounded-lg bg-zinc-50 shadow-none focus-visible:ring-0 focus-visible:border-zinc-400"
+                                        className="pl-5 h-8 text-xs tabular-nums border-zinc-200 rounded-lg bg-zinc-50 shadow-none focus-visible:ring-0 focus-visible:border-zinc-400"
                                     />
                                 </div>
                                 <span className="text-zinc-300 text-sm select-none">
@@ -364,11 +413,131 @@ export const FilterBottomSheet = ({
                     </FilterSection>
 
                     <FilterSection title={t("catalogFilterPopularCities")}>
-                        <p className="text-[12px] text-zinc-400 py-1">
-                            <ClientTranslate translationKey="catalogFilterComingSoon" />
-                        </p>
+                        <div className="flex flex-col gap-1 pt-0.5">
+                            <div
+                                className={cn(
+                                    "overflow-hidden transition-all duration-300 ease-in-out flex flex-col gap-2",
+                                    showAllDestinations ? "max-h-[1000px]" : (
+                                        "max-h-[185px]"
+                                    ),
+                                )}
+                            >
+                                {visibleDestinations.map((dest) => {
+                                    const active =
+                                        filters.destinations.includes(dest.id)
+                                    return (
+                                        <FieldGroup
+                                            className="w-full"
+                                            key={dest.id}
+                                        >
+                                            <Field orientation="horizontal">
+                                                <Checkbox
+                                                    id={`dest-${dest.id}`}
+                                                    name={`dest-${dest.id}`}
+                                                    checked={active}
+                                                    onCheckedChange={() =>
+                                                        toggleDestination(
+                                                            dest.id,
+                                                        )
+                                                    }
+                                                />
+                                                <FieldLabel
+                                                    htmlFor={`dest-${dest.id}`}
+                                                    className="cursor-pointer text-zinc-500 text-[14px]"
+                                                >
+                                                    {isRussian ?
+                                                        dest.nameRu
+                                                    :   dest.nameUz}
+                                                </FieldLabel>
+                                            </Field>
+                                        </FieldGroup>
+                                    )
+                                })}
+                            </div>
+                            {hasMoreDestinations && (
+                                <button
+                                    onClick={() =>
+                                        setShowAllDestinations((prev) => !prev)
+                                    }
+                                    className="cursor-pointer mt-2 w-full rounded-lg bg-zinc-100 py-2 text-[13px] font-medium text-zinc-600 transition-colors duration-150 focus-visible:outline-none"
+                                >
+                                    {showAllDestinations ?
+                                        t("catalogFilterShowLess")
+                                    :   t("catalogFilterAllCities", {
+                                            count: hiddenDestinationCount,
+                                        })
+                                    }
+                                </button>
+                            )}
+                        </div>
                     </FilterSection>
+                    <FilterSection title={t("catalogFilterAdditional")}>
+                        <div className="flex flex-col gap-4 pt-1">
+                            <div className="space-y-2">
+                                <span className="text-[13px] font-medium text-zinc-600 block">
+                                    <ClientTranslate translationKey="catalogFilterChildCount" />
+                                </span>
+                                <div className="flex items-center justify-between p-3 border border-zinc-200 rounded-xl bg-zinc-50/50">
+                                    <div className="flex flex-col">
+                                        <span className="text-[11px] text-zinc-400 font-medium leading-none mb-1">
+                                            <ClientTranslate translationKey="catalogFilterChildCount" />
+                                        </span>
+                                        <span className="text-[16px] font-bold text-zinc-900 tabular-nums">
+                                            {filters.childrenCount ?? 0}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={() =>
+                                                setFilters((p) => ({
+                                                    ...p,
+                                                    childrenCount:
+                                                        (
+                                                            (p.childrenCount ??
+                                                                0) <= 1
+                                                        ) ?
+                                                            null
+                                                        :   (p.childrenCount ??
+                                                                0) - 1,
+                                                }))
+                                            }
+                                            className="w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-white hover:opacity-90 transition-opacity"
+                                        >
+                                            <Minus className="w-4 h-4" />
+                                        </button>
+                                        <button
+                                            onClick={() =>
+                                                setFilters((p) => ({
+                                                    ...p,
+                                                    childrenCount:
+                                                        (p.childrenCount ?? 0) +
+                                                        1,
+                                                }))
+                                            }
+                                            className="w-8 h-8 flex items-center justify-center rounded-lg bg-zinc-100 text-zinc-400 hover:bg-zinc-200 transition-colors"
+                                        >
+                                            <Plus className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <div className="space-y-2">
+                                <span className="text-[13px] font-medium text-zinc-600 block">
+                                    <ClientTranslate translationKey="catalogFilterChildAgeLabel" />
+                                </span>
+                                <ChildAgeSelect
+                                    value={filters.childAge}
+                                    onChange={(val) =>
+                                        setFilters((p) => ({
+                                            ...p,
+                                            childAge: val,
+                                        }))
+                                    }
+                                />
+                            </div>
+                        </div>
+                    </FilterSection>
                     <FilterSection title={t("catalogFilterByLanguage")}>
                         <div className="flex flex-wrap gap-2 pt-0.5 transition-all duration-300 ease-in-out">
                             {visibleLanguages.map((lang) => {
@@ -418,92 +587,14 @@ export const FilterBottomSheet = ({
                             )}
                         </div>
                     </FilterSection>
-
-                    <FilterSection title={t("catalogFilterAdditional")}>
-                        <div className="flex flex-col gap-4 pt-1">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-1.5 cursor-pointer select-none">
-                                    <span className="text-[14px] text-zinc-900 font-medium">
-                                        <ClientTranslate translationKey="catalogFilterNoVisa" />
-                                    </span>
-                                    <Info
-                                        strokeWidth={1.5}
-                                        className="w-[18px] h-[18px] text-zinc-400"
-                                    />
-                                </div>
-                                <Switch
-                                    checked={filters.visaRequired}
-                                    onCheckedChange={(val) =>
-                                        setFilters((p) => ({
-                                            ...p,
-                                            visaRequired: val,
-                                        }))
-                                    }
-                                    className="data-[state=checked]:bg-blue-600"
-                                />
-                            </div>
-
-                            <div className="space-y-2">
-                                <span className="text-[13px] font-medium text-zinc-600 block">
-                                    <ClientTranslate translationKey="catalogFilterChildDiscount" />
-                                </span>
-                                <div className="flex items-center justify-between p-3.5 border border-zinc-200 rounded-xl bg-zinc-50/50">
-                                    <div className="flex flex-col">
-                                        <span className="text-[11px] text-zinc-400 font-medium leading-none mb-1">
-                                            <ClientTranslate translationKey="catalogFilterPeopleCount" />
-                                        </span>
-                                        <span className="text-[17px] font-bold text-zinc-900 tabular-nums">
-                                            {filters.childDiscount ?? 0}
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <button
-                                            onClick={() =>
-                                                setFilters((p) => ({
-                                                    ...p,
-                                                    childDiscount: Math.max(
-                                                        0,
-                                                        (p.childDiscount ?? 0) -
-                                                            1,
-                                                    ),
-                                                }))
-                                            }
-                                            className="w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-white hover:opacity-90 transition-opacity"
-                                        >
-                                            <Minus className="w-4 h-4" />
-                                        </button>
-                                        <button
-                                            onClick={() =>
-                                                setFilters((p) => ({
-                                                    ...p,
-                                                    childDiscount:
-                                                        (p.childDiscount ?? 0) +
-                                                        1,
-                                                }))
-                                            }
-                                            className="w-8 h-8 flex items-center justify-center rounded-lg bg-zinc-100 text-zinc-400 hover:bg-zinc-200 transition-colors"
-                                        >
-                                            <Plus className="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </FilterSection>
                 </div>
 
-                <div className="shrink-0 px-5 py-4 border-t border-zinc-100 flex gap-3">
-                    <Button
-                        variant="outline"
-                        onClick={resetFilters}
-                        disabled={!hasActiveFilters}
-                        className="flex-1 rounded-xl h-11 border-zinc-200 text-zinc-600"
-                    >
-                        <ClientTranslate translationKey="catalogFilterClear" />
-                    </Button>
+                <div className="sticky -bottom-4 bg-white px-5 py-4 border-t border-zinc-100 flex gap-3">
                     <DrawerClose asChild>
                         <Button className="flex-1 rounded-xl h-11">
-                            <ClientTranslate translationKey="catalogFilterShowResults" />
+                            {t("catalogFilterShowResultsCount", {
+                                count: totalTours,
+                            })}
                         </Button>
                     </DrawerClose>
                 </div>

@@ -3,7 +3,6 @@ import { useRouter } from "@/i18n/navigation"
 import { CURRENCIES } from "@/lib/constants/currency"
 import { cn } from "@/lib/utils/shadcn"
 import { Currency } from "@/types/common/extra"
-import { useQueryClient } from "@tanstack/react-query"
 import { ChevronDown } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 
@@ -15,7 +14,6 @@ export const CurrencySwitcher = ({ isTransparent }: CurrencySwitcherProps) => {
     const [open, setOpen] = useState(false)
     const ref = useRef<HTMLDivElement>(null)
     const router = useRouter()
-    const queryClient = useQueryClient()
     const { currency: activeCurrency, setCurrency } = useCurrency()
 
     useEffect(() => {
@@ -36,7 +34,6 @@ export const CurrencySwitcher = ({ isTransparent }: CurrencySwitcherProps) => {
 
     const active =
         CURRENCIES.find((c) => c.id === activeCurrency) ?? CURRENCIES[0]
-    const others = CURRENCIES.filter((c) => c.id !== activeCurrency)
 
     return (
         <div ref={ref} className="relative">
@@ -47,7 +44,7 @@ export const CurrencySwitcher = ({ isTransparent }: CurrencySwitcherProps) => {
                 className={cn(
                     "flex items-center gap-1.5 px-2.5 rounded-[10px]  h-10",
                     "text-[13px] font-medium transition-colors duration-150",
-                    "focus-visible:outline-none",
+                    "focus-visible:outline-none cursor-pointer hover:bg-gray-100",
                     isTransparent ?
                         "text-white/80 hover:text-white"
                     :   "text-slate-800",

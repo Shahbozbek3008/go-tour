@@ -78,12 +78,6 @@ export function TourHeader({ title }: TourHeaderProps) {
                     return oldData
                 })
 
-                if (detail?.isFavorite) {
-                    toast.success(t("removeFavouritesTour"))
-                } else {
-                    toast.success(t("addFavouritesTour"))
-                }
-
                 invalidateByExactMatch([
                     API.TOUR.TOP_SELLING,
                     API.TOUR.PROMOTIONAL,
@@ -103,26 +97,29 @@ export function TourHeader({ title }: TourHeaderProps) {
     const handleShare = async () => {
         const shareData = {
             title: title,
-            text: title,
             url: window.location.href,
         }
 
-        if (navigator.share) {
-            try {
-                await navigator.share(shareData)
-            } catch (err) {
-                if ((err as Error).name !== "AbortError") {
-                    console.error("Error sharing:", err)
-                }
-            }
-        } else {
+        const copyToClipboard = async () => {
             try {
                 await navigator.clipboard.writeText(window.location.href)
                 toast.success(t("linkCopied"))
-            } catch (err) {
-                console.error("Error copying to clipboard:", err)
+            } catch {
                 toast.error(t("failedToCopy"))
             }
+        }
+
+        if (navigator.share && navigator.canShare?.(shareData)) {
+            try {
+                await navigator.share(shareData)
+            } catch (err) {
+                const error = err as Error
+                if (error.name === "AbortError") return
+                // share ishlamasa clipboard ga fallback
+                await copyToClipboard()
+            }
+        } else {
+            await copyToClipboard()
         }
     }
 
@@ -155,7 +152,9 @@ export function TourHeader({ title }: TourHeaderProps) {
                     <Heart
                         className={cn(
                             "transition-transform duration-200 group-hover/heart:scale-110 group-hover/heart:fill-red-500 group-hover/heart:stroke-red-500 active:scale-95",
-                            detail?.isFavorite && "fill-red-500 stroke-red-500",
+                            isAuthenticated &&
+                                detail?.isFavorite &&
+                                "fill-red-500 stroke-red-500",
                         )}
                     />
                 </Button>

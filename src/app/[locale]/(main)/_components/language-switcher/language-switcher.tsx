@@ -59,7 +59,7 @@ export const LanguageSwitcher = ({ isTransparent }: LanguageSwitcherProps) => {
                 aria-haspopup="listbox"
                 aria-expanded={open}
                 className={cn(
-                    "flex items-center gap-1.5 px-2.5 rounded-[10px]  h-10",
+                    "flex items-center gap-1.5 px-2.5 rounded-[10px] h-10 cursor-pointer hover:bg-gray-100",
                     "text-[13px] font-medium transition-colors duration-150",
                     "focus-visible:outline-none",
                     isTransparent ?

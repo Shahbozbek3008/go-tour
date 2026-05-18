@@ -16,7 +16,6 @@ type TourSearchBody = {
     hasReviews?: boolean | null
     languages?: string[] | null
     visaRequired?: boolean | null
-    childDiscount?: number | null
     sortBy?: string
     agentId?: string | null
     destinationId?: string | null
@@ -24,6 +23,8 @@ type TourSearchBody = {
     endDate?: string | null
     destinationIds?: number[] | null
     name?: string | null
+    childrenCount?: number | null
+    childAge?: number | null
 }
 
 export const useTourSearch = (

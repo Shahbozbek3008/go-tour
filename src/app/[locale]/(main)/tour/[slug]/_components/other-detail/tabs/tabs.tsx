@@ -64,10 +64,10 @@ export function TourNavTabs() {
     }, [])
 
     const scrollToSection = (key: SectionKey) => {
+        setActiveTab(key)
         const el = document.getElementById(SECTION_IDS[key])
         if (!el) return
 
-        setActiveTab(key)
         isClickScrolling.current = true
 
         el.scrollIntoView({ behavior: "smooth", block: "start" })

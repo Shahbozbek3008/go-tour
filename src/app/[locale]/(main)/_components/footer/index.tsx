@@ -123,10 +123,22 @@ const Footer = () => {
                                 </a>
                             </li>
                             <li className="group flex items-center gap-4 cursor-pointer">
-                                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-white shadow-sm border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all duration-300">
+                                <div
+                                    className="flex items-center justify-center w-10 h-10 rounded-xl bg-white shadow-sm border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all duration-300"
+                                    onClick={() =>
+                                        window.open("https://t.me/gotour_uzb")
+                                    }
+                                >
                                     <TelegramIcon className="text-slate-500 hover:text-blue-600 transition-all duration-300" />
                                 </div>
-                                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-white shadow-sm border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all duration-300">
+                                <div
+                                    className="flex items-center justify-center w-10 h-10 rounded-xl bg-white shadow-sm border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all duration-300"
+                                    onClick={() =>
+                                        window.open(
+                                            "https://www.instagram.com/gotour_uzb/",
+                                        )
+                                    }
+                                >
                                     <InstagramIcon className="text-slate-500 hover:text-blue-600 transition-all duration-300" />
                                 </div>
                             </li>

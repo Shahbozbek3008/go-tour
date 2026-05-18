@@ -67,7 +67,7 @@ const resolveBadge = (tour: Tour): string => {
     if (tour.hasDiscount) return "badge_discount"
     if (tour.popular) return "badge_bestseller"
     if (tour.visaRequired === false) return "badge_visaFree"
-    if (tour.categories && tour.categories.length > 0) {
+    if (tour.categories && tour.categories.length > 0 && tour.categories[0]) {
         return `cat_${tour.categories[0]}`
     }
     return "badge_tour"

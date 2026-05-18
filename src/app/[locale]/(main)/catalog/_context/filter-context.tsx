@@ -1,5 +1,6 @@
 "use client"
 
+import { useCurrency } from "@/app/_providers/currency-provider"
 import { getHref } from "@/lib/utils/get-href"
 import { useRouter, useSearchParams } from "next/navigation"
 import React, {
@@ -10,8 +11,11 @@ import React, {
     useRef,
     useState,
 } from "react"
-import { useCurrency } from "@/app/_providers/currency-provider"
-import { DEFAULT_FILTERS, FilterState, getPriceLimit } from "../_constants/filter"
+import {
+    DEFAULT_FILTERS,
+    FilterState,
+    getPriceLimit,
+} from "../_constants/filter"
 
 interface FilterContextType {
     filters: FilterState
@@ -44,6 +48,16 @@ export const FilterProvider = ({ children }: { children: React.ReactNode }) => {
                 destinationsStr ?
                     destinationsStr.split(",").map(Number).filter(Boolean)
                 :   [],
+            // childrenCount (ilgari: childDiscount)
+            childrenCount:
+                searchParams.get("childrenCount") !== null ?
+                    Number(searchParams.get("childrenCount"))
+                :   null,
+            // childAge — YANGI
+            childAge:
+                searchParams.get("childAge") !== null ?
+                    Number(searchParams.get("childAge"))
+                :   null,
         }
     }
 
@@ -94,10 +108,18 @@ export const FilterProvider = ({ children }: { children: React.ReactNode }) => {
             params.delete("visaRequired")
         }
 
-        if (filters.childDiscount) {
-            params.set("childDiscount", "true")
+        // childrenCount (ilgari: childDiscount)
+        if (filters.childrenCount) {
+            params.set("childrenCount", String(filters.childrenCount))
         } else {
-            params.delete("childDiscount")
+            params.delete("childrenCount")
+        }
+
+        // childAge — YANGI
+        if (filters.childAge !== null) {
+            params.set("childAge", String(filters.childAge))
+        } else {
+            params.delete("childAge")
         }
 
         if (filters.destinations.length > 0) {
@@ -109,15 +131,24 @@ export const FilterProvider = ({ children }: { children: React.ReactNode }) => {
         // Check if anything actually changed
         const currentCategory =
             currentSearchParams.get("category") ?? DEFAULT_FILTERS.category
-        const currentPromotional = currentSearchParams.get("promotional") === "true"
-        const currentGuaranteed = currentSearchParams.get("guaranteed") === "true"
-        const currentHasReviews = currentSearchParams.get("hasReviews") === "true"
-        const currentVisaRequired = currentSearchParams.get("visaRequired") === "true"
-        const currentChildDiscount =
-            currentSearchParams.get("childDiscount") ?
-                Number(currentSearchParams.get("childDiscount"))
+        const currentPromotional =
+            currentSearchParams.get("promotional") === "true"
+        const currentGuaranteed =
+            currentSearchParams.get("guaranteed") === "true"
+        const currentHasReviews =
+            currentSearchParams.get("hasReviews") === "true"
+        const currentVisaRequired =
+            currentSearchParams.get("visaRequired") === "true"
+        const currentChildrenCount =
+            currentSearchParams.get("childrenCount") !== null ?
+                Number(currentSearchParams.get("childrenCount"))
             :   null
-        const currentDestinations = currentSearchParams.get("destinations") ?? ""
+        const currentChildAge =
+            currentSearchParams.get("childAge") !== null ?
+                Number(currentSearchParams.get("childAge"))
+            :   null
+        const currentDestinations =
+            currentSearchParams.get("destinations") ?? ""
 
         if (
             currentCategory === filters.category &&
@@ -125,7 +156,8 @@ export const FilterProvider = ({ children }: { children: React.ReactNode }) => {
             currentGuaranteed === filters.guaranteed &&
             currentHasReviews === filters.hasReviews &&
             currentVisaRequired === filters.visaRequired &&
-            currentChildDiscount === filters.childDiscount &&
+            currentChildrenCount === filters.childrenCount &&
+            currentChildAge === filters.childAge &&
             currentDestinations === filters.destinations.join(",")
         ) {
             return
@@ -145,7 +177,8 @@ export const FilterProvider = ({ children }: { children: React.ReactNode }) => {
         filters.guaranteed,
         filters.hasReviews,
         filters.visaRequired,
-        filters.childDiscount,
+        filters.childrenCount,
+        filters.childAge,
         filters.destinations,
         router,
         // searchParams olib tashlandi, faqat filters o'zgarganda ishlaydi
@@ -164,9 +197,13 @@ export const FilterProvider = ({ children }: { children: React.ReactNode }) => {
         const guaranteedFromUrl = searchParams.get("guaranteed") === "true"
         const hasReviewsFromUrl = searchParams.get("hasReviews") === "true"
         const visaRequiredFromUrl = searchParams.get("visaRequired") === "true"
-        const childDiscountFromUrl =
-            searchParams.get("childDiscount") ?
-                Number(searchParams.get("childDiscount"))
+        const childrenCountFromUrl =
+            searchParams.get("childrenCount") !== null ?
+                Number(searchParams.get("childrenCount"))
+            :   null
+        const childAgeFromUrl =
+            searchParams.get("childAge") !== null ?
+                Number(searchParams.get("childAge"))
             :   null
         const destinationsFromUrl =
             searchParams
@@ -181,7 +218,8 @@ export const FilterProvider = ({ children }: { children: React.ReactNode }) => {
             guaranteedFromUrl !== filters.guaranteed ||
             hasReviewsFromUrl !== filters.hasReviews ||
             visaRequiredFromUrl !== filters.visaRequired ||
-            childDiscountFromUrl !== filters.childDiscount ||
+            childrenCountFromUrl !== filters.childrenCount ||
+            childAgeFromUrl !== filters.childAge ||
             destinationsFromUrl.join(",") !== filters.destinations.join(",")
         ) {
             setFilters((prev) => ({
@@ -191,7 +229,8 @@ export const FilterProvider = ({ children }: { children: React.ReactNode }) => {
                 guaranteed: guaranteedFromUrl,
                 hasReviews: hasReviewsFromUrl,
                 visaRequired: visaRequiredFromUrl,
-                childDiscount: childDiscountFromUrl,
+                childrenCount: childrenCountFromUrl,
+                childAge: childAgeFromUrl,
                 destinations: destinationsFromUrl,
             }))
         }

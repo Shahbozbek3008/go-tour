@@ -1,8 +1,8 @@
 "use client"
 
+import { FilterIcon } from "@/assets/icons/filter3"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils/shadcn"
-import { SlidersHorizontal } from "lucide-react"
 
 interface FilterTriggerButtonProps {
     activeCount: number
@@ -27,7 +27,7 @@ export const FilterTriggerButton = ({
                 className,
             )}
         >
-            <SlidersHorizontal className="w-4 h-4 text-zinc-500" />
+            <FilterIcon />
             {activeCount > 0 && (
                 <Badge className="flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-blue-600 text-white text-[10px] font-bold">
                     {activeCount}

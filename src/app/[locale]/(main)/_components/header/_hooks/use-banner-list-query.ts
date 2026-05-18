@@ -19,6 +19,8 @@ export type Banner = {
     androidLink: string | null
     iosLink: string | null
     destinationId: number | null
+    slugRu?: string | null
+    slugUz?: string | null
 }
 export const useBannerListQuery = () => {
     const res = useGet<{ data: Banner[] }>(API.BANNER)

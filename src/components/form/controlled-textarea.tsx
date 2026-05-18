@@ -1,6 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils/shadcn"
+import { useTranslations } from "next-intl"
 import { ChangeEvent } from "react"
 import {
     FieldValues,
@@ -9,11 +10,10 @@ import {
     useController,
     UseFormReturn,
 } from "react-hook-form"
+import ClientTranslate from "../common/translation/client-translate"
 import ErrorMessage from "../ui/error-message"
 import { Label } from "../ui/label"
 import { Textarea, TextareaProps } from "../ui/textarea"
-import ClientTranslate from "../common/translation/client-translate"
-import { useTranslations } from "next-intl"
 
 interface IProps<IForm extends FieldValues> {
     methods: UseFormReturn<IForm>
@@ -71,15 +71,15 @@ export default function ControlledTextarea<IForm extends FieldValues>({
             )}
             <Textarea
                 autoComplete="off"
-                placeholder={
-                    placeholder ?
-                        t(placeholder as any)
-                    :   undefined
-                }
+                placeholder={placeholder ? t(placeholder as any) : undefined}
                 onChange={(e) => {
                     onChange(e)
                     onValueChange?.(e)
                 }}
+                className={cn(
+                    "break-words overflow-wrap-anywhere",
+                    textareaProps?.className,
+                )}
                 {...field}
                 {...textareaProps}
             />

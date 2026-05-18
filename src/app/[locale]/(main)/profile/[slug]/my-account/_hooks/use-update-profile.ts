@@ -4,12 +4,14 @@ import { useRevalidate } from "@/hooks/react-query/use-revalidate"
 import { API } from "@/lib/constants/api-endpoints"
 import { FILE_UPLOAD_URL } from "@/lib/constants/base-url"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useTranslations } from "next-intl"
 import { useEffect } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { FormValues, schema } from "../schemas"
 
 export const useUpdateProfile = () => {
+    const t = useTranslations()
     const { data: profile } = useProfileQuery()
     const { post, postAsync, isPending } = useRequest()
     const { invalidateByExactMatch } = useRevalidate()
@@ -27,7 +29,7 @@ export const useUpdateProfile = () => {
     })
 
     const onSubmit: SubmitHandler<FormValues> = async (data) => {
-        const { avatar, ...rest } = data
+        const { avatar, gender, ...rest } = data
         let imageUrl = profile?.data?.userProfile?.imageUrl || ""
 
         if (avatar instanceof File) {
@@ -50,20 +52,18 @@ export const useUpdateProfile = () => {
 
         const payload = {
             ...rest,
-            imageUrl,
+            imageUrl: imageUrl?.startsWith("https") ? null : imageUrl,
             notification: null,
+            gender: gender ?? null,
         }
 
         post(API.PROFILE.UPDATE, payload, {
             onSuccess: (res) => {
-                console.log(res, "response")
                 if (res?.status === 0) {
-                    toast.error(res?.message)
-                } else {
-                    toast.success(
-                        "Profile ma'lumotlari muvaffaqiyatli yangilandi",
-                    )
                     invalidateByExactMatch([API.PROFILE.INFO.ME])
+                    toast.success(t("profileUpdatedSuccessfully"))
+                } else {
+                    toast.error(res?.message)
                 }
             },
         })

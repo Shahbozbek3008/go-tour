@@ -5,6 +5,7 @@ import { useGet, UseGetArgs } from "./use-get"
 
 export const useProfileQuery = (args?: UseGetArgs<AuthResponse>) => {
     const accessToken = ClientTokenService.getAccessToken()
+
     const res = useGet<AuthResponse>(API.PROFILE.INFO.ME, {
         options: {
             refetchOnMount: false,

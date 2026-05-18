@@ -46,10 +46,14 @@ export function ReadMore({ children, lines = 4, className }: ReadMoreProps) {
             {(isClamped || isExpanded) && (
                 <button
                     onClick={() => setIsExpanded((prev) => !prev)}
-                    className="mt-2.5 flex items-center gap-1.5 text-[15px] font-medium text-[#ADC227] transition-colors"
+                    className="mt-2.5 flex items-center gap-1.5 text-[15px] font-medium text-primary transition-colors"
                 >
                     <span>
-                        <ClientTranslate translationKey={isExpanded ? "showLess" : "showMore"} />
+                        <ClientTranslate
+                            translationKey={
+                                isExpanded ? "showLess" : "showMore"
+                            }
+                        />
                     </span>
                     <ChevronDown
                         className={cn(

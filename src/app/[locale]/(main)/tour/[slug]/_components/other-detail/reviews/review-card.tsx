@@ -17,11 +17,14 @@ export function ReviewCard({ review, className }: ReviewCardProps) {
     const { userFullName, rating, createdAt, comment, mediaUrls } = review
 
     const formattedDate = format(new Date(createdAt), "dd.MM.yyyy")
-    
-    const galleryImages = mediaUrls?.map((m) => ({
-        src: m.url,
-        alt: `${userFullName}'s review image`,
-    })) || []
+
+    const galleryMedia =
+        mediaUrls?.map((m) => ({
+            src: m.url,
+            alt: `${userFullName}'s review media`,
+            img: m.type === "IMAGE",
+            video: m.type === "VIDEO",
+        })) || []
 
     return (
         <div className={cn("py-5", className)}>
@@ -33,8 +36,8 @@ export function ReviewCard({ review, className }: ReviewCardProps) {
                             {userFullName}
                         </p>
                         <div className="flex items-center gap-1">
-                            <Star className="size-4 fill-[#ADC227] text-[#ADC227]" />
-                            <span className="text-[15px] sm:text-[17px] font-semibold text-[#ADC227]">
+                            <Star className="size-4 fill-amber-400 text-amber-400" />
+                            <span className="text-[15px] sm:text-[17px] font-semibold text-amber-400">
                                 {rating.toFixed(1)}
                             </span>
                         </div>
@@ -48,7 +51,7 @@ export function ReviewCard({ review, className }: ReviewCardProps) {
             <ReadMore lines={2} className="mb-4">
                 {comment}
             </ReadMore>
-            {galleryImages.length > 0 && <ImageGallery images={galleryImages} />}
+            {galleryMedia.length > 0 && <ImageGallery media={galleryMedia} />}
         </div>
     )
 }

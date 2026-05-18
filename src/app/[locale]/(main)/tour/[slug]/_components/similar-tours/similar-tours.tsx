@@ -1,5 +1,6 @@
 "use client"
 
+import { useCurrency } from "@/app/_providers/currency-provider"
 import { ProductCard } from "@/components/card"
 import ClientTranslate from "@/components/common/translation/client-translate"
 import { useRouter } from "@/i18n/navigation"
@@ -21,7 +22,12 @@ export const SimilarTours = ({
     hasLike,
 }: SimilarToursProps) => {
     const router = useRouter()
-    const { similarTours } = useSimilarToursQuery()
+    const { currency } = useCurrency()
+    const { similarTours } = useSimilarToursQuery({
+        options: {
+            queryKey: [currency],
+        },
+    })
     const [emblaRef] = useEmblaCarousel({
         align: "start",
         dragFree: true,

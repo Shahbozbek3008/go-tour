@@ -3,7 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { useLanguage } from "@/hooks/use-language"
 import { Building2 } from "lucide-react"
-import type { AccommodationImage, AccommodationOption } from "../../../_types"
+import type { AccommodationOption } from "../../../_types"
 import { ImageGallery } from "../image-gallery/image-gallery"
 import { ComfortBadge } from "./comfort-badge"
 
@@ -16,10 +16,12 @@ export function AccommodationCard({ option }: AccommodationCardProps) {
 
     const description = isRussian ? option.descriptionRu : option.descriptionUz
 
-    const galleryImages: AccommodationImage[] =
+    const galleryMedia =
         option.images?.map((img) => ({
             src: img?.url,
             alt: option?.name,
+            img: true,
+            video: false,
         })) || []
 
     return (
@@ -41,8 +43,8 @@ export function AccommodationCard({ option }: AccommodationCardProps) {
                         {description}
                     </p>
 
-                    {galleryImages?.length > 0 && (
-                        <ImageGallery images={galleryImages} />
+                    {galleryMedia?.length > 0 && (
+                        <ImageGallery media={galleryMedia} />
                     )}
                 </div>
             </CardContent>

@@ -13,6 +13,7 @@ interface LocationSearchProps {
     value: string | null
     onSelect: (item: Destination | null) => void
     onQueryChange?: (query: string) => void
+    onEnter?: () => void
     autoOpen?: boolean
 }
 
@@ -20,6 +21,7 @@ export function LocationSearch({
     value,
     onSelect,
     onQueryChange,
+    onEnter,
     autoOpen = false,
 }: LocationSearchProps) {
     const t = useTranslations()
@@ -61,7 +63,7 @@ export function LocationSearch({
 
     const handleOpen = () => {
         setOpen(true)
-        setQuery(value ?? "")
+        setQuery("")
         setTimeout(() => inputRef.current?.focus(), 50)
     }
 
@@ -77,6 +79,9 @@ export function LocationSearch({
         setQuery("")
         onQueryChange?.("")
     }
+
+    // filtered natija bo'lsa ko'rsat, yo'q bo'lsa (API search rejimi) yop
+    const isDropdownVisible = open && filtered.length > 0
 
     return (
         <div ref={wrapperRef} className="relative flex-1">
@@ -103,6 +108,13 @@ export function LocationSearch({
                             const val = e.target.value
                             setQuery(val)
                             onQueryChange?.(val)
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === " ") e.stopPropagation()
+                            if (e.key === "Enter") {
+                                setOpen(false)
+                                onEnter?.()
+                            }
                         }}
                         placeholder={t("whereDoYouWantToGo")}
                         className="flex-1 text-sm outline-none text-gray-800 placeholder-gray-400 bg-transparent"
@@ -148,7 +160,7 @@ export function LocationSearch({
             <div
                 className={cn(
                     "absolute top-[calc(100%+8px)] left-0 w-full sm:w-80 rounded-2xl shadow-2xl border bg-white border-gray-100 z-50 transition-all duration-200 origin-top",
-                    open ?
+                    isDropdownVisible ?
                         "opacity-100 scale-100 pointer-events-auto"
                     :   "opacity-0 scale-95 pointer-events-none",
                 )}

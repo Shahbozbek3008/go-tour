@@ -67,7 +67,7 @@ export function BottomNav() {
         },
     })
     const pathname = usePathname()
-    const { isAuthenticated } = useProfileQuery()
+    const { isAuthenticated, data: profile } = useProfileQuery()
     const { isOpen, openModal } = useModal(MODAL_KEYS.SIGN_IN_MODAL)
     const { isOpen: isVerifyOpen } = useModal(MODAL_KEYS.VERIFY_PHONE_MODAL)
 
@@ -94,6 +94,8 @@ export function BottomNav() {
                     const { id, href, label, icon } = item
                     const active = isActive(href)
                     const showLoginLabel = id === "profile" && !isAuthenticated
+                    const isSaved = id === "saved"
+                    const favoriteCount = profile?.data?.favoriteCount ?? 0
 
                     return (
                         <Link
@@ -104,25 +106,39 @@ export function BottomNav() {
                             onClick={(e) => handleNavClick(e, item)}
                         >
                             <div className="flex flex-col items-center justify-center h-full gap-1.5 px-0.5">
-                                <div
-                                    className={cn(
-                                        "transition-all duration-300 transform",
-                                        active ? 
-                                            "text-primary scale-110" : 
-                                            "text-gray-400 scale-100"
+                                <div className="relative">
+                                    <div
+                                        className={cn(
+                                            "transition-all duration-300 transform",
+                                            active ?
+                                                "text-primary scale-110"
+                                            :   "text-gray-400 scale-100",
+                                        )}
+                                    >
+                                        {icon}
+                                    </div>
+                                    {isSaved && favoriteCount > 0 && (
+                                        <span className="absolute -top-2 -right-2 flex items-center justify-center min-w-[16px] h-4 rounded-full bg-red-500 text-white text-[9px] font-bold leading-none px-1">
+                                            {favoriteCount > 99 ?
+                                                "99+"
+                                            :   favoriteCount}
+                                        </span>
                                     )}
-                                >
-                                    {icon}
                                 </div>
                                 <span
                                     className={cn(
                                         "text-[10px] sm:text-xs font-medium transition-colors duration-200 text-center w-full truncate px-0.5",
-                                        active ? "text-primary" : "text-gray-500"
+                                        active ? "text-primary" : (
+                                            "text-gray-500"
+                                        ),
                                     )}
                                 >
                                     {showLoginLabel ?
                                         <ClientTranslate translationKey="signInTitle" />
-                                    :   <ClientTranslate translationKey={label as any} />}
+                                    :   <ClientTranslate
+                                            translationKey={label as any}
+                                        />
+                                    }
                                 </span>
                             </div>
                         </Link>

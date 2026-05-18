@@ -1,6 +1,7 @@
 "use client"
 
 import { useCurrency } from "@/app/_providers/currency-provider"
+import { OpenLogo } from "@/assets/icons/open-logo"
 import ClientTranslate from "@/components/common/translation/client-translate"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -16,10 +17,11 @@ import { useLanguage } from "@/hooks/use-language"
 import { cn } from "@/lib/utils/shadcn"
 import { format } from "date-fns"
 import { ru, uz } from "date-fns/locale"
-import { CalendarOff, Check, Minus, Plus, Users, Zap } from "lucide-react"
+import { CalendarOff, Check, FileX, Zap } from "lucide-react"
 import { useState } from "react"
 import { useTourInstallmentSessionQuery } from "../../../_hooks"
 import { InstallmentOption, TourPricing, TourSession } from "../../../_types"
+import { Participants } from "./participants"
 
 interface BookingCardProps {
     pricing: TourPricing
@@ -34,7 +36,9 @@ export function BookingCard({
 }: BookingCardProps) {
     const { isRussian } = useLanguage()
     const { currency } = useCurrency()
-    const [selectedSessionId, setSelectedSessionId] = useState<string>("")
+    const [selectedSessionId, setSelectedSessionId] = useState<string>(
+        sessions?.[0]?.id?.toString() ?? "",
+    )
     const [participants, setParticipants] = useState(1)
     const [paymentTab, setPaymentTab] = useState<"cash" | "installment">(
         "installment",
@@ -90,7 +94,6 @@ export function BookingCard({
         const dLocale = isRu ? ru : uz
         const startDate = new Date(start)
         const endDate = new Date(end)
-
         const startMonth = format(startDate, "MMM", {
             locale: dLocale,
         }).toLowerCase()
@@ -98,12 +101,10 @@ export function BookingCard({
             locale: dLocale,
         }).toLowerCase()
         const year = format(endDate, "yyyy")
-
         if (startMonth === endMonth) {
             return `${format(startDate, "d")} – ${format(endDate, "d")} ${endMonth} ${year}`
-        } else {
-            return `${format(startDate, "d")} ${startMonth} – ${format(endDate, "d")} ${endMonth} ${year}`
         }
+        return `${format(startDate, "d")} ${startMonth} – ${format(endDate, "d")} ${endMonth} ${year}`
     }
 
     const getPlacesString = (count: number, isRu: boolean) => {
@@ -123,8 +124,14 @@ export function BookingCard({
     const formatNumber = (num: number) =>
         num.toLocaleString(undefined, { maximumFractionDigits: 2 })
 
+    const currencyLabel =
+        currency === "USD" ? "$"
+        : isRussian ? "сум"
+        : "so'm"
+
     return (
         <div className="rounded-2xl border border-border/60 bg-card p-5 space-y-4">
+            {/* ─── Price header ─── */}
             <div className="flex items-baseline gap-2 flex-wrap">
                 {!activeSession && sessions?.length > 0 && (
                     <span className="text-2xl font-bold text-foreground mr-1">
@@ -137,7 +144,6 @@ export function BookingCard({
                         "$"
                     :   <ClientTranslate translationKey="uzs" />}
                 </span>
-
                 {hasDiscount && originalPrice ?
                     <>
                         <span className="text-base text-muted-foreground line-through">
@@ -164,6 +170,7 @@ export function BookingCard({
                 <ClientTranslate translationKey="days_label" />
             </p>
 
+            {/* ─── Session select ─── */}
             <div className="space-y-3">
                 <Select
                     value={selectedSessionId}
@@ -173,7 +180,7 @@ export function BookingCard({
                         setSelectedMonths(null)
                     }}
                 >
-                    <SelectTrigger className="w-full text-foreground font-medium h-20 placeholder:text-sm rounded-xl">
+                    <SelectTrigger className="w-full text-foreground font-medium h-auto! placeholder:text-sm rounded-xl">
                         <SelectValue
                             placeholder={
                                 <ClientTranslate translationKey="selectDates" />
@@ -197,10 +204,11 @@ export function BookingCard({
                                 <SelectItem
                                     key={session.id}
                                     value={session.id.toString()}
-                                    className="py-3 px-3 cursor-pointer"
+                                    className="p-3 cursor-pointer"
+                                    data-tour-session-item
                                 >
-                                    <div className="flex items-center justify-between w-full min-w-[240px] pr-2">
-                                        <span className="text-sm font-medium text-foreground min-w-0 pr-4">
+                                    <div className="flex lg:flex-row flex-col lg:items-center items-start gap-2 justify-between w-full min-w-[240px] pr-2">
+                                        <span className="lg:text-sm text-xs font-medium text-foreground min-w-0 pr-4">
                                             {formatDateRange(
                                                 session?.startDate,
                                                 session?.endDate,
@@ -209,7 +217,7 @@ export function BookingCard({
                                         </span>
                                         <span
                                             className={cn(
-                                                "shrink-0 inline-flex items-center px-2 py-0.5 rounded-md border text-[13px] font-semibold tracking-wide bg-background",
+                                                "shrink-0 inline-flex items-center px-2 py-0.5 rounded-md border lg:text-sm text-xs font-semibold tracking-wide bg-background",
                                                 session.availableSlots < 3 ?
                                                     "border-[#b180ad]/40 text-[#b180ad] bg-[#b180ad]/5 dark:text-[#c49bc0]"
                                                 :   "border-[#a5c156]/40 text-[#a5c156] bg-[#a5c156]/5 dark:text-[#b4ce6a]",
@@ -231,44 +239,11 @@ export function BookingCard({
                     </SelectContent>
                 </Select>
 
-                <div className="flex items-center justify-between p-3 rounded-xl border border-border/60 bg-muted/20">
-                    <div className="flex items-center gap-2">
-                        <Users className="size-4 text-primary" />
-                        <span className="text-sm text-foreground font-medium">
-                            <ClientTranslate translationKey="participants" />
-                        </span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <button
-                            onClick={() =>
-                                setParticipants((p) => Math.max(1, p - 1))
-                            }
-                            className="size-7 rounded-lg border border-border flex items-center justify-center hover:bg-muted transition-colors disabled:opacity-40"
-                            disabled={participants <= 1}
-                        >
-                            <Minus className="size-3" />
-                        </button>
-                        <span className="text-sm font-semibold w-4 text-center">
-                            {participants}
-                        </span>
-                        <button
-                            onClick={() =>
-                                setParticipants((p) =>
-                                    Math.min(
-                                        activeSession ? availableSpots : 1,
-                                        p + 1,
-                                    ),
-                                )
-                            }
-                            className="size-7 rounded-lg border border-border flex items-center justify-center hover:bg-muted transition-colors disabled:opacity-40"
-                            disabled={
-                                !activeSession || participants >= availableSpots
-                            }
-                        >
-                            <Plus className="size-3" />
-                        </button>
-                    </div>
-                </div>
+                <Participants
+                    participants={participants}
+                    setParticipants={setParticipants}
+                    activeSession={activeSession}
+                />
             </div>
 
             {activeSession && (
@@ -288,7 +263,6 @@ export function BookingCard({
             {/* ─── Installment / Cash payment section ─── */}
             {selectedSessionId && installmentOptions.length > 0 && (
                 <div className="space-y-3">
-                    {/* Payment type tabs */}
                     <div className="flex rounded-xl border border-border/60 bg-muted/30 p-1 gap-1">
                         <button
                             onClick={() => {
@@ -305,7 +279,7 @@ export function BookingCard({
                                 }
                             }}
                             className={cn(
-                                "flex-1 py-2 px-3 rounded-lg text-sm font-semibold transition-all duration-200",
+                                "flex-1 py-2 px-3 rounded-lg lg:text-sm text-xs font-semibold transition-all duration-200",
                                 paymentTab === "installment" ?
                                     "bg-card text-foreground shadow-sm border border-border/40"
                                 :   "text-muted-foreground hover:text-foreground",
@@ -316,7 +290,7 @@ export function BookingCard({
                         <button
                             onClick={() => setPaymentTab("cash")}
                             className={cn(
-                                "flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all duration-200",
+                                "flex-1 py-2 px-3 rounded-lg lg:text-sm text-xs font-medium transition-all duration-200",
                                 paymentTab === "cash" ?
                                     "bg-card text-foreground shadow-sm border border-border/40"
                                 :   "text-muted-foreground hover:text-foreground",
@@ -328,7 +302,7 @@ export function BookingCard({
 
                     {paymentTab === "installment" && (
                         <div className="space-y-3">
-                            <div className="flex flex-wrap gap-2">
+                            <div className="flex flex-wrap gap-1">
                                 {[...installmentOptions]
                                     .sort((a, b) => b.months - a.months)
                                     .map((opt) => (
@@ -338,7 +312,7 @@ export function BookingCard({
                                                 setSelectedMonths(opt.months)
                                             }
                                             className={cn(
-                                                "px-3 py-1.5 rounded-full text-sm font-semibold border transition-all duration-200",
+                                                "px-3 py-1.5 rounded-lg text-sm font-semibold border transition-all duration-200",
                                                 selectedMonths === opt.months ?
                                                     "bg-primary text-primary-foreground border-primary shadow-sm"
                                                 :   "bg-muted/30 border-border/60 text-muted-foreground hover:border-primary/50 hover:text-foreground",
@@ -350,81 +324,95 @@ export function BookingCard({
                                     ))}
                             </div>
 
-                            {/* Open installment card */}
                             {selectedInstallment && (
-                                <div className="flex items-center justify-between px-4 py-3 rounded-xl border border-orange-300/60 bg-orange-50/60 dark:bg-orange-950/20 dark:border-orange-700/40">
-                                    <div className="flex items-center gap-3">
-                                        {/* Open logo */}
-                                        <div className="flex-shrink-0">
-                                            <svg
-                                                width="52"
-                                                height="22"
-                                                viewBox="0 0 52 22"
-                                                fill="none"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                className="block"
-                                            >
-                                                <text
-                                                    x="0"
-                                                    y="18"
-                                                    fontFamily="Arial, sans-serif"
-                                                    fontWeight="700"
-                                                    fontSize="20"
-                                                    fill="url(#openGrad)"
-                                                >
-                                                    open
-                                                </text>
-                                                <defs>
-                                                    <linearGradient
-                                                        id="openGrad"
-                                                        x1="0"
-                                                        y1="0"
-                                                        x2="52"
-                                                        y2="0"
-                                                        gradientUnits="userSpaceOnUse"
-                                                    >
-                                                        <stop
-                                                            offset="0%"
-                                                            stopColor="#8B5CF6"
-                                                        />
-                                                        <stop
-                                                            offset="50%"
-                                                            stopColor="#3B82F6"
-                                                        />
-                                                        <stop
-                                                            offset="100%"
-                                                            stopColor="#06B6D4"
-                                                        />
-                                                    </linearGradient>
-                                                </defs>
-                                            </svg>
+                                <div className="rounded-xl border border-border/50 bg-muted/20 overflow-hidden">
+                                    <div className="flex items-center justify-between px-4 py-2.5 border-b border-border/40 bg-muted/30">
+                                        <div className="flex items-center gap-2">
+                                            <OpenLogo />
+                                            <span className="text-xs text-muted-foreground font-medium">
+                                                {isRussian ?
+                                                    "Рассрочка"
+                                                :   "Muddatli to'lov"}
+                                            </span>
                                         </div>
-                                        <div className="min-w-0">
-                                            <p className="text-sm font-semibold text-foreground leading-tight">
+                                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+                                            {isRussian ?
+                                                "Без документов"
+                                            :   "Hujjatsiz"}
+                                        </span>
+                                    </div>
+
+                                    <div className="px-4 py-3 flex items-end justify-between gap-3">
+                                        <div>
+                                            <p className="text-[11px] text-muted-foreground mb-0.5">
+                                                {isRussian ?
+                                                    "Ежемесячный платёж"
+                                                :   "Oylik to'lov"}
+                                            </p>
+                                            <p className="text-xl font-bold text-foreground leading-tight">
                                                 {formatNumber(
-                                                    selectedInstallment.monthlyPayment,
+                                                    selectedInstallment.monthlyPayment *
+                                                        participants,
                                                 )}{" "}
-                                                ${"  "}
-                                                <span className="font-normal text-muted-foreground">
-                                                    ×{" "}
-                                                    {selectedInstallment.months}{" "}
-                                                    {isRussian ?
-                                                        "месяцев"
-                                                    :   "oy"}
+                                                <span className="text-sm font-normal text-muted-foreground">
+                                                    {currencyLabel}
                                                 </span>
                                             </p>
                                             <p className="text-xs text-muted-foreground mt-0.5">
-                                                <ClientTranslate translationKey="total_label" />{" "}
+                                                × {selectedInstallment.months}{" "}
+                                                {isRussian ? "месяцев" : "oy"}
+                                            </p>
+                                        </div>
+                                        <div className="text-right shrink-0">
+                                            <p className="text-[11px] text-muted-foreground mb-0.5">
+                                                {isRussian ? "Итого" : "Jami"}
+                                            </p>
+                                            <p className="text-sm font-semibold text-foreground">
                                                 {formatNumber(
-                                                    selectedInstallment.totalPayment,
+                                                    selectedInstallment.totalPayment *
+                                                        participants,
                                                 )}{" "}
-                                                $
+                                                <span className="font-normal text-muted-foreground">
+                                                    {currencyLabel}
+                                                </span>
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="flex-shrink-0 ml-2">
-                                        <div className="size-6 rounded-full bg-primary/10 flex items-center justify-center">
-                                            <Check className="size-3.5 text-primary" />
+
+                                    <div className="px-4 pb-3 space-y-1.5 border-t border-border/30 pt-2.5">
+                                        {[
+                                            isRussian ?
+                                                "От 10 000 до 82 400 000 сум"
+                                            :   "10 000 so'mdan 82 400 000 so'mgacha",
+                                            isRussian ? "2, 4 или 6 месяцев" : (
+                                                "2, 4 yoki 6 oyga bo'lib to'lash"
+                                            ),
+                                            isRussian ?
+                                                "Без документов и анкет"
+                                            :   "Hujjatlar va anketa talab etilmaydi",
+                                        ].map((text, i) => (
+                                            <div
+                                                key={i}
+                                                className="flex items-center gap-2"
+                                            >
+                                                <div className="size-4 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                                                    <Check className="size-2.5 text-primary" />
+                                                </div>
+                                                <span className="text-xs text-muted-foreground">
+                                                    {text}
+                                                </span>
+                                            </div>
+                                        ))}
+                                        <div className="flex items-center gap-2 pt-0.5">
+                                            <div className="size-4 rounded-full bg-muted/50 flex items-center justify-center shrink-0">
+                                                <FileX className="size-2.5 text-muted-foreground/60" />
+                                            </div>
+                                            <span className="text-xs text-muted-foreground">
+                                                {isRussian ?
+                                                    "Для всех держателей банковских карт"
+                                                :   "Barcha bank kartalari egalari uchun"
+                                                }
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -454,7 +442,7 @@ export function BookingCard({
 
             <div className="text-center space-y-0.5">
                 <p className="text-xs text-muted-foreground">
-                    <ClientTranslate translationKey="prepayment" /> – ${" "}
+                    <ClientTranslate translationKey="prepayment" /> –{" "}
                     {activeSession ?
                         (
                             ((activeSession.price * pricing.prepayment) /
@@ -463,7 +451,9 @@ export function BookingCard({
                         ).toLocaleString(undefined, {
                             maximumFractionDigits: 0,
                         })
-                    :   (pricing.prepayment * participants).toLocaleString()}
+                    :   (pricing.prepayment * participants).toLocaleString()
+                    }{" "}
+                    {currencyLabel}
                 </p>
                 <p className="text-xs text-muted-foreground">
                     <ClientTranslate translationKey="cancellation_24h" />

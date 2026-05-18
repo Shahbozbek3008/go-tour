@@ -1,7 +1,16 @@
 "use client"
 
 import ClientTranslate from "@/components/common/translation/client-translate"
-import { BookOpen, ChevronDown, MapPin, Plane, Shield } from "lucide-react"
+import {
+    BookOpen,
+    ChevronDown,
+    Headphones,
+    MapPin,
+    Plane,
+    Shield,
+    Tag,
+    Users,
+} from "lucide-react"
 import { useState } from "react"
 
 interface ServiceCardProps {
@@ -39,25 +48,28 @@ const services: ServiceCardProps[] = [
 ]
 
 const faqs: FaqItemProps[] = [
+    { question: "whyUsFaq1Q", answer: "whyUsFaq1A" },
+    { question: "whyUsFaq2Q", answer: "whyUsFaq2A" },
+    { question: "whyUsFaq3Q", answer: "whyUsFaq3A" },
+    { question: "whyUsFaq4Q", answer: "whyUsFaq4A" },
+    { question: "whyUsFaq5Q", answer: "whyUsFaq5A" },
+]
+
+const stats = [
     {
-        question: "whyUsFaq1Q",
-        answer: "whyUsFaq1A",
+        icon: <Users className="w-5 h-5" />,
+        value: "5000+",
+        label: "customer",
     },
     {
-        question: "whyUsFaq2Q",
-        answer: "whyUsFaq2A",
+        icon: <Headphones className="w-5 h-5" />,
+        value: "24/7",
+        label: "support",
     },
     {
-        question: "whyUsFaq3Q",
-        answer: "whyUsFaq3A",
-    },
-    {
-        question: "whyUsFaq4Q",
-        answer: "whyUsFaq4A",
-    },
-    {
-        question: "whyUsFaq5Q",
-        answer: "whyUsFaq5A",
+        icon: <Tag className="w-5 h-5" />,
+        value: "№1",
+        label: "bestPriceGuarantee",
     },
 ]
 
@@ -128,6 +140,30 @@ export const WhyUs = () => {
                             <ServiceCard key={service.title} {...service} />
                         ))}
                     </div>
+
+                    {/* Stats strip */}
+                    <div className="mt-8 grid grid-cols-3 gap-2 sm:gap-4">
+                        {stats.map((stat) => (
+                            <div
+                                key={stat.value}
+                                className="flex flex-col items-center justify-center gap-1.5 sm:gap-2 px-2 py-3 sm:px-4 sm:py-5 rounded-2xl bg-white border border-slate-100 shadow-sm text-center"
+                            >
+                                <div className="p-1.5 sm:p-2 rounded-xl bg-blue-50 text-blue-600 shrink-0">
+                                    {stat.icon}
+                                </div>
+                                <div>
+                                    <p className="text-sm sm:text-xl font-bold text-slate-900 leading-tight">
+                                        {stat.value}
+                                    </p>
+                                    <p className="text-[9px] sm:text-[12px] text-slate-500 leading-tight mt-0.5">
+                                        <ClientTranslate
+                                            translationKey={stat.label}
+                                        />
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
                 {/* Contact + FAQ */}
@@ -154,22 +190,10 @@ export const WhyUs = () => {
                                 <ClientTranslate translationKey="whyUsUsefulSections" />
                             </p>
                             {[
-                                {
-                                    key: "whyUsBookingProcess",
-                                    label: "Bron jarayoni",
-                                },
-                                {
-                                    key: "whyUsPaymentRefunds",
-                                    label: "To'lov va qaytishlar",
-                                },
-                                {
-                                    key: "whyUsTravelRequirements",
-                                    label: "Sayohat talablari",
-                                },
-                                {
-                                    key: "whyUsTravelExperience",
-                                    label: "Sayohat tajribasi",
-                                },
+                                { key: "whyUsBookingProcess" },
+                                { key: "whyUsPaymentRefunds" },
+                                { key: "whyUsTravelRequirements" },
+                                { key: "whyUsTravelExperience" },
                             ].map((item) => (
                                 <a
                                     key={item.key}

@@ -171,7 +171,7 @@ const TourCard = memo(function TourCard({
 
                     <div className="flex justify-between items-end gap-3 flex-wrap sm:flex-nowrap">
                         <div className="mb-1 w-full sm:w-auto flex-1">
-                            <h3 className="text-2xl  font-bold text-white leading-tight mb-2 drop-shadow-md">
+                            <h3 className="text-base md:text-2xl  font-bold text-white leading-tight mb-2 drop-shadow-md">
                                 {title}
                             </h3>
                             <p className="text-base md:text-lg font-semibold text-white drop-shadow-md">

@@ -1,9 +1,19 @@
 import { Skeleton } from "@/components/ui/skeleton"
+import { cn } from "@/lib/utils/shadcn"
 import { motion } from "framer-motion"
 
-export const ProductCardSkeleton = () => {
+export const ProductCardSkeleton = ({
+    wrapperClassName,
+}: {
+    wrapperClassName?: string
+}) => {
     return (
-        <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-zinc-100 flex-shrink-0 w-full animate-in fade-in duration-500">
+        <div
+            className={cn(
+                "bg-white rounded-2xl overflow-hidden shadow-sm border border-zinc-100  flex-shrink-0 w-full animate-in fade-in duration-500",
+                wrapperClassName,
+            )}
+        >
             {/* Image Area */}
             <div className="relative h-[200px]">
                 <Skeleton className="w-full h-full rounded-none" />
@@ -51,7 +61,13 @@ export const ProductCardSkeleton = () => {
     )
 }
 
-export const ProductGridSkeleton = ({ count = 6 }: { count?: number }) => {
+export const ProductGridSkeleton = ({
+    count = 6,
+    wrapperClassName,
+}: {
+    count?: number
+    wrapperClassName?: string
+}) => {
     return (
         <>
             {Array.from({ length: count }).map((_, i) => (
@@ -62,7 +78,7 @@ export const ProductGridSkeleton = ({ count = 6 }: { count?: number }) => {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
                 >
-                    <ProductCardSkeleton />
+                    <ProductCardSkeleton wrapperClassName={wrapperClassName} />
                 </motion.div>
             ))}
         </>

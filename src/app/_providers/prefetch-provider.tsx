@@ -14,6 +14,7 @@ interface Props {
     children: ReactNode
     queryKey?: QueryKey
     options?: CustomFetchConfig
+    data?: Record<string, unknown>
     enabled?: boolean
 }
 
@@ -21,10 +22,10 @@ export default async function PrefetchProvider({
     endpoint,
     queryKey,
     options,
+    data,
     children,
     enabled = true,
 }: Props) {
-    // return children
     const queryClient = new QueryClient()
 
     if (enabled) {
@@ -32,23 +33,37 @@ export default async function PrefetchProvider({
         await queryClient.prefetchQuery({
             queryKey: (() => {
                 const paramValues = Object.values(options?.params || {})
+                const dataValues = Object.values(data || {})
                 const hasParams = paramValues.length > 0
+                const hasData = dataValues.length > 0
+
                 if (queryKey?.length) {
-                    return hasParams ?
-                            [endpoint, ...queryKey, ...paramValues, currency]
+                    return hasParams || hasData ?
+                            [
+                                endpoint,
+                                ...queryKey,
+                                ...paramValues,
+                                ...dataValues,
+                                currency,
+                            ]
                         :   [endpoint, ...queryKey, currency]
                 }
-                return hasParams ?
-                        [endpoint, ...paramValues, currency]
+                return hasParams || hasData ?
+                        [endpoint, ...paramValues, ...dataValues, currency]
                     :   [endpoint, currency]
             })(),
-            queryFn: () => serverGetRequest(endpoint, { ...options }),
+            queryFn: () =>
+                serverGetRequest(endpoint, {
+                    ...options,
+                    params: {
+                        ...options?.params,
+                        ...data,
+                    },
+                }),
         })
     }
 
     return (
-        // Neat! Serialization is now as easy as passing props.
-        // HydrationBoundary is a Client Component, so hydration will happen there.
         <HydrationBoundary state={dehydrate(queryClient)}>
             {children}
         </HydrationBoundary>

@@ -2,38 +2,42 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ArrowRight, CheckCircle2, Mail, MapPin, Phone } from "lucide-react"
-import { useState, useMemo } from "react"
+import { useTranslations } from "next-intl"
+import { useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { useTranslations } from "next-intl"
 
+import ClientTranslate from "@/components/common/translation/client-translate"
 import ControlledInput from "@/components/form/controlled-input"
 import ControlledTextarea from "@/components/form/controlled-textarea"
 import PhoneField from "@/components/form/phone-field"
 import { Form } from "@/components/ui/form"
 import { cn } from "@/lib/utils/shadcn"
-import ClientTranslate from "@/components/common/translation/client-translate"
 
 export const TourCompaniesForm = () => {
     const t = useTranslations()
     const [submitted, setSubmitted] = useState(false)
 
-    const schema = useMemo(() => z.object({
-        name: z.string().min(2, t("tourCompanies_error_name")),
-        phone: z.string().min(7, t("tourCompanies_error_phone")),
-        website: z
-            .string()
-            .optional()
-            .refine(
-                (val) =>
-                    !val ||
-                    val === "" ||
-                    val.startsWith("http://") ||
-                    val.startsWith("https://"),
-                { message: t("tourCompanies_error_website") },
-            ),
-        message: z.string().min(10, t("tourCompanies_error_message")),
-    }), [t])
+    const schema = useMemo(
+        () =>
+            z.object({
+                name: z.string().min(2, t("tourCompanies_error_name")),
+                phone: z.string().min(7, t("tourCompanies_error_phone")),
+                website: z
+                    .string()
+                    .optional()
+                    .refine(
+                        (val) =>
+                            !val ||
+                            val === "" ||
+                            val.startsWith("http://") ||
+                            val.startsWith("https://"),
+                        { message: t("tourCompanies_error_website") },
+                    ),
+                message: z.string().min(10, t("tourCompanies_error_message")),
+            }),
+        [t],
+    )
 
     type FormValues = z.infer<typeof schema>
 
@@ -112,7 +116,9 @@ export const TourCompaniesForm = () => {
                                         </div>
                                         <div className="pt-0.5">
                                             <p className="text-xs text-zinc-400 font-medium mb-0.5">
-                                                <ClientTranslate translationKey={label} />
+                                                <ClientTranslate
+                                                    translationKey={label}
+                                                />
                                             </p>
                                             <p className="text-sm text-zinc-700 font-medium leading-snug">
                                                 {value}
@@ -163,6 +169,7 @@ export const TourCompaniesForm = () => {
                                             name="name"
                                             label="tourCompanies_label_name"
                                             showError
+                                            sanitize
                                         />
 
                                         <PhoneField

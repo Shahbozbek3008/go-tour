@@ -1,6 +1,6 @@
 "use client"
 
-import { ProductCard } from "@/components/card"
+import { ProductCard, ProductGridSkeleton } from "@/components/card"
 import ClientTranslate from "@/components/common/translation/client-translate"
 import { useTourSearch } from "@/hooks/react-query/use-tour-search-query"
 import { useRouter } from "@/i18n/navigation"
@@ -39,7 +39,7 @@ export const TourSection = () => {
         dragFree: true,
         containScroll: "trimSnaps",
     })
-    const { tours: rawTours } = useTourSearch({
+    const { tours: rawTours, isLoading } = useTourSearch({
         data: {
             sortBy:
                 activeTab === "new" ? "NEWEST"
@@ -50,19 +50,26 @@ export const TourSection = () => {
             placeholderData: keepPreviousData,
         },
     })
-    const { topSellingTours } = useTourTopSellingQuery({
-        options: {
-            enabled: activeTab === "bestseller",
-            placeholderData: keepPreviousData,
+
+    const { topSellingTours, isLoading: topSellingLoading } =
+        useTourTopSellingQuery({
+            options: {
+                placeholderData: keepPreviousData,
+            },
+        })
+    const { recommendedTours, isLoading: recommendedLoading } =
+        useTourRecommendedQuery({
+            options: {
+                placeholderData: keepPreviousData,
+            },
+        })
+    const { discountTours, isLoading: discountLoading } = useTourDiscountsQuery(
+        {
+            options: {
+                placeholderData: keepPreviousData,
+            },
         },
-    })
-    const { recommendedTours } = useTourRecommendedQuery()
-    const { discountTours } = useTourDiscountsQuery({
-        options: {
-            enabled: activeTab === "discount",
-            placeholderData: keepPreviousData,
-        },
-    })
+    )
 
     const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi])
     const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi])
@@ -79,6 +86,71 @@ export const TourSection = () => {
         }
         return adaptTours(rawTours ?? [])
     }, [rawTours, topSellingTours, recommendedTours, discountTours, activeTab])
+
+    const handleNavigateToCatalog = () => {
+        switch (activeTab) {
+            case "all":
+                router.push(
+                    getHref({
+                        pathname: "/[locale]/catalog",
+                    }),
+                )
+                break
+            case "bestseller":
+                router.push(
+                    getHref({
+                        pathname: "/[locale]/catalog",
+                        query: {
+                            sortBy: "TOP_SELLING",
+                        },
+                    }),
+                )
+                break
+            case "discount":
+                router.push(
+                    getHref({
+                        pathname: "/[locale]/catalog",
+                        query: {
+                            promotional: true,
+                        },
+                    }),
+                )
+                break
+            case "best":
+                router.push(
+                    getHref({
+                        pathname: "/[locale]/catalog",
+                        query: {
+                            sortBy: "RATING_DESC",
+                        },
+                    }),
+                )
+                break
+            case "new":
+                router.push(
+                    getHref({
+                        pathname: "/[locale]/catalog",
+                        query: {
+                            sortBy: "NEWEST",
+                        },
+                    }),
+                )
+                break
+            case "special":
+                router.push(
+                    getHref({
+                        pathname: "/[locale]/catalog",
+                        query: {
+                            sortBy: "TOP_SELLING",
+                        },
+                    }),
+                )
+                break
+        }
+    }
+
+    const isLoadingAll =
+        isLoading || topSellingLoading || recommendedLoading || discountLoading
 
     return (
         <section className="w-full bg-[#F8FAFC] py-16 md:py-24 overflow-hidden">
@@ -104,7 +176,7 @@ export const TourSection = () => {
                                     :   "text-slate-500 hover:text-slate-800 hover:bg-slate-200/50"
                                 }`}
                             >
-                                <ClientTranslate translationKey={tab?.label} /> 
+                                <ClientTranslate translationKey={tab?.label} />
                             </button>
                         ))}
                     </div>
@@ -116,13 +188,19 @@ export const TourSection = () => {
                 >
                     <AnimatePresence mode="popLayout">
                         <motion.div className="flex gap-4 pl-0.5 pb-2">
-                            {tours?.map((tour) => (
-                                <ProductCard
-                                    tour={tour}
-                                    key={`${activeTab}-${tour.id}`}
+                            {isLoadingAll ?
+                                <ProductGridSkeleton
+                                    count={4}
                                     wrapperClassName="w-full md:w-[320px]"
                                 />
-                            ))}
+                            :   tours?.map((tour) => (
+                                    <ProductCard
+                                        tour={tour}
+                                        key={`${activeTab}-${tour.id}`}
+                                        wrapperClassName="w-full md:w-[320px]"
+                                    />
+                                ))
+                            }
                         </motion.div>
                     </AnimatePresence>
                 </div>
@@ -145,22 +223,18 @@ export const TourSection = () => {
                             />
                         </button>
                     </div>
-                    <button
-                        onClick={() =>
-                            router.push(
-                                getHref({
-                                    pathname: "/[locale]/catalog",
-                                }),
-                            )
-                        }
-                        className="flex items-center cursor-pointer gap-1.5 text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors duration-200 group"
-                    >
-                        <ClientTranslate translationKey="exploreAll" />
-                        <ArrowRight
-                            size={15}
-                            className="transition-transform duration-200 group-hover:translate-x-0.5"
-                        />
-                    </button>
+                    {tours?.length > 0 && (
+                        <button
+                            onClick={handleNavigateToCatalog}
+                            className="flex items-center cursor-pointer gap-1.5 text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors duration-200 group"
+                        >
+                            <ClientTranslate translationKey="exploreAll" />
+                            <ArrowRight
+                                size={15}
+                                className="transition-transform duration-200 group-hover:translate-x-0.5"
+                            />
+                        </button>
+                    )}
                 </div>
             </div>
         </section>

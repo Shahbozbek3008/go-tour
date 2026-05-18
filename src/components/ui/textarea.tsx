@@ -72,7 +72,7 @@ function Textarea({
                 className={cn(
                     "flex field-sizing-content min-h-14 w-full rounded-md border bg-background px-3 py-2 text-base shadow-xs outline-none transition-[color,box-shadow]",
                     "resize-none border-input placeholder:text-muted-foreground focus-visible:ring-[1px] focus-visible:ring-ring/50",
-                    "disabled:cursor-not-allowed disabled:opacity-50",
+                    "disabled:cursor-not-allowed disabled:opacity-50 break-all overflow-hidden min-w-0",
                     { "pl-10": !!leftNode },
                     { "pr-10": !!rightNode },
                     className,

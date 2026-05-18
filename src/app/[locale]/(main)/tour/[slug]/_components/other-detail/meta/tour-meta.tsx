@@ -2,6 +2,8 @@ import ClientTranslate from "@/components/common/translation/client-translate"
 import { TranslationKey } from "@/components/common/translation/types"
 import { Badge } from "@/components/ui/badge"
 import { StarRating } from "@/components/ui/star-rating"
+import { useModal } from "@/hooks/use-modal"
+import { MODAL_KEYS } from "@/lib/constants/modal-keys"
 import { formatReviewCount } from "@/lib/utils/format-review"
 import { ChevronRight } from "lucide-react"
 
@@ -20,6 +22,8 @@ export function TourMeta({
     type,
     discount,
 }: TourMetaProps) {
+    const { openModal } = useModal(MODAL_KEYS.ALL_REVIEWS_MODAL)
+
     return (
         <div className="flex flex-wrap items-center gap-2 mb-4">
             {rating === 0 ?
@@ -31,7 +35,8 @@ export function TourMeta({
                 </Badge>
             :   <Badge
                     variant="default"
-                    className="bg-lime-50 text-lime-700 border border-lime-200"
+                    className="bg-lime-50 text-lime-700 border border-lime-200 cursor-pointer"
+                    onClick={openModal}
                 >
                     <StarRating
                         rating={rating ? Number(rating.toFixed(1)) : 0}
@@ -50,11 +55,16 @@ export function TourMeta({
             <Badge variant="gray" className="bg-[#eeeef2] text-black text-sm">
                 {country}
             </Badge>
-            <Badge variant="gray" className="bg-[#eeeef2] text-black text-sm">
-                <ClientTranslate
-                    translationKey={`cat_${type}` as TranslationKey}
-                />
-            </Badge>
+            {type && (
+                <Badge
+                    variant="gray"
+                    className="bg-[#eeeef2] text-black text-sm"
+                >
+                    <ClientTranslate
+                        translationKey={`cat_${type}` as TranslationKey}
+                    />
+                </Badge>
+            )}
 
             {discount > 0 && (
                 <Badge variant="destructive" className="text-sm">

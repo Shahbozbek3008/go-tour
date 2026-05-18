@@ -19,15 +19,13 @@ import { CurrencySwitcher } from "../currency-switcher"
 import { LanguageSwitcher } from "../language-switcher"
 import { Login } from "../login"
 import { Verify } from "../login/verify"
-import { DesktopNavLinks, MobileMenu, NavList } from "./nav-list"
+import { DesktopNavLinks } from "./nav-list"
 import { Profile } from "./profile"
 
 export const Navbar = () => {
     const pathname = usePathname()
     const router = useRouter()
-    const [menuOpen, setMenuOpen] = useState(false)
     const [scrolled, setScrolled] = useState(false)
-    const [hidden, setHidden] = useState(false)
     const lastScrollY = useRef(0)
     const navRef = useRef<HTMLElement>(null)
     const { isOpen, openModal } = useModal(MODAL_KEYS.SIGN_IN_MODAL)
@@ -46,23 +44,7 @@ export const Navbar = () => {
     useEffect(() => {
         const handleScroll = () => {
             const currentScrollY = window.scrollY
-
-            if (currentScrollY > 20) {
-                setScrolled(true)
-            } else {
-                setScrolled(false)
-            }
-
-            if (currentScrollY > 100) {
-                if (currentScrollY > lastScrollY.current) {
-                    setHidden(false)
-                } else if (currentScrollY < lastScrollY.current) {
-                    setHidden(true)
-                }
-            } else {
-                setHidden(false)
-            }
-
+            setScrolled(currentScrollY > 80)
             lastScrollY.current = currentScrollY
         }
 
@@ -70,10 +52,6 @@ export const Navbar = () => {
         handleScroll()
         return () => window.removeEventListener("scroll", handleScroll)
     }, [])
-
-    useEffect(() => {
-        setMenuOpen(false)
-    }, [pathname])
 
     const handleHeartClick = () => {
         if (!isAuthenticated) {
@@ -94,7 +72,6 @@ export const Navbar = () => {
                 className={cn(
                     "top-0 z-[50] w-full transition-transform duration-300",
                     isCatalog ? "fixed" : "sticky",
-                    hidden ? "-translate-y-full" : "translate-y-0",
                 )}
             >
                 <div
@@ -107,8 +84,9 @@ export const Navbar = () => {
                 >
                     <nav
                         className={cn(
-                            "flex items-center justify-between transition-all duration-300 home-container",
-                            scrolled ? "py-2.5" : "py-4",
+                            "flex items-center justify-between home-container",
+                            // padding o'zgarmaydi — navbar o'ynamaydi
+                            "py-4",
                         )}
                     >
                         <Link href="/" className="flex-shrink-0">
@@ -117,7 +95,7 @@ export const Navbar = () => {
                                 alt="Travel logo"
                                 priority
                                 className={cn(
-                                    "transition-all duration-300  mt-2 w-24",
+                                    "transition-all duration-300 mt-2 w-24",
                                     isTransparent && "brightness-0 invert",
                                 )}
                             />
@@ -169,12 +147,6 @@ export const Navbar = () => {
                                     <ClientTranslate translationKey="signIn" />
                                 </Button>
                             )}
-
-                            <NavList
-                                menuOpen={menuOpen}
-                                onMenuToggle={setMenuOpen}
-                                isTransparent={isTransparent}
-                            />
                         </div>
                     </nav>
                 </div>
@@ -183,12 +155,6 @@ export const Navbar = () => {
                     {isVerifyOpen && <Verify />}
                 </FormProvider>
             </header>
-
-            <MobileMenu
-                open={menuOpen}
-                pathname={pathname}
-                onClose={() => setMenuOpen(false)}
-            />
         </>
     )
 }

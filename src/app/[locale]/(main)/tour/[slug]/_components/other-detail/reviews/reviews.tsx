@@ -32,7 +32,8 @@ export const Reviews = ({
                     className="text-sm font-semibold bg-[#f0f2f5] hover:bg-[#e4e6e9] text-black"
                     onClick={openModal}
                 >
-                    <ClientTranslate translationKey="allReviews" /> ({totalCount})
+                    <ClientTranslate translationKey="allReviews" /> (
+                    {totalCount})
                 </Button>
             </div>
             {isOpen && (
